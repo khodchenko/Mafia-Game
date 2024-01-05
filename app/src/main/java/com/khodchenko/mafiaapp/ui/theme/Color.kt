@@ -9,3 +9,11 @@ val Pink80 = Color(0xFFEFB8C8)
 val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
+
+val RichBlack = Color(0xFF02040F)
+val EngineeringOrange = Color(0xFFC60000)
+val Goldenrod = Color(0xFFCC9900)
+val CaribbeanCurrent = Color(0xFF026C7C)
+val White = Color(0xFFFFFFFF)
+
+val Background = Color(0xff8f0000)
