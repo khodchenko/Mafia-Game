@@ -13,15 +13,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -45,10 +41,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.khodchenko.mafiaapp.R
+import com.khodchenko.mafiaapp.ui.SimpleElevatedButton
 import com.khodchenko.mafiaapp.ui.theme.*
 
 @Composable
-fun StartGameStageUI(modifier: Modifier = Modifier) {
+fun StartGameStageUI() {
 
     val englishText = "English"
     val mafiaText = "MAFIA"
@@ -225,7 +222,7 @@ fun StartGameStageUI(modifier: Modifier = Modifier) {
             ) {
 
 
-                ElevatedButtonExample {
+                SimpleElevatedButton(onClick = { /* Handle button click here */ }) {
                 }
 
             }
@@ -258,23 +255,7 @@ fun StartGameStageUI(modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-fun ElevatedButtonExample(onClick: () -> Unit) {
-    val buttonText = "Погнали"
-    ElevatedButton(
-        onClick = { onClick() },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.White,
-            contentColor = Color.Black
-        ),
-        modifier = Modifier
-            .height(56.dp)
-            .width(168.dp)
-    ) {
-        Text(buttonText, color = Background, fontSize = 30.sp)
 
-    }
-}
 
 @Composable
 fun SimpleSwitch(onSwitchChanged: (Boolean) -> Unit) {
@@ -325,5 +306,5 @@ fun SliderMinimalExample(onSliderValueChanged: (Float) -> Unit, currentValue: Fl
 @Preview()
 @Composable
 private fun StartGameStageUIPreview() {
-    StartGameStageUI(Modifier)
+    StartGameStageUI()
 }
