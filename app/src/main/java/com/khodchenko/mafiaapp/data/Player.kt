@@ -1,9 +1,9 @@
 package com.khodchenko.mafiaapp.data
 
-class Player (
-    number : Int,
-    name : String,
-    role : Role,
-    isAlive : Boolean,
-    score : Double
+data class Player (
+    val number : Int,
+    val name : String,
+    val role : Role,
+    val isAlive : Boolean,
+    val score : Double
 )
