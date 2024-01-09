@@ -1,6 +1,7 @@
 package com.khodchenko.mafiaapp.ui.stage
 
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -62,19 +63,19 @@ fun RolePickerStage(players: MutableList<Player>) {
             LazyColumn {
                 items(playersList) { player ->
                     Row(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
                             text = "${player.number}: ",
                             style = MaterialTheme.typography.titleMedium,
-                            fontSize = 26.sp,
+                            fontSize = 22.sp,
                             color = Color.White
                         )
                         Text(
                             text = player.name,
                             style = MaterialTheme.typography.titleMedium,
-                            fontSize = 26.sp,
+                            fontSize = 22.sp,
                             color = Color.White
                         )
 
@@ -92,13 +93,13 @@ fun RolePickerStage(players: MutableList<Player>) {
                 textStyle = TextStyle(color = Color.White),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(12.dp)
             )
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
@@ -115,7 +116,7 @@ fun RolePickerStage(players: MutableList<Player>) {
                 }
 
                 ElevatedButton(onClick = {
-                    if (newPlayerName.isNotEmpty()) {
+                    if (newPlayerName.isNotEmpty() && playersList.size < 10) {
                         val newPlayer = Player(
                             number = playersList.size + 1,
                             name = newPlayerName,

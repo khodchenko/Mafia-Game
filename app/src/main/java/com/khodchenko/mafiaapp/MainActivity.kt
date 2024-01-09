@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.khodchenko.mafiaapp.ui.Timer
 import com.khodchenko.mafiaapp.ui.stage.StartGameStageUI
 import com.khodchenko.mafiaapp.ui.theme.MafiaAppTheme
 
@@ -18,7 +19,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MafiaAppTheme {
-                    StartGameStageUI()
+                    Timer()
             }
         }
     }
