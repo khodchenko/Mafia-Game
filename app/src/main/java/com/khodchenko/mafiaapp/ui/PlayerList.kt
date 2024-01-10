@@ -34,7 +34,7 @@ fun PlayerList(playersList: MutableList<Player>, currentDay: Day, activePlayerIn
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = Background)
+            .background(color = Color.Transparent)
             .padding(4.dp)
     ) {
         Column() {
@@ -137,5 +137,5 @@ private fun PlayerListPreview() {
         Player(10, "Player 10", Role.CIVIL)
     )
     val day = Day(1)
-    PlayerList(players, day, activePlayerIndex = 1)
+    PlayerList(players, day, activePlayerIndex = 2)
 }

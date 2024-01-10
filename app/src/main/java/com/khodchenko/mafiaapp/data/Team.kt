@@ -1,6 +1,10 @@
 package com.khodchenko.mafiaapp.data
 
-class Team(
-    name: String,
-    players: List<Player>
-)
+data class Team(
+    val color : TeamColor,
+    val players: List<Player>
+){
+    enum class TeamColor{
+        RED, BLACK
+    }
+}

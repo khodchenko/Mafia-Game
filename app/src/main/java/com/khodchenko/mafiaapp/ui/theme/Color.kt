@@ -17,3 +17,4 @@ val CaribbeanCurrent = Color(0xFF026C7C)
 val White = Color(0xFFFFFFFF)
 
 val Background = Color(0xff8f0000)
+val BeautifulBlack = Color(0xFF121212)

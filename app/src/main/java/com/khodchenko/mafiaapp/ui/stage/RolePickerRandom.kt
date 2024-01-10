@@ -33,7 +33,6 @@ import com.khodchenko.mafiaapp.ui.theme.Background
 
 @Composable
 fun RolePickerRandom (player : Player) {
-    val player = "Игрок №"
     var showImage by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
@@ -54,7 +53,7 @@ fun RolePickerRandom (player : Player) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = player,
+                text = "Игрок №${player.number}",
                 color = Color(0xffffffff),
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Normal,
@@ -63,7 +62,7 @@ fun RolePickerRandom (player : Player) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = player,
+                text = player.name,
                 color = Color(0xffffffff),
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Normal,
@@ -104,5 +103,5 @@ fun RolePickerRandom (player : Player) {
 @Preview()
 @Composable
 private fun RolePickerRandomPreview() {
-    RolePickerRandom(Player(1, "Player", Role.MAFIA, 0,true, 0.0))
+    RolePickerRandom(Player(1, "Player", Role.MAFIA))
 }
