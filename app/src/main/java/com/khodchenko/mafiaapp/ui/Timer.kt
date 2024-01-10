@@ -42,13 +42,11 @@ fun Timer() {
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(color = Background)
+            .background(color = Color.Transparent)
             .padding(4.dp)
     ) {
         Row(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(4.dp)
         ) {
             Text(

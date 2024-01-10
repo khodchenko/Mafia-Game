@@ -3,11 +3,17 @@ package com.khodchenko.mafiaapp.ui.stage
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -18,57 +24,61 @@ import androidx.compose.ui.unit.sp
 import com.khodchenko.mafiaapp.data.Day
 import com.khodchenko.mafiaapp.data.Player
 import com.khodchenko.mafiaapp.data.Role
-import com.khodchenko.mafiaapp.data.Team
 import com.khodchenko.mafiaapp.ui.PlayerList
+import com.khodchenko.mafiaapp.ui.Timer
 import com.khodchenko.mafiaapp.ui.theme.Background
 import com.khodchenko.mafiaapp.ui.theme.BeautifulBlack
 
+
 @Composable
-fun EndGameStage(playerList: MutableList<Player>, currentDay: Day, winnerTeam: Team) {
-    val bestPlayer = playerList.maxByOrNull { it.score }
+fun NightStage(players: MutableList<Player>, currentDay: Day) {
+    var activePlayerIndex by remember { mutableStateOf(0) }
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                color = if (winnerTeam.color == Team.TeamColor.RED) Background
-                else BeautifulBlack
-            )
+            .background(BeautifulBlack)
             .padding(8.dp)
     ) {
-        Column {
+        Column(modifier = Modifier.fillMaxHeight()) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = "Победила команда:\n" + winnerTeam.color.toString(),
+                text = "Ночь:$currentDay",
                 color = Color.White,
                 fontSize = 26.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center
+            )
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                text = "Мафия совершает выстрел...",
+                color = Color.White,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center
             )
 
             PlayerList(
-                playersList = playerList,
-                activePlayerIndex = bestPlayer?.number
-                    ?: 0, onPlayerClick = {}
+                playersList = players,
+                activePlayerIndex = activePlayerIndex,
+                onPlayerClick = { clickedPlayerIndex ->
+                    activePlayerIndex = clickedPlayerIndex
+                },
+                Background
             )
 
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                text = "Лучший игрок:\n" + bestPlayer?.name,
-                color = Color.White,
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center
-            )
+            Spacer(modifier = Modifier.weight(1f))
 
+            Timer()
         }
     }
 }
 
 @Preview()
 @Composable
-private fun EndGameStagePreview() {
+private fun NightStagePreview() {
     val players = mutableListOf<Player>(
         Player(1, "Player 1", Role.MAFIA),
         Player(2, "Player 2", Role.CIVIL),
@@ -82,6 +92,5 @@ private fun EndGameStagePreview() {
         Player(10, "Player 10", Role.CIVIL)
     )
     val day = Day(1)
-    val redTeam = Team(Team.TeamColor.BLACK, players)
-    EndGameStage(players, day, redTeam)
+    NightStage(players, day)
 }
