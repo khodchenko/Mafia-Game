@@ -104,5 +104,5 @@ fun RolePickerRandom (player : Player) {
 @Preview()
 @Composable
 private fun RolePickerRandomPreview() {
-    RolePickerRandom(Player(1, "Player", Role.MAFIA, true, 0.0))
+    RolePickerRandom(Player(1, "Player", Role.MAFIA, 0,true, 0.0))
 }

@@ -1,7 +1,11 @@
 package com.khodchenko.mafiaapp.data
 
-class Day (
-    number: Int = 0
-)
+data class Day (
+    val number: Int = 0
+) {
+    override fun toString(): String {
+        return "$number"
+    }
+}
 
 

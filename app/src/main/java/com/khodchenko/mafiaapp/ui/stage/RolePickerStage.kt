@@ -152,17 +152,6 @@ fun RolePickerStage(players: MutableList<Player>) {
     }
 }
 
-@Preview()
-@Composable
-private fun RolePickerStagePreview() {
-    val players = mutableListOf<Player>(
-        Player(1, "Player 1", Role.MAFIA, true, 0.0),
-        Player(2, "Player 2", Role.CIVIL, true, 0.0),
-    )
-    RolePickerStage(players)
-}
-
-
 @Composable
 fun Demo_DropDownMenu(selectedRole: Role) {
     var expanded by remember { mutableStateOf(false) }
@@ -206,4 +195,14 @@ fun Demo_DropDownMenu(selectedRole: Role) {
             }
         }
     }
+}
+
+@Preview()
+@Composable
+private fun RolePickerStagePreview() {
+    val players = mutableListOf<Player>(
+        Player(1, "Player 1", Role.MAFIA),
+        Player(2, "Player 2", Role.CIVIL),
+    )
+    RolePickerStage(players)
 }
