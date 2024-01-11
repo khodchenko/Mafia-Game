@@ -3,17 +3,21 @@ package com.khodchenko.mafiaapp.ui.stage
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -32,7 +36,7 @@ import com.khodchenko.mafiaapp.ui.theme.BeautifulBlack
 
 @Composable
 fun NightStage(players: MutableList<Player>, currentDay: Day) {
-    var activePlayerIndex by remember { mutableStateOf(0) }
+    var activePlayerIndex by remember { mutableStateOf(11) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -68,6 +72,20 @@ fun NightStage(players: MutableList<Player>, currentDay: Day) {
                 },
                 Background
             )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 36.dp)
+            ) {
+                Button(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier.align(Alignment.Center),
+                    colors = ButtonDefaults.buttonColors(Color.White)
+                ) {
+                    Text(text = "ВЫСТРЕЛ", color = Color.Black, fontSize = 24.sp)
+                }
+            }
 
             Spacer(modifier = Modifier.weight(1f))
 
