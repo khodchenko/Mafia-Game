@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import com.khodchenko.mafiaapp.data.Day
 import com.khodchenko.mafiaapp.data.Player
 import com.khodchenko.mafiaapp.data.Role
+import com.khodchenko.mafiaapp.helpers.SoundPlayer
 import com.khodchenko.mafiaapp.ui.PlayerList
 import com.khodchenko.mafiaapp.ui.Timer
 import com.khodchenko.mafiaapp.ui.theme.Background
@@ -37,6 +39,8 @@ import com.khodchenko.mafiaapp.ui.theme.BeautifulBlack
 @Composable
 fun NightStage(players: MutableList<Player>, currentDay: Day) {
     var activePlayerIndex by remember { mutableStateOf(11) }
+    val soundPlayer = SoundPlayer(LocalContext.current)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -79,7 +83,7 @@ fun NightStage(players: MutableList<Player>, currentDay: Day) {
                     .padding(top = 36.dp)
             ) {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {   soundPlayer.playShootSound() },
                     modifier = Modifier.align(Alignment.Center),
                     colors = ButtonDefaults.buttonColors(Color.White)
                 ) {

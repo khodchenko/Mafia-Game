@@ -47,7 +47,7 @@ import com.khodchenko.mafiaapp.ui.theme.Background
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RolePickerStage(players: MutableList<Player>) {
+fun RolePickerStage(players: MutableList<Player>, onRoleAssigned: (Player, Role) -> Unit) {
     var newPlayerName by remember { mutableStateOf("") }
     var playersList by remember { mutableStateOf(players) }
 
@@ -77,7 +77,9 @@ fun RolePickerStage(players: MutableList<Player>) {
                             color = Color.White
                         )
 
-                        Demo_DropDownMenu(selectedRole = player.role)
+                        Demo_DropDownMenu(selectedRole = player.role) { selectedRole ->
+                            onRoleAssigned(player, selectedRole)
+                        }
                     }
                 }
             }
@@ -151,7 +153,7 @@ fun RolePickerStage(players: MutableList<Player>) {
 }
 
 @Composable
-fun Demo_DropDownMenu(selectedRole: Role) {
+fun Demo_DropDownMenu(selectedRole: Role, onRoleSelected: (Role) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var currentRole by remember(selectedRole) { mutableStateOf(selectedRole) }
 
@@ -187,6 +189,7 @@ fun Demo_DropDownMenu(selectedRole: Role) {
                     onClick = {
                         currentRole = role
                         expanded = false
+                        onRoleSelected(role)
                     },
                     enabled = role != currentRole
                 )
@@ -202,5 +205,7 @@ private fun RolePickerStagePreview() {
         Player(1, "Player 1", Role.MAFIA),
         Player(2, "Player 2", Role.CIVIL),
     )
-    RolePickerStage(players)
+    RolePickerStage(players) { player, role ->
+        // Обработка назначения роли
+    }
 }

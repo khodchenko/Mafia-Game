@@ -35,7 +35,7 @@ fun PlayerList(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = Color.Transparent)
-            .padding(4.dp)
+            .padding(2.dp)
     ) {
         Column() {
 
@@ -56,7 +56,7 @@ private fun PlayerItem(player: Player, isActive: Boolean, onPlayerClick: (Int) -
     Row(
         modifier = Modifier
             .clickable { onPlayerClick(player.number) }
-            .padding(12.dp)
+            .padding(6.dp)
             .background(if (isActive) activePlayerColor else Color.Transparent),
         verticalAlignment = Alignment.CenterVertically
     ) {
