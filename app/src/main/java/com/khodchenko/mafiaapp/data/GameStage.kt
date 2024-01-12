@@ -1,6 +1,7 @@
 package com.khodchenko.mafiaapp.data
 
 enum class GameStage {
+    START,
     NIGHT,
     DAY,
     VOTE,

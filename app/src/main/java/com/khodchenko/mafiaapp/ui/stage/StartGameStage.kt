@@ -33,15 +33,16 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.khodchenko.mafiaapp.R
+import com.khodchenko.mafiaapp.Screen
 import com.khodchenko.mafiaapp.ui.SimpleElevatedButton
-import com.khodchenko.mafiaapp.ui.theme.*
+import com.khodchenko.mafiaapp.ui.theme.Background
 
 @Composable
-fun StartGameStageUI() {
+fun StartGameStage(navController: NavController) {
 
     val englishText = "English"
     val mafiaText = "MAFIA"
@@ -54,6 +55,8 @@ fun StartGameStageUI() {
     val playersCountInfoText = "От количества игроков зависит количество “черных” ролей."
     val hutirText = "HUTIR"
     val productInfoText = "Продукт для внутреннего использования сообществом украинцев в Бельгии."
+    var buttonClicked by remember { mutableStateOf(false) }
+
 
     Box(
         modifier = Modifier
@@ -218,8 +221,10 @@ fun StartGameStageUI() {
             ) {
 
 
-                SimpleElevatedButton("Погнали", onClick = { /* Handle button click here */ }) {
-                }
+
+                SimpleElevatedButton("Погнали", onClick = {
+                  navController.navigate(Screen.RolePickerScreen.route)
+                }) {}
 
             }
 
@@ -296,11 +301,4 @@ fun SliderMinimalExample(onSliderValueChanged: (Float) -> Unit, currentValue: Fl
             valueRange = 7f..10F
         )
     }
-}
-
-
-@Preview()
-@Composable
-private fun StartGameStageUIPreview() {
-    StartGameStageUI()
 }

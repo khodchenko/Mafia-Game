@@ -1,53 +1,56 @@
 package com.khodchenko.mafiaapp.game
 
 import androidx.compose.runtime.Composable
-import com.khodchenko.mafiaapp.data.GameStage
-import com.khodchenko.mafiaapp.ui.stage.DayStage
-import com.khodchenko.mafiaapp.ui.stage.EndGameStage
-import com.khodchenko.mafiaapp.ui.stage.NightStage
-import com.khodchenko.mafiaapp.ui.stage.RolePickerRandom
-import com.khodchenko.mafiaapp.ui.stage.RolePickerStage
-import com.khodchenko.mafiaapp.ui.stage.StartGameStageUI
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 @Composable
 fun MafiaGameUI(game: MafiaGame) {
-    val gameState = game.getCurrentGameState()
-
-    when (gameState) {
-        GameStage.NIGHT -> {
-            NightStage(game.players.toMutableList(), game.currentDay)
-        }
-
-        GameStage.DAY -> {
-            DayStage(game.getAlivePlayers(), game.currentDay)
-        }
-
-        GameStage.VOTE -> {
-
-        }
-
-        GameStage.ROLE_PICK -> {
-            // Отображение UI для стадии выбора ролей
-            RolePickerStage(game.players.toMutableList()) { player, role ->
-                game.assignRole(player, role)
-            }
-        }
-
-        GameStage.ROLE_PICK_RANDOM -> {
-            RolePickerRandom(player = game.currentPlayer)
-        }
-
-        GameStage.GAME_OVER -> {
-            // Отображение UI для экрана окончания игры
-            EndGameStage(
-                game.players.toMutableList(), game.currentDay,
-                game.winnerTeam!!
-            )
-        }
-
-        else -> {
-            // Отображение UI для стартового экрана
-            StartGameStageUI()
-        }
-    }
+    var gameState by remember(game) { mutableStateOf(game.getCurrentGameState()) }
+//
+//    LaunchedEffect(gameState) {
+//        gameState = game.getCurrentGameState()
+//    }
+//    // Отображение текущего экрана в зависимости от стадии игры
+//    when (gameState) {
+//        GameStage.NIGHT -> {
+//            NightStage(
+//                players = game.getAllPlayers().toMutableList(),
+//                currentDay = game.currentDay
+//            )
+//        }
+//
+//        GameStage.DAY -> {
+//            DayStage(players = game.getAlivePlayers(), currentDay = game.currentDay)
+//        }
+//
+//        GameStage.VOTE -> {
+//            // Добавьте код для стадии голосования при необходимости
+//        }
+//
+//        GameStage.ROLE_PICK -> {
+//            // Отображение UI для стадии выбора ролей
+////            RolePickerStage(players = game.getAllPlayers().toMutableList()) { player, role ->
+////                game.assignRole(player, role)
+////            }
+//        }
+//
+//        GameStage.ROLE_PICK_RANDOM -> {
+//            RolePickerRandom(player = game.getCurrentPlayer())
+//        }
+//
+//        GameStage.GAME_OVER -> {
+//            // Отображение UI для экрана окончания игры
+//            EndGameStage(
+//                playerList = game.getAllPlayers().toMutableList(), currentDay = game.currentDay,
+//                winnerTeam = game.winnerTeam!!
+//            )
+//        }
+//
+//        GameStage.START -> {
+//            StartGameStageUI(navController = )
+//        }
+//    }
 }

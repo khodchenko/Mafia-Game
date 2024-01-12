@@ -23,7 +23,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -33,11 +32,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.khodchenko.mafiaapp.data.Player
@@ -47,9 +44,9 @@ import com.khodchenko.mafiaapp.ui.theme.Background
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RolePickerStage(players: MutableList<Player>, onRoleAssigned: (Player, Role) -> Unit) {
+fun RolePickerStage() {
     var newPlayerName by remember { mutableStateOf("") }
-    var playersList by remember { mutableStateOf(players) }
+    var playersList by remember { mutableStateOf(mutableListOf<Player>()) }
 
     Box(
         modifier = Modifier
@@ -78,7 +75,7 @@ fun RolePickerStage(players: MutableList<Player>, onRoleAssigned: (Player, Role)
                         )
 
                         Demo_DropDownMenu(selectedRole = player.role) { selectedRole ->
-                            onRoleAssigned(player, selectedRole)
+
                         }
                     }
                 }
@@ -198,14 +195,14 @@ fun Demo_DropDownMenu(selectedRole: Role, onRoleSelected: (Role) -> Unit) {
     }
 }
 
-@Preview()
-@Composable
-private fun RolePickerStagePreview() {
-    val players = mutableListOf<Player>(
-        Player(1, "Player 1", Role.MAFIA),
-        Player(2, "Player 2", Role.CIVIL),
-    )
-    RolePickerStage(players) { player, role ->
-        // Обработка назначения роли
-    }
-}
+//@Preview()
+//@Composable
+//private fun RolePickerStagePreview() {
+//    val players = mutableListOf<Player>(
+//        Player(1, "Player 1", Role.MAFIA),
+//        Player(2, "Player 2", Role.CIVIL),
+//    )
+//    RolePickerStage(players)
+//        // Обработка назначения роли
+//
+//}
