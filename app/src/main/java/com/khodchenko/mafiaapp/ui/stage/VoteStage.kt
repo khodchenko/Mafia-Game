@@ -2,6 +2,7 @@ package com.khodchenko.mafiaapp.ui.stage
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,8 +25,10 @@ import com.khodchenko.mafiaapp.data.Role
 import com.khodchenko.mafiaapp.ui.theme.Background
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import com.khodchenko.mafiaapp.ui.SimpleElevatedButton
 
 @Composable
 fun VoteStage(player: Player, allPlayers: List<Player>) {
@@ -50,10 +53,11 @@ fun VoteStage(player: Player, allPlayers: List<Player>) {
             )
             Text(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(top = 10.dp, bottom = 10.dp),
                 text = "Выберете ниже кто голосует \nпротив этого игрока:",
                 color = Color.White,
-                fontSize = 16.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center
             )
@@ -65,12 +69,16 @@ fun VoteStage(player: Player, allPlayers: List<Player>) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(top = 2.dp, bottom = 2.dp)
                             .clickable {
-                                // Обработка клика
                                 voters = if (isSelected) {
-                                    voters.toMutableList().apply { remove(otherPlayer) }
+                                    voters
+                                        .toMutableList()
+                                        .apply { remove(otherPlayer) }
                                 } else {
-                                    voters.toMutableList().apply { add(otherPlayer) }
+                                    voters
+                                        .toMutableList()
+                                        .apply { add(otherPlayer) }
                                 }
                             },
                         verticalAlignment = Alignment.CenterVertically
@@ -78,17 +86,40 @@ fun VoteStage(player: Player, allPlayers: List<Player>) {
                         Checkbox(
                             checked = isSelected,
                             onCheckedChange = null,
-                            modifier = Modifier
-                                .padding(4.dp)
+                            colors = CheckboxDefaults.colors(
+                                checkmarkColor = Background,
+                                checkedColor = Color.White,
+                                uncheckedColor = Color.White.copy(alpha = 0.5f)
+                            ),
+                            modifier = Modifier.padding(4.dp)
+                        )
+                        Text(
+                            text = "${otherPlayer.number}:",
+                            modifier = Modifier.padding(end = 4.dp),
+                            color = Color.White,
+                            fontSize = 28.sp
                         )
                         Text(
                             text = otherPlayer.name,
                             color = Color.White,
-                            fontSize = 18.sp
+                            fontSize = 28.sp
                         )
+
+
                     }
                 }
             }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 30.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                SimpleElevatedButton("Голосуем", onClick = { /* Handle button click here */ }) {
+                }
+            }
+
         }
     }
 }

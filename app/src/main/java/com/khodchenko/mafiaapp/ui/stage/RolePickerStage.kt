@@ -143,7 +143,7 @@ fun RolePickerStage(players: MutableList<Player>, onRoleAssigned: (Player, Role)
                     .padding(bottom = 16.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                SimpleElevatedButton(onClick = { /* Handle button click here */ }) {
+                SimpleElevatedButton("Погнали", onClick = { /* Handle button click here */ }) {
                 }
             }
 
