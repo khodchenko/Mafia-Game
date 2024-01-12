@@ -19,7 +19,7 @@ fun MafiaGameUI(game: MafiaGame) {
         }
 
         GameStage.DAY -> {
-            DayStage(game.currentDay)
+            DayStage(game.getAlivePlayers(), game.currentDay)
         }
 
         GameStage.VOTE -> {

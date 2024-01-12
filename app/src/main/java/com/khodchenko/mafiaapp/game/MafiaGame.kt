@@ -73,6 +73,10 @@ class MafiaGame(
         return gameStage
     }
 
+    fun getAlivePlayers(): MutableList<Player> {
+        return players.filter { it.isAlive }.toMutableList()
+    }
+
     // Реализуйте функцию для генерации начальных игроков
     private fun generateInitialPlayers(): MutableList<Player> {
         return mutableListOf<Player>()

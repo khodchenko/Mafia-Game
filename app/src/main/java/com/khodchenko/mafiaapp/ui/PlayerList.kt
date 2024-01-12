@@ -29,7 +29,8 @@ fun PlayerList(
     playersList: MutableList<Player>,
     activePlayerIndex: Int,
     onPlayerClick: (Int) -> Unit,
-    activePlayerColor : Color = Color.Gray
+    activePlayerColor: Color = Color.Gray,
+    showRoles: Boolean = false
 ) {
     Box(
         modifier = Modifier
@@ -41,10 +42,13 @@ fun PlayerList(
 
             LazyColumn {
                 items(playersList) { player ->
-                    PlayerItem(player,
+                    PlayerItem(
+                        player,
                         activePlayerIndex == player.number,
                         onPlayerClick,
-                        activePlayerColor)
+                        activePlayerColor,
+                        showRoles
+                    )
                 }
             }
         }
@@ -52,7 +56,13 @@ fun PlayerList(
 }
 
 @Composable
-private fun PlayerItem(player: Player, isActive: Boolean, onPlayerClick: (Int) -> Unit, activePlayerColor : Color) {
+private fun PlayerItem(
+    player: Player,
+    isActive: Boolean,
+    onPlayerClick: (Int) -> Unit,
+    activePlayerColor: Color,
+    showRoles: Boolean
+) {
     Row(
         modifier = Modifier
             .clickable { onPlayerClick(player.number) }
@@ -80,14 +90,15 @@ private fun PlayerItem(player: Player, isActive: Boolean, onPlayerClick: (Int) -
             modifier = Modifier.padding(start = 12.dp)
         )
         Spacer(modifier = Modifier.weight(1f))
-
-        Text(
-            text = player.role.toString(),
-            style = MaterialTheme.typography.bodySmall,
-            fontSize = 20.sp,
-            color = Color.White,
-            modifier = Modifier.padding(start = 12.dp)
-        )
+        if (showRoles) {
+            Text(
+                text = player.role.toString(),
+                style = MaterialTheme.typography.bodySmall,
+                fontSize = 20.sp,
+                color = Color.White,
+                modifier = Modifier.padding(start = 12.dp)
+            )
+        }
     }
 }
 
