@@ -1,9 +1,10 @@
-package com.khodchenko.mafiaapp
+package com.khodchenko.mafiaapp.game
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
 import com.khodchenko.mafiaapp.ui.stage.DayStage
 import com.khodchenko.mafiaapp.ui.stage.EndGameStage

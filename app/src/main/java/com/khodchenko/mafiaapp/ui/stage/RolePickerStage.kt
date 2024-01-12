@@ -38,9 +38,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.khodchenko.mafiaapp.Screen
 import com.khodchenko.mafiaapp.data.Player
 import com.khodchenko.mafiaapp.data.Role
+import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
 import com.khodchenko.mafiaapp.ui.SimpleElevatedButton
 import com.khodchenko.mafiaapp.ui.theme.Background
@@ -51,6 +51,10 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
     var newPlayerName by remember { mutableStateOf("") }
     var playersList by remember { mutableStateOf(mutableListOf<Player>()) }
 
+    game.startRolePickStage()
+
+    playersList = generateTestPlayers().toMutableList()
+    0
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -61,7 +65,7 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
             LazyColumn {
                 items(playersList) { player ->
                     Row(
-                        modifier = Modifier.padding(12.dp),
+                        modifier = Modifier.padding(6.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
@@ -104,7 +108,7 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
             ) {
 
                 ElevatedButton(onClick = {
-                    if (playersList.isNotEmpty()) {
+                    if (playersList.isNotEmpty() && playersList.size < 10) {
                         playersList = playersList.dropLast(1).toMutableList()
                     }
                 }) {
@@ -144,8 +148,10 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
                 contentAlignment = Alignment.BottomCenter
             ) {
                 SimpleElevatedButton("Погнали", onClick = {
-                    game.initialPlayers(playersList)
-                    navController.navigate(Screen.NightStageScreen.route)
+                    if (playersList.isNotEmpty()) {
+                        game.initialPlayers(playersList)
+                        navController.navigate(Screen.NightStageScreen.route)
+                    }
                 }) {
                 }
             }
@@ -199,4 +205,71 @@ fun Demo_DropDownMenu(selectedRole: Role, onRoleSelected: (Role) -> Unit) {
             }
         }
     }
+}
+
+fun generateTestPlayers(): List<Player> {
+    val playerNames = listOf(
+        "Player1",
+        "Player2",
+        "Player3",
+        "Player4",
+        "Player5",
+        "Player6",
+        "Player7",
+        "Player8",
+        "Player9",
+        "Player10"
+    )
+
+    val players = mutableListOf<Player>()
+
+    for (i in 1..2) {
+        players.add(
+            Player(
+                number = i,
+                name = playerNames[i - 1],
+                role = Role.MAFIA,
+                isAlive = true,
+                score = 0.0
+            )
+        )
+    }
+
+    for (i in 3..4) {
+        players.add(
+            Player(
+                number = i,
+                name = playerNames[i - 1],
+                role = Role.DON,
+                isAlive = true,
+                score = 0.0
+            )
+        )
+    }
+
+    for (i in 5..5) {
+        players.add(
+            Player(
+                number = i,
+                name = playerNames[i - 1],
+                role = Role.SHERIFF,
+                isAlive = true,
+                score = 0.0
+            )
+        )
+    }
+
+    for (i in 6..10) {
+        players.add(
+            Player(
+                number = i,
+                name = playerNames[i - 1],
+                role = Role.CIVIL,
+                isAlive = true,
+                score = 0.0
+            )
+        )
+    }
+
+    return players
 }

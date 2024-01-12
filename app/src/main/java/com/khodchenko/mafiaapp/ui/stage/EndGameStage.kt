@@ -24,8 +24,7 @@ import com.khodchenko.mafiaapp.ui.theme.BeautifulBlack
 fun EndGameStage(game: MafiaGame) {
     val playerList = game.getAllPlayers()
     val bestPlayer = playerList.maxByOrNull { it.score }
-    //todo
-    val winnerTeam  = Team(Team.TeamColor.RED, playerList)
+    val winnerTeam = game.getWinningTeam()
     Box(
         modifier = Modifier
             .fillMaxSize()

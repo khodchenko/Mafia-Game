@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,18 +28,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.khodchenko.mafiaapp.Screen
+import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
 import com.khodchenko.mafiaapp.ui.SimpleElevatedButton
 import com.khodchenko.mafiaapp.ui.theme.Background
 
 @Composable
-fun VoteStage(navController: NavController , game: MafiaGame) {
+fun VoteStage(navController: NavController, game: MafiaGame) {
 
     var voters by remember { mutableStateOf(game.getAllPlayers().filter { it.isAlive }) }
-    val alivePlayers by remember { mutableStateOf(game.getAllPlayers().toMutableList()) }
-    //todo
-    game.setCurrentPlayer(alivePlayers[0])
+    val alivePlayers by remember { mutableStateOf(game.getAllPlayers().filter { it.isAlive }) }
+
+    game.startVote()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -113,6 +115,9 @@ fun VoteStage(navController: NavController , game: MafiaGame) {
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.weight(1f))
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -121,7 +126,12 @@ fun VoteStage(navController: NavController , game: MafiaGame) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 SimpleElevatedButton("Голосуем", onClick = {
-                    navController.navigate(Screen.NightStageScreen.route)
+                    for (player in voters) {
+                        game.killPlayer(player)
+                    }
+                    if (game.checkEndGame()) {
+                        navController.navigate(Screen.EndGameStageScreen.route)
+                    } else navController.navigate(Screen.NightStageScreen.route)
                 }) {
                 }
             }

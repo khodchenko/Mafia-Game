@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.khodchenko.mafiaapp.R
-import com.khodchenko.mafiaapp.Screen
 import com.khodchenko.mafiaapp.data.Player
+import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
 import com.khodchenko.mafiaapp.ui.PlayerList
 import com.khodchenko.mafiaapp.ui.SimpleElevatedButton
@@ -49,7 +49,9 @@ fun DayStage(navController: NavController, game: MafiaGame) {
     var showDialog by remember { mutableStateOf(false) }
     var selectedPlayer by remember { mutableStateOf<Player?>(null) }
     val currentDay = game.getCurrentDay()
-    val players = game.getAllPlayers()
+    val players = game.getAllPlayers().filter { it.isAlive }
+
+    game.startDay()
 
     Box(
         modifier = Modifier
@@ -168,7 +170,7 @@ fun DayStage(navController: NavController, game: MafiaGame) {
                     }
                 }
             }
-
+            Spacer(modifier = Modifier.weight(1f))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -227,3 +229,4 @@ fun PlayerDialog(
         }
     )
 }
+

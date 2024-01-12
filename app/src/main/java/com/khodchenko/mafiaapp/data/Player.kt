@@ -5,6 +5,6 @@ data class Player (
     val name : String,
     val role : Role,
     var fouls : Int = 0,
-    val isAlive : Boolean = true,
+    var isAlive : Boolean = true,
     val score : Double = 0.0
 )

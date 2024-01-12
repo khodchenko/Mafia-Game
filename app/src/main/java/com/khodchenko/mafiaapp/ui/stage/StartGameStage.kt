@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.khodchenko.mafiaapp.R
-import com.khodchenko.mafiaapp.Screen
+import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.ui.SimpleElevatedButton
 import com.khodchenko.mafiaapp.ui.theme.Background
 

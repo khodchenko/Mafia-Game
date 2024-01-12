@@ -1,4 +1,4 @@
-package com.khodchenko.mafiaapp
+package com.khodchenko.mafiaapp.data
 
 sealed class Screen(val route: String) {
     object StartGameScreen : Screen("start_screen")
