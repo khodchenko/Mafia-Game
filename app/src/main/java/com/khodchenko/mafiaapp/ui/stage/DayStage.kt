@@ -29,26 +29,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.khodchenko.mafiaapp.R
-import com.khodchenko.mafiaapp.data.Day
+import com.khodchenko.mafiaapp.Screen
 import com.khodchenko.mafiaapp.data.Player
-import com.khodchenko.mafiaapp.data.Role
-import com.khodchenko.mafiaapp.data.Team
+import com.khodchenko.mafiaapp.game.MafiaGame
 import com.khodchenko.mafiaapp.ui.PlayerList
 import com.khodchenko.mafiaapp.ui.SimpleElevatedButton
 import com.khodchenko.mafiaapp.ui.theme.Background
 
 @Composable
-fun DayStage(players: MutableList<Player>, currentDay: Day) {
+fun DayStage(navController: NavController, game: MafiaGame) {
 
     var showRoles by remember { mutableStateOf(true) }
     var activePlayerIndex by remember { mutableStateOf(0) }
     var votedPlayers by remember { mutableStateOf(mutableListOf<Player>()) }
     var showDialog by remember { mutableStateOf(false) }
     var selectedPlayer by remember { mutableStateOf<Player?>(null) }
+    val currentDay = game.getCurrentDay()
+    val players = game.getAllPlayers()
 
     Box(
         modifier = Modifier
@@ -92,7 +93,7 @@ fun DayStage(players: MutableList<Player>, currentDay: Day) {
             )
 
             PlayerList(
-                playersList = players,
+                playersList = players.toMutableList(),
                 activePlayerIndex = activePlayerIndex,
                 onPlayerClick = { clickedIndex ->
                     selectedPlayer = players.find { it.number == clickedIndex }
@@ -174,7 +175,9 @@ fun DayStage(players: MutableList<Player>, currentDay: Day) {
                     .padding(top = 20.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                SimpleElevatedButton(buttonText = "Голосование", onClick = { /*TODO*/ }) {
+                SimpleElevatedButton(buttonText = "Голосование", onClick = {
+                    navController.navigate(Screen.VoteStageScreen.route)
+                }) {
 
                 }
             }
@@ -223,24 +226,4 @@ fun PlayerDialog(
             }
         }
     )
-}
-
-@Preview()
-@Composable
-private fun DayStagePreview() {
-    val players = mutableListOf(
-        Player(1, "Player 1", Role.MAFIA),
-        Player(2, "Player 2", Role.CIVIL),
-        Player(3, "Player 3", Role.CIVIL),
-        Player(4, "Player 4", Role.CIVIL),
-        Player(5, "Player 5", Role.CIVIL),
-        Player(6, "Player 6", Role.CIVIL),
-        Player(7, "Player 7", Role.CIVIL),
-        Player(8, "Player 8", Role.CIVIL),
-        Player(9, "Player 9", Role.CIVIL),
-        Player(10, "Player 10", Role.CIVIL)
-    )
-    val day = Day(1)
-    val redTeam = Team(Team.TeamColor.BLACK, players)
-    DayStage(players, day)
 }

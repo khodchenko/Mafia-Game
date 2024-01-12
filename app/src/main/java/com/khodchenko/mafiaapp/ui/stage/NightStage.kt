@@ -3,7 +3,6 @@ package com.khodchenko.mafiaapp.ui.stage
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,12 +22,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.khodchenko.mafiaapp.data.Day
-import com.khodchenko.mafiaapp.data.Player
-import com.khodchenko.mafiaapp.data.Role
+import androidx.navigation.NavController
+import com.khodchenko.mafiaapp.Screen
+import com.khodchenko.mafiaapp.game.MafiaGame
 import com.khodchenko.mafiaapp.helpers.SoundPlayer
 import com.khodchenko.mafiaapp.ui.PlayerList
 import com.khodchenko.mafiaapp.ui.Timer
@@ -37,9 +35,11 @@ import com.khodchenko.mafiaapp.ui.theme.BeautifulBlack
 
 
 @Composable
-fun NightStage(players: MutableList<Player>, currentDay: Day) {
+fun NightStage(navController: NavController, game: MafiaGame) {
     var activePlayerIndex by remember { mutableStateOf(11) }
     val soundPlayer = SoundPlayer(LocalContext.current)
+    val currentDay = game.getCurrentDay()
+    val players = game.getAllPlayers()
 
     Box(
         modifier = Modifier
@@ -69,7 +69,7 @@ fun NightStage(players: MutableList<Player>, currentDay: Day) {
             )
 
             PlayerList(
-                playersList = players,
+                playersList = players.toMutableList(),
                 activePlayerIndex = activePlayerIndex,
                 onPlayerClick = { clickedPlayerIndex ->
                     activePlayerIndex = clickedPlayerIndex
@@ -83,7 +83,10 @@ fun NightStage(players: MutableList<Player>, currentDay: Day) {
                     .padding(top = 36.dp)
             ) {
                 Button(
-                    onClick = {   soundPlayer.playShootSound() },
+                    onClick = {
+                        soundPlayer.playShootSound()
+                        navController.navigate(Screen.DayStageScreen.route)
+                    },
                     modifier = Modifier.align(Alignment.Center),
                     colors = ButtonDefaults.buttonColors(Color.White)
                 ) {
@@ -96,23 +99,4 @@ fun NightStage(players: MutableList<Player>, currentDay: Day) {
             Timer()
         }
     }
-}
-
-@Preview()
-@Composable
-private fun NightStagePreview() {
-    val players = mutableListOf<Player>(
-        Player(1, "Player 1", Role.MAFIA),
-        Player(2, "Player 2", Role.CIVIL),
-        Player(3, "Player 3", Role.CIVIL),
-        Player(4, "Player 4", Role.CIVIL),
-        Player(5, "Player 5", Role.CIVIL),
-        Player(6, "Player 6", Role.CIVIL),
-        Player(7, "Player 7", Role.CIVIL),
-        Player(8, "Player 8", Role.CIVIL),
-        Player(9, "Player 9", Role.CIVIL),
-        Player(10, "Player 10", Role.CIVIL)
-    )
-    val day = Day(1)
-    NightStage(players, day)
 }

@@ -220,8 +220,6 @@ fun StartGameStage(navController: NavController) {
                 horizontalArrangement = Arrangement.Center,
             ) {
 
-
-
                 SimpleElevatedButton("Погнали", onClick = {
                   navController.navigate(Screen.RolePickerScreen.route)
                 }) {}

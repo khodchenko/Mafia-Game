@@ -37,14 +37,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.khodchenko.mafiaapp.Screen
 import com.khodchenko.mafiaapp.data.Player
 import com.khodchenko.mafiaapp.data.Role
+import com.khodchenko.mafiaapp.game.MafiaGame
 import com.khodchenko.mafiaapp.ui.SimpleElevatedButton
 import com.khodchenko.mafiaapp.ui.theme.Background
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RolePickerStage() {
+fun RolePickerStage(navController: NavController, game: MafiaGame) {
     var newPlayerName by remember { mutableStateOf("") }
     var playersList by remember { mutableStateOf(mutableListOf<Player>()) }
 
@@ -140,7 +143,10 @@ fun RolePickerStage() {
                     .padding(bottom = 16.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                SimpleElevatedButton("Погнали", onClick = { /* Handle button click here */ }) {
+                SimpleElevatedButton("Погнали", onClick = {
+                    game.initialPlayers(playersList)
+                    navController.navigate(Screen.NightStageScreen.route)
+                }) {
                 }
             }
 
@@ -194,15 +200,3 @@ fun Demo_DropDownMenu(selectedRole: Role, onRoleSelected: (Role) -> Unit) {
         }
     }
 }
-
-//@Preview()
-//@Composable
-//private fun RolePickerStagePreview() {
-//    val players = mutableListOf<Player>(
-//        Player(1, "Player 1", Role.MAFIA),
-//        Player(2, "Player 2", Role.CIVIL),
-//    )
-//    RolePickerStage(players)
-//        // Обработка назначения роли
-//
-//}

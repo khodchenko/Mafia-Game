@@ -4,20 +4,14 @@ import com.khodchenko.mafiaapp.data.Day
 import com.khodchenko.mafiaapp.data.GameStage
 import com.khodchenko.mafiaapp.data.Player
 import com.khodchenko.mafiaapp.data.Role
-import com.khodchenko.mafiaapp.data.Team
 
 class MafiaGame(
-    var currentDay: Day,
     var gameStage: GameStage,
-    var gameInProgress: Boolean,
-    var winnerTeam: Team?
+    var gameInProgress: Boolean
 ) {
-
+    private var currentDay: Day = Day(1)
     private lateinit var currentPlayer: Player
-    private var players : List<Player>
-    init {
-        players = mutableListOf()
-    }
+    private lateinit var players : List<Player>
 
     fun changeGameStage(newGameStage: GameStage) {
         gameStage = newGameStage
@@ -69,6 +63,10 @@ class MafiaGame(
         return gameStage
     }
 
+    fun getCurrentDay(): Day {
+        return currentDay
+    }
+
     fun getAllPlayers(): List<Player> {
         return players
     }
@@ -77,15 +75,11 @@ class MafiaGame(
         return currentPlayer
     }
 
-    fun getAlivePlayers(): MutableList<Player> {
-        return players.filter { it.isAlive }.toMutableList()
+    fun setCurrentPlayer(player: Player) {
+        currentPlayer = player
     }
 
-    private fun generateInitialPlayers(): MutableList<Player> {
-        return mutableListOf(
-            Player(1, "Player 1", Role.MAFIA),
-            Player(2, "Player 2", Role.CIVIL),
-            // добавьте остальных игроков
-        )
+    fun initialPlayers(players: List<Player>) {
+        this.players = players
     }
 }
