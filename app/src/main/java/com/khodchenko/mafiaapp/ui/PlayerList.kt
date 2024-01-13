@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.khodchenko.mafiaapp.data.Day
 import com.khodchenko.mafiaapp.data.Player
 import com.khodchenko.mafiaapp.data.Role
 
@@ -118,6 +117,6 @@ private fun PlayerListPreview() {
         Player(9, "Player 9", Role.CIVIL),
         Player(10, "Player 10", Role.CIVIL)
     )
-    val day = Day(1)
+
     PlayerList(players, activePlayerIndex = 2, onPlayerClick = {})
 }

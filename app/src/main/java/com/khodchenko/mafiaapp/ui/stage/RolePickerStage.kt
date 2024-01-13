@@ -61,7 +61,16 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
             .background(color = Background)
             .padding(16.dp)
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Создание игроков",
+                style = MaterialTheme.typography.titleMedium,
+                fontSize = 22.sp,
+                color = Color.White
+            )
             LazyColumn {
                 items(playersList) { player ->
                     Row(
@@ -91,13 +100,19 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
 
             OutlinedTextField(
                 value = newPlayerName,
-                onValueChange = { newPlayerName = it },
+                onValueChange = {
+                    if (it.length <= 20) {
+                        newPlayerName = it
+                    }
+                },
 
                 label = { Text("Введите имя", color = Color.White) },
                 textStyle = TextStyle(color = Color.White),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp)
+                    .padding(12.dp),
+                singleLine = true,
+                maxLines = 1
             )
 
             Row(
@@ -108,7 +123,7 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
             ) {
 
                 ElevatedButton(onClick = {
-                    if (playersList.isNotEmpty() && playersList.size < 10) {
+                    if (playersList.isNotEmpty()) {
                         playersList = playersList.dropLast(1).toMutableList()
                     }
                 }) {

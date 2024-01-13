@@ -1,6 +1,5 @@
 package com.khodchenko.mafiaapp.game
 
-import com.khodchenko.mafiaapp.data.Day
 import com.khodchenko.mafiaapp.data.GameStage
 import com.khodchenko.mafiaapp.data.Player
 import com.khodchenko.mafiaapp.data.Role
@@ -10,7 +9,7 @@ class MafiaGame(
     var gameStage: GameStage,
     var gameInProgress: Boolean
 ) {
-    private var currentDay: Day = Day(1)
+    private var currentDay: Int = 1
     private lateinit var currentPlayer: Player
     private lateinit var players: List<Player>
     private var blackTeam: Team = Team(Team.TeamColor.BLACK, mutableListOf())
@@ -35,6 +34,10 @@ class MafiaGame(
         } ?: emptyList()
     }
 
+    fun newDay(){
+      currentDay += 1
+    }
+
     fun killPlayer(player: Player) {
         player.isAlive = false
     }
@@ -53,11 +56,10 @@ class MafiaGame(
     fun startDay() {
         gameStage = GameStage.DAY
         gameInProgress = true
-        currentPlayer = players.find { it.number == getCurrentDay().number } ?: players.first()
+        currentPlayer = players.find { it.number == getCurrentDay() } ?: players.first()
     }
 
     fun startVote() {
-        currentDay.number += 1
         gameStage = GameStage.VOTE
         gameInProgress = true
     }
@@ -69,7 +71,7 @@ class MafiaGame(
 
     fun getCurrentGameState(): GameStage = gameStage
 
-    fun getCurrentDay(): Day = currentDay
+    fun getCurrentDay(): Int = currentDay
 
     fun getAllPlayers(): List<Player> = players
 

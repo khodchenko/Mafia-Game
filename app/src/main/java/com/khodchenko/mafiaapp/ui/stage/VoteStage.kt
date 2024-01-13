@@ -131,7 +131,10 @@ fun VoteStage(navController: NavController, game: MafiaGame) {
                     }
                     if (game.checkEndGame()) {
                         navController.navigate(Screen.EndGameStageScreen.route)
-                    } else navController.navigate(Screen.NightStageScreen.route)
+                    } else {
+                        game.newDay()
+                        navController.navigate(Screen.NightStageScreen.route)
+                    }
                 }) {
                 }
             }
