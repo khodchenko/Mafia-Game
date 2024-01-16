@@ -5,7 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.khodchenko.mafiaapp.data.Screen
-import com.khodchenko.mafiaapp.game.MafiaGame
+import com.khodchenko.mafiaapp.helpers.BluetoothHelper
 import com.khodchenko.mafiaapp.ui.stage.DayStage
 import com.khodchenko.mafiaapp.ui.stage.EndGameStage
 import com.khodchenko.mafiaapp.ui.stage.NightStage
@@ -14,7 +14,7 @@ import com.khodchenko.mafiaapp.ui.stage.StartGameStage
 import com.khodchenko.mafiaapp.ui.stage.VoteStage
 
 @Composable
-fun Navigation(game: MafiaGame) {
+fun Navigation(game: MafiaGame, bluetoothHelper: BluetoothHelper) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.StartGameScreen.route) {
         composable(route = Screen.StartGameScreen.route) {
@@ -24,7 +24,7 @@ fun Navigation(game: MafiaGame) {
            RolePickerStage(navController = navController, game = game)
         }
         composable(route = Screen.NightStageScreen.route, arguments = listOf()) {
-            NightStage(navController = navController, game = game)
+            NightStage(navController = navController, game = game, bluetoothHelper = bluetoothHelper)
         }
         composable(route = Screen.DayStageScreen.route, arguments = listOf()) {
             DayStage(navController = navController, game = game)

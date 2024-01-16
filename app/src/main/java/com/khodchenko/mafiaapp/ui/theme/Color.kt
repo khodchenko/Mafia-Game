@@ -18,3 +18,8 @@ val White = Color(0xFFFFFFFF)
 
 val Background = Color(0xff8f0000)
 val BeautifulBlack = Color(0xFF121212)
+
+val RedPalette = Color(241, 80, 37)
+val GrayPalette = Color(230, 232, 230)
+val Timberwolf = Color(206,208,206)
+val EairyBlack = Color(25,25,25)

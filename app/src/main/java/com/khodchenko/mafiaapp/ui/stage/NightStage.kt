@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
+import com.khodchenko.mafiaapp.helpers.BluetoothHelper
 import com.khodchenko.mafiaapp.helpers.SoundPlayer
 import com.khodchenko.mafiaapp.ui.PlayerList
 import com.khodchenko.mafiaapp.ui.Timer
@@ -35,7 +36,7 @@ import com.khodchenko.mafiaapp.ui.theme.BeautifulBlack
 
 
 @Composable
-fun NightStage(navController: NavController, game: MafiaGame) {
+fun NightStage(navController: NavController, game: MafiaGame, bluetoothHelper: BluetoothHelper) {
     var activePlayerIndex by remember { mutableStateOf(11) }
     val soundPlayer = SoundPlayer(LocalContext.current)
     val currentDay = game.getCurrentDay()
@@ -103,7 +104,7 @@ fun NightStage(navController: NavController, game: MafiaGame) {
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Timer()
+            Timer(bluetoothHelper)
         }
     }
 }
