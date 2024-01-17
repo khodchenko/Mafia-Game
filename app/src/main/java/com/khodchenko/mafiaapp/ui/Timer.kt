@@ -3,10 +3,8 @@ package com.khodchenko.mafiaapp.ui
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,15 +35,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.khodchenko.mafiaapp.R
-import com.khodchenko.mafiaapp.helpers.BluetoothHelper
 import com.khodchenko.mafiaapp.ui.theme.Background
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.ticker
 
 
-@RequiresApi(Build.VERSION_CODES.S)
+
 @Composable
-fun Timer(bluetoothHelper: BluetoothHelper) {
+fun Timer() {
     var isRunning by remember { mutableStateOf(false) }
     var time by remember { mutableStateOf(0L) }
 
@@ -77,8 +74,9 @@ fun Timer(bluetoothHelper: BluetoothHelper) {
 
                 Text(
                     text = if (hasBluetoothPermission) {
-                        val connectedDevice = bluetoothHelper.getBluetoothDevices().firstOrNull()
-                        connectedDevice?.toString() ?: "Нет устройств"
+                       // val connectedDevice = bluetoothHelper.getBluetoothDevices().firstOrNull()
+                     //   connectedDevice?.toString() ?:
+                        "Нет устройств"
                     }else {
                         "Нет прав на отображение"
                     },

@@ -13,9 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,9 +33,12 @@ import com.khodchenko.mafiaapp.R
 import com.khodchenko.mafiaapp.data.Player
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
+import com.khodchenko.mafiaapp.ui.PlayerDialog
 import com.khodchenko.mafiaapp.ui.PlayerList
 import com.khodchenko.mafiaapp.ui.SimpleElevatedButton
+import com.khodchenko.mafiaapp.ui.Timer
 import com.khodchenko.mafiaapp.ui.theme.Background
+
 
 @Composable
 fun DayStage(navController: NavController, game: MafiaGame) {
@@ -77,7 +77,7 @@ fun DayStage(navController: NavController, game: MafiaGame) {
                     }
                 ) {
                     Icon(
-                        painter = if (true) painterResource(id = R.drawable.ic_roles_show_hide)
+                        painter = if (showRoles) painterResource(id = R.drawable.ic_roles_show_hide)
                         else painterResource(
                             id = R.drawable.ic_roles_show_hide
                         ),
@@ -177,56 +177,12 @@ fun DayStage(navController: NavController, game: MafiaGame) {
                     .padding(top = 20.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                SimpleElevatedButton(buttonText = "Голосование", onClick = {
+                SimpleElevatedButton(buttonText = "Голосование",enabled = true, onClick = {
                     navController.navigate(Screen.VoteStageScreen.route)
-                }) {
-
-                }
+                })
             }
+
+            Timer()
         }
     }
 }
-
-@Composable
-fun PlayerDialog(
-    player: Player?,
-    activePlayer: Player,
-    onDismiss: () -> Unit,
-    onVoteClick: () -> Unit,
-    onFoulClick: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            if (player != null) {
-                Text(text = player.name)
-            }
-        },
-        text = {
-            Text(text = "Активный игрок сейчас: ${activePlayer.number}:${activePlayer.name}")
-        },
-        confirmButton = {
-            Button(
-                onClick = {
-                    onDismiss()
-                    onVoteClick()
-                },
-                colors = ButtonDefaults.buttonColors(Background)
-            ) {
-                Text("Выставить на голосование", color = Color.White)
-            }
-        },
-        dismissButton = {
-            Button(
-                onClick = {
-                    onDismiss()
-                    onFoulClick()
-                },
-                colors = ButtonDefaults.buttonColors(Background)
-            ) {
-                Text("Дать фол", color = Color.White)
-            }
-        }
-    )
-}
-

@@ -54,7 +54,7 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
     game.startRolePickStage()
 
     playersList = generateTestPlayers().toMutableList()
-    0
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -91,7 +91,7 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
                         )
 
                         Demo_DropDownMenu(selectedRole = player.role) { selectedRole ->
-
+                            player.role = selectedRole
                         }
                     }
                 }
@@ -105,7 +105,6 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
                         newPlayerName = it
                     }
                 },
-
                 label = { Text("Введите имя", color = Color.White) },
                 textStyle = TextStyle(color = Color.White),
                 modifier = Modifier
@@ -121,10 +120,9 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
                     .padding(12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-
                 ElevatedButton(onClick = {
                     if (playersList.isNotEmpty()) {
-                        playersList = playersList.dropLast(1).toMutableList()
+                        playersList.removeLastOrNull()
                     }
                 }) {
                     Icon(
@@ -144,7 +142,7 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
                             score = 0.0
                         )
 
-                        playersList = (playersList + newPlayer).toMutableList()
+                        playersList.add(newPlayer)
                         newPlayerName = ""
                     }
                 }) {
@@ -162,13 +160,15 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
                     .padding(bottom = 16.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                SimpleElevatedButton("Погнали", onClick = {
-                    if (playersList.isNotEmpty()) {
+                SimpleElevatedButton(
+                    "Погнали", true,
+                    onClick = {
                         game.initialPlayers(playersList)
                         navController.navigate(Screen.NightStageScreen.route)
-                    }
-                }) {
-                }
+
+                    },
+                )
+
             }
 
         }

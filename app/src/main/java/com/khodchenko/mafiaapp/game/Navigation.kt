@@ -13,6 +13,7 @@ import com.khodchenko.mafiaapp.ui.stage.RolePickerStage
 import com.khodchenko.mafiaapp.ui.stage.StartGameStage
 import com.khodchenko.mafiaapp.ui.stage.VoteStage
 
+
 @Composable
 fun Navigation(game: MafiaGame, bluetoothHelper: BluetoothHelper) {
     val navController = rememberNavController()
@@ -24,7 +25,7 @@ fun Navigation(game: MafiaGame, bluetoothHelper: BluetoothHelper) {
            RolePickerStage(navController = navController, game = game)
         }
         composable(route = Screen.NightStageScreen.route, arguments = listOf()) {
-            NightStage(navController = navController, game = game, bluetoothHelper = bluetoothHelper)
+            NightStage(navController = navController, game = game)
         }
         composable(route = Screen.DayStageScreen.route, arguments = listOf()) {
             DayStage(navController = navController, game = game)

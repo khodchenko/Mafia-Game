@@ -125,7 +125,7 @@ fun VoteStage(navController: NavController, game: MafiaGame) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                SimpleElevatedButton("Голосуем", onClick = {
+                SimpleElevatedButton("Голосуем", enabled = true, onClick = {
                     for (player in voters) {
                         game.killPlayer(player)
                     }
@@ -135,8 +135,8 @@ fun VoteStage(navController: NavController, game: MafiaGame) {
                         game.newDay()
                         navController.navigate(Screen.NightStageScreen.route)
                     }
-                }) {
-                }
+                })
+
             }
 
         }
