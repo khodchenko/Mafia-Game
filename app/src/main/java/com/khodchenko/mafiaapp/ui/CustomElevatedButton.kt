@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.sp
 import com.khodchenko.mafiaapp.ui.theme.Background
 
 @Composable
-fun SimpleElevatedButton(buttonText: String, enabled: Boolean, onClick: () -> Unit) {
+fun CustomElevatedButton(buttonText: String, enabled: Boolean = true, onClick: () -> Unit) {
     ElevatedButton(
         onClick = { onClick() },
         colors = ButtonDefaults.buttonColors(

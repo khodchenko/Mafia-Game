@@ -43,7 +43,7 @@ import com.khodchenko.mafiaapp.data.Player
 import com.khodchenko.mafiaapp.data.Role
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
-import com.khodchenko.mafiaapp.ui.SimpleElevatedButton
+import com.khodchenko.mafiaapp.ui.CustomElevatedButton
 import com.khodchenko.mafiaapp.ui.theme.Background
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +56,7 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
     game.startRolePickStage()
 
 //todo TESTING
-  //  playersList = generateTestPlayers().toMutableList()
+   playersList = generateTestPlayers().toMutableList()
     Log.d("RolePickerStage", "PlayerList = $playersList")
 
     Box(
@@ -174,7 +174,7 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
                     .padding(bottom = 16.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                SimpleElevatedButton(
+                CustomElevatedButton(
                     "Погнали", rulesCheck,
                     onClick = {
                         game.initialPlayers(playersList)

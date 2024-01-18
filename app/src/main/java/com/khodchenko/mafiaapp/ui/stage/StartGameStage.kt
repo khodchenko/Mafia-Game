@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.khodchenko.mafiaapp.R
 import com.khodchenko.mafiaapp.data.Screen
-import com.khodchenko.mafiaapp.ui.SimpleElevatedButton
+import com.khodchenko.mafiaapp.ui.CustomElevatedButton
 import com.khodchenko.mafiaapp.ui.theme.Background
 
 @Composable
@@ -220,7 +220,7 @@ fun StartGameStage(navController: NavController) {
                 horizontalArrangement = Arrangement.Center,
             ) {
 
-                SimpleElevatedButton("Погнали", enabled = true, onClick = {
+                CustomElevatedButton("Погнали", enabled = true, onClick = {
                   navController.navigate(Screen.RolePickerScreen.route)
                 })
 

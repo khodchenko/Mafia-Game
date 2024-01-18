@@ -35,7 +35,7 @@ import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
 import com.khodchenko.mafiaapp.ui.PlayerDialog
 import com.khodchenko.mafiaapp.ui.PlayerList
-import com.khodchenko.mafiaapp.ui.SimpleElevatedButton
+import com.khodchenko.mafiaapp.ui.CustomElevatedButton
 import com.khodchenko.mafiaapp.ui.Timer
 import com.khodchenko.mafiaapp.ui.theme.Background
 
@@ -177,7 +177,7 @@ fun DayStage(navController: NavController, game: MafiaGame) {
                     .padding(top = 20.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                SimpleElevatedButton(buttonText = "Голосование",enabled = true, onClick = {
+                CustomElevatedButton(buttonText = "Голосование",enabled = true, onClick = {
                     navController.navigate(Screen.VoteStageScreen.route)
                 })
             }

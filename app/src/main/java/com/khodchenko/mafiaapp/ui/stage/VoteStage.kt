@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
-import com.khodchenko.mafiaapp.ui.SimpleElevatedButton
+import com.khodchenko.mafiaapp.ui.CustomElevatedButton
 import com.khodchenko.mafiaapp.ui.theme.Background
 
 @Composable
@@ -125,7 +125,7 @@ fun VoteStage(navController: NavController, game: MafiaGame) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                SimpleElevatedButton("Голосуем", enabled = true, onClick = {
+                CustomElevatedButton("Голосуем", enabled = true, onClick = {
                     for (player in voters) {
                         game.killPlayer(player)
                     }
