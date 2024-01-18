@@ -226,7 +226,6 @@ fun StartGameStage(navController: NavController) {
 
             }
 
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth(),

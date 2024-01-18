@@ -1,5 +1,6 @@
 package com.khodchenko.mafiaapp.ui.stage
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -49,11 +50,14 @@ import com.khodchenko.mafiaapp.ui.theme.Background
 @Composable
 fun RolePickerStage(navController: NavController, game: MafiaGame) {
     var newPlayerName by remember { mutableStateOf("") }
-    var playersList by remember { mutableStateOf(mutableListOf<Player>()) }
+    var playersList by remember { mutableStateOf(listOf<Player>()) }
+    var rulesCheck by remember { mutableStateOf(false) }
 
     game.startRolePickStage()
 
-    playersList = generateTestPlayers().toMutableList()
+//todo TESTING
+  //  playersList = generateTestPlayers().toMutableList()
+    Log.d("RolePickerStage", "PlayerList = $playersList")
 
     Box(
         modifier = Modifier
@@ -90,12 +94,19 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
                             color = Color.White
                         )
 
-                        Demo_DropDownMenu(selectedRole = player.role) { selectedRole ->
+                        CustomDropDownMenu(player = player) { selectedRole ->
                             player.role = selectedRole
+                            rulesCheck = checkRules(playersList = playersList)
+                            Log.d(
+                                "RolePickerStage",
+                                "Player ${player.number} role changed to $selectedRole"
+                            )
+                            Log.d("RolePickerStage", "RulesCheck = ${rulesCheck}")
                         }
                     }
                 }
             }
+
             Spacer(modifier = Modifier.weight(1f))
 
             OutlinedTextField(
@@ -120,10 +131,11 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
                     .padding(12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ElevatedButton(onClick = {
-                    if (playersList.isNotEmpty()) {
-                        playersList.removeLastOrNull()
-                    }
+                ElevatedButton(enabled = playersList.isNotEmpty(), onClick = {
+
+                    playersList = playersList.dropLast(1).toMutableList()
+                    Log.d("RolePickerStage", "PlayerList = ${playersList}")
+
                 }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
@@ -132,8 +144,10 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
                     )
                 }
 
-                ElevatedButton(onClick = {
-                    if (newPlayerName.isNotEmpty() && playersList.size < 10) {
+                ElevatedButton(
+                    enabled = (newPlayerName.isNotEmpty() && playersList.size < 10),
+                    onClick = {
+
                         val newPlayer = Player(
                             number = playersList.size + 1,
                             name = newPlayerName,
@@ -142,10 +156,10 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
                             score = 0.0
                         )
 
-                        playersList.add(newPlayer)
+                        playersList = (playersList + newPlayer).toMutableList()
                         newPlayerName = ""
-                    }
-                }) {
+
+                    }) {
                     Icon(
                         imageVector = Icons.Default.Add,
                         tint = Background,
@@ -161,25 +175,30 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
                 contentAlignment = Alignment.BottomCenter
             ) {
                 SimpleElevatedButton(
-                    "Погнали", true,
+                    "Погнали", rulesCheck,
                     onClick = {
                         game.initialPlayers(playersList)
                         navController.navigate(Screen.NightStageScreen.route)
 
                     },
                 )
-
             }
-
         }
-
     }
 }
 
+
+fun checkRules(playersList: List<Player>, numbersOfPlayers: Int = 10): Boolean {
+    val mafiaCount = playersList.count { it.role == Role.MAFIA }
+    val donCount = playersList.count { it.role == Role.DON }
+    val sheriffCount = playersList.count { it.role == Role.SHERIFF }
+
+    return numbersOfPlayers == 10 && donCount == 1 && sheriffCount == 1 && mafiaCount <= 2 && (donCount + sheriffCount) > 0
+}
+
 @Composable
-fun Demo_DropDownMenu(selectedRole: Role, onRoleSelected: (Role) -> Unit) {
+fun CustomDropDownMenu(player: Player, onRoleSelected: (Role) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-    var currentRole by remember(selectedRole) { mutableStateOf(selectedRole) }
 
     Box(
         modifier = Modifier
@@ -192,7 +211,7 @@ fun Demo_DropDownMenu(selectedRole: Role, onRoleSelected: (Role) -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = currentRole.name,
+                text = player.role.name,
                 color = Color.White
             )
             Spacer(modifier = Modifier.width(4.dp))
@@ -211,38 +230,34 @@ fun Demo_DropDownMenu(selectedRole: Role, onRoleSelected: (Role) -> Unit) {
                 DropdownMenuItem(
                     text = { Text(role.name) },
                     onClick = {
-                        currentRole = role
                         expanded = false
                         onRoleSelected(role)
                     },
-                    enabled = role != currentRole
+                    enabled = role != player.role
                 )
             }
         }
     }
 }
 
-fun generateTestPlayers(): List<Player> {
+fun generateTestPlayers(
+    mafiaCount: Int = 2,
+    donCount: Int = 2,
+    sheriffCount: Int = 1,
+    civilCount: Int = 5
+): List<Player> {
     val playerNames = listOf(
-        "Player1",
-        "Player2",
-        "Player3",
-        "Player4",
-        "Player5",
-        "Player6",
-        "Player7",
-        "Player8",
-        "Player9",
-        "Player10"
+        "Player1", "Player2", "Player3", "Player4", "Player5",
+        "Player6", "Player7", "Player8", "Player9", "Player10"
     )
 
     val players = mutableListOf<Player>()
 
-    for (i in 1..2) {
+    repeat(mafiaCount) {
         players.add(
             Player(
-                number = i,
-                name = playerNames[i - 1],
+                number = players.size + 1,
+                name = playerNames[it],
                 role = Role.MAFIA,
                 isAlive = true,
                 score = 0.0
@@ -250,11 +265,11 @@ fun generateTestPlayers(): List<Player> {
         )
     }
 
-    for (i in 3..4) {
+    repeat(donCount) {
         players.add(
             Player(
-                number = i,
-                name = playerNames[i - 1],
+                number = players.size + 1,
+                name = playerNames[it + mafiaCount],
                 role = Role.DON,
                 isAlive = true,
                 score = 0.0
@@ -262,11 +277,11 @@ fun generateTestPlayers(): List<Player> {
         )
     }
 
-    for (i in 5..5) {
+    repeat(sheriffCount) {
         players.add(
             Player(
-                number = i,
-                name = playerNames[i - 1],
+                number = players.size + 1,
+                name = playerNames[it + mafiaCount + donCount],
                 role = Role.SHERIFF,
                 isAlive = true,
                 score = 0.0
@@ -274,11 +289,11 @@ fun generateTestPlayers(): List<Player> {
         )
     }
 
-    for (i in 6..10) {
+    repeat(civilCount) {
         players.add(
             Player(
-                number = i,
-                name = playerNames[i - 1],
+                number = players.size + 1,
+                name = playerNames[it + mafiaCount + donCount + sheriffCount],
                 role = Role.CIVIL,
                 isAlive = true,
                 score = 0.0
