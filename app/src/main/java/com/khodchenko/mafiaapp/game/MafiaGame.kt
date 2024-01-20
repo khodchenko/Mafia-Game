@@ -17,6 +17,7 @@ class MafiaGame(
 
     private var candidates: MutableMap<Player, List<Player>> = mutableMapOf()
 
+
     fun addCandidate(candidate: Player) {
         candidates[candidate] = emptyList()
     }
@@ -32,6 +33,40 @@ class MafiaGame(
         return maxVoteCount?.let { maxCount ->
             candidates.filterValues { it.size == maxCount }.keys.toList()
         } ?: emptyList()
+    }
+
+    fun getCandidates(): MutableList<Player> {
+        return candidates.keys.toMutableList()
+    }
+
+    fun getCandidatesAndVotes(): MutableMap<Player, List<Player>> = candidates
+
+    fun getCandidatesAndVotesLog(): String {
+        val logBuilder = StringBuilder()
+
+        for ((candidate, voters) in candidates) {
+            val voterNumbers = voters.map { it.number }
+            val voterList = if (voterNumbers.isEmpty()) "No votes" else "Votes: $voterNumbers"
+            val logMessage = "Candidate ${candidate.number}: $voterList"
+            logBuilder.appendLine(logMessage)
+        }
+
+        return logBuilder.toString()
+    }
+
+    fun getNextCandidateAfterCurrentPlayer(): Player? {
+        val candidateKeys = candidates.keys.toMutableList()
+        val currentIndex = candidateKeys.indexOf(currentPlayer)
+
+        return when {
+            candidateKeys.isEmpty() -> null
+            currentIndex == -1 || currentIndex == candidateKeys.size - 1 -> candidateKeys.first()
+            else -> candidateKeys[currentIndex + 1]
+        }
+    }
+
+    fun getVotersByCandidate(candidate: Player): MutableList<Player>? {
+        return candidates[candidate]?.toMutableList()
     }
 
     fun newDay(){
@@ -74,6 +109,8 @@ class MafiaGame(
     fun getCurrentDay(): Int = currentDay
 
     fun getAllPlayers(): List<Player> = players
+
+    fun getAllAlivePlayers(): List<Player> = players.filter { it.isAlive }
 
     fun getCurrentPlayer(): Player = currentPlayer
 

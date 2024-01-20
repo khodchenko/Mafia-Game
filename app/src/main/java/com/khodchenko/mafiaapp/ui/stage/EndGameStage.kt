@@ -48,7 +48,7 @@ fun EndGameStage(game: MafiaGame) {
             PlayerList(
                 playersList = playerList.toMutableList(),
                 activePlayerIndex = bestPlayer?.number
-                    ?: 0, onPlayerClick = {}
+                    ?: 0, onPlayerClick = {}, game = game
             )
 
             Text(

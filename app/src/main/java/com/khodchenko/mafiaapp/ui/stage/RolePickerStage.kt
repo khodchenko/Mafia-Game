@@ -53,7 +53,6 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
     var playersList by remember { mutableStateOf(listOf<Player>()) }
     var rulesCheck by remember { mutableStateOf(false) }
 
-    game.startRolePickStage()
 
 //todo TESTING
    playersList = generateTestPlayers().toMutableList()
@@ -242,9 +241,9 @@ fun CustomDropDownMenu(player: Player, onRoleSelected: (Role) -> Unit) {
 
 fun generateTestPlayers(
     mafiaCount: Int = 2,
-    donCount: Int = 2,
+    donCount: Int = 1,
     sheriffCount: Int = 1,
-    civilCount: Int = 5
+    civilCount: Int = 6
 ): List<Player> {
     val playerNames = listOf(
         "Player1", "Player2", "Player3", "Player4", "Player5",

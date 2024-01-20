@@ -55,7 +55,6 @@ fun StartGameStage(navController: NavController) {
     val playersCountInfoText = "От количества игроков зависит количество “черных” ролей."
     val hutirText = "HUTIR"
     val productInfoText = "Продукт для внутреннего использования сообществом украинцев в Бельгии."
-    var buttonClicked by remember { mutableStateOf(false) }
 
 
     Box(

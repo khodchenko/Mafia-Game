@@ -41,7 +41,6 @@ fun NightStage(navController: NavController, game: MafiaGame) {
     val currentDay = game.getCurrentDay()
     val players = game.getAllPlayers()
 
-    game.startNight()
 
     Box(
         modifier = Modifier
@@ -76,7 +75,8 @@ fun NightStage(navController: NavController, game: MafiaGame) {
                 onPlayerClick = { clickedPlayerIndex ->
                     activePlayerIndex = clickedPlayerIndex
                 },
-                Background
+                Background,
+                game = game
             )
 
             Spacer(modifier = Modifier.weight(1f))

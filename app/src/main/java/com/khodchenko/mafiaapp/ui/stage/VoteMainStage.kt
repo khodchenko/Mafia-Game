@@ -1,5 +1,7 @@
 package com.khodchenko.mafiaapp.ui.stage
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,23 +23,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.khodchenko.mafiaapp.R
-import com.khodchenko.mafiaapp.data.Player
-import com.khodchenko.mafiaapp.data.Role
+import com.khodchenko.mafiaapp.data.Screen
+import com.khodchenko.mafiaapp.game.MafiaGame
 import com.khodchenko.mafiaapp.ui.CustomElevatedButton
 import com.khodchenko.mafiaapp.ui.PlayerList
-
 import com.khodchenko.mafiaapp.ui.theme.Background
 
 @Composable
-fun VoteMainStage(playerList: List<Player>) {
+fun VoteMainStage(navController: NavController, game: MafiaGame) {
     var showRoles by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -49,7 +52,7 @@ fun VoteMainStage(playerList: List<Player>) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = "Голосование за день:0",
+                text = "Голосование за день:${game.getCurrentDay()}",
                 color = Color.White,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Normal,
@@ -59,7 +62,7 @@ fun VoteMainStage(playerList: List<Player>) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = "В живых игроков:0",
+                text = "В живых игроков:${game.getAllAlivePlayers().size}",
                 color = Color.White,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
@@ -102,12 +105,15 @@ fun VoteMainStage(playerList: List<Player>) {
             )
 
             PlayerList(
-                playersList = playerList.toMutableList(),
-                activePlayerIndex = 0,
+                playersList = game.getCandidates().toMutableList(),
+                activePlayerIndex = game.getCurrentPlayer().number,
                 showRoles = showRoles,
                 onPlayerClick = {
 
-                })
+                },
+                showVotes = true,
+                game = game
+            )
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -116,28 +122,21 @@ fun VoteMainStage(playerList: List<Player>) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomElevatedButton("К голосованию", true) {
-
+                    if (game.getNextCandidateAfterCurrentPlayer() == null){
+                            Log.d("VoteMainStage", "End of stage.")
+                            if (game.checkEndGame()) {
+                                navController.navigate(Screen.EndGameStageScreen.route)
+                            } else {
+                                Log.d("VoteMainStage", "Most votes: ${game.findCandidatesWithLongestVotes()}")
+                                navController.navigate(Screen.NightStageScreen.route)
+                                Toast.makeText(context, "End of voting", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        Log.d("VoteMainStage", "Current player: ${game.getCurrentPlayer()}")
+                        navController.navigate(Screen.VoteStageScreen.route)
+                    }
                 }
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun VoteMainStageUI() {
-    val players = mutableListOf<Player>(
-        Player(1, "Player 1", Role.MAFIA),
-        Player(2, "Player 2", Role.CIVIL),
-        Player(3, "Player 3", Role.CIVIL),
-        Player(4, "Player 4", Role.CIVIL),
-        Player(5, "Player 5", Role.CIVIL),
-        Player(6, "Player 6", Role.CIVIL),
-        Player(7, "Player 7", Role.CIVIL),
-        Player(8, "Player 8", Role.CIVIL),
-        Player(9, "Player 9", Role.CIVIL),
-        Player(10, "Player 10", Role.CIVIL)
-    )
-
-    VoteMainStage(players)
 }

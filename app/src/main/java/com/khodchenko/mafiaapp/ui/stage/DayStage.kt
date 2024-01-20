@@ -1,5 +1,6 @@
 package com.khodchenko.mafiaapp.ui.stage
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,9 +34,9 @@ import com.khodchenko.mafiaapp.R
 import com.khodchenko.mafiaapp.data.Player
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
+import com.khodchenko.mafiaapp.ui.CustomElevatedButton
 import com.khodchenko.mafiaapp.ui.PlayerDialog
 import com.khodchenko.mafiaapp.ui.PlayerList
-import com.khodchenko.mafiaapp.ui.CustomElevatedButton
 import com.khodchenko.mafiaapp.ui.Timer
 import com.khodchenko.mafiaapp.ui.theme.Background
 
@@ -45,13 +46,12 @@ fun DayStage(navController: NavController, game: MafiaGame) {
 
     var showRoles by remember { mutableStateOf(true) }
     var activePlayerIndex by remember { mutableStateOf(0) }
-    var votedPlayers by remember { mutableStateOf(mutableListOf<Player>()) }
+
     var showDialog by remember { mutableStateOf(false) }
     var selectedPlayer by remember { mutableStateOf<Player?>(null) }
     val currentDay = game.getCurrentDay()
     val players = game.getAllPlayers().filter { it.isAlive }
 
-    game.startDay()
 
     Box(
         modifier = Modifier
@@ -101,7 +101,7 @@ fun DayStage(navController: NavController, game: MafiaGame) {
                     selectedPlayer = players.find { it.number == clickedIndex }
                     showDialog = true
                 },
-                showRoles = showRoles
+                showRoles = showRoles, game = game
             )
             if (showDialog) {
                 PlayerDialog(
@@ -109,8 +109,11 @@ fun DayStage(navController: NavController, game: MafiaGame) {
                     activePlayer = players.find { it.number == activePlayerIndex } ?: players[0],
                     onDismiss = { showDialog = false },
                     onVoteClick = {
-                        if (!votedPlayers.contains(selectedPlayer)) {
-                            votedPlayers.add(selectedPlayer!!)
+                        if (!game.getCandidates().contains(selectedPlayer)) {
+                            game.addCandidate(selectedPlayer!!)
+                            Log.d("DayStage", "Add ${selectedPlayer!!.name} to Canditates: ${game.getCandidates()} ")
+                        } else {
+                            Log.d("DayStage", "Кандидат $selectedPlayer уже выставлен")
                         }
                     },
                     onFoulClick = {
@@ -129,7 +132,7 @@ fun DayStage(navController: NavController, game: MafiaGame) {
 
             Text(
                 modifier = Modifier.padding(top = 4.dp),
-                text = "На голосовании: ${votedPlayers.joinToString { it.number.toString() }}",
+                text = "На голосовании: ${game.getCandidates().joinToString { it.number.toString() }}",
                 style = MaterialTheme.typography.bodySmall,
                 fontSize = 22.sp,
                 color = Color.White
@@ -178,7 +181,9 @@ fun DayStage(navController: NavController, game: MafiaGame) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomElevatedButton(buttonText = "Голосование",enabled = true, onClick = {
-                    navController.navigate(Screen.VoteStageScreen.route)
+                    game.getCandidates().firstOrNull()?.let { game.setCurrentPlayer(it) }
+                    Log.d("DayStage", "Current player: ${game.getCurrentPlayer()}")
+                    navController.navigate(Screen.VoteMainStageScreen.route)
                 })
             }
 

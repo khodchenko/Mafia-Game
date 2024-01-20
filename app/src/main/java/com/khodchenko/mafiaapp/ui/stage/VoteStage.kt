@@ -1,5 +1,6 @@
 package com.khodchenko.mafiaapp.ui.stage
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +40,6 @@ fun VoteStage(navController: NavController, game: MafiaGame) {
     var voters by remember { mutableStateOf(game.getAllPlayers().filter { it.isAlive }) }
     val alivePlayers by remember { mutableStateOf(game.getAllPlayers().filter { it.isAlive }) }
 
-    game.startVote()
 
     Box(
         modifier = Modifier
@@ -126,14 +126,18 @@ fun VoteStage(navController: NavController, game: MafiaGame) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomElevatedButton("Голосуем", enabled = true, onClick = {
-                    for (player in voters) {
-                        game.killPlayer(player)
-                    }
-                    if (game.checkEndGame()) {
-                        navController.navigate(Screen.EndGameStageScreen.route)
+                    game.addVotesForCandidate(game.getCurrentPlayer(), voters)
+
+                    Log.d("VoteStage", game.getCandidatesAndVotesLog())
+                    if (game.getCandidates().last() == game.getCurrentPlayer()) {
+                        if (game.findCandidatesWithLongestVotes().size == 1){
+                            game.killPlayer(game.findCandidatesWithLongestVotes()[0])
+                            //todo
+                            navController.navigate(Screen.NightStageScreen.route)
+                        }
                     } else {
-                        game.newDay()
-                        navController.navigate(Screen.NightStageScreen.route)
+                        game.getNextCandidateAfterCurrentPlayer()?.let { game.setCurrentPlayer(it) }
+                        navController.navigate(Screen.VoteMainStageScreen.route)
                     }
                 })
 
