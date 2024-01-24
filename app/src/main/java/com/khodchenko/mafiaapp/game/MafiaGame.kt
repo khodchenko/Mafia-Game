@@ -69,6 +69,10 @@ class MafiaGame(
         return candidates[candidate]?.toMutableList()
     }
 
+    fun clearVote() {
+        candidates = mutableMapOf()
+    }
+
     fun newDay(){
       currentDay += 1
     }
@@ -103,8 +107,6 @@ class MafiaGame(
         gameStage = GameStage.ROLE_PICK
         gameInProgress = false
     }
-
-    fun getCurrentGameState(): GameStage = gameStage
 
     fun getCurrentDay(): Int = currentDay
 

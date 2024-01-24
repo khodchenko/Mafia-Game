@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.khodchenko.mafiaapp.data.Player
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
 import com.khodchenko.mafiaapp.ui.CustomElevatedButton
@@ -37,9 +38,11 @@ import com.khodchenko.mafiaapp.ui.theme.Background
 @Composable
 fun VoteStage(navController: NavController, game: MafiaGame) {
 
-    var voters by remember { mutableStateOf(game.getAllPlayers().filter { it.isAlive }) }
-    val alivePlayers by remember { mutableStateOf(game.getAllPlayers().filter { it.isAlive }) }
+    var voters by remember { mutableStateOf(emptyList<Player>()) }
 
+    val nonVotedPlayers = game.getAllPlayers().filter { player ->
+        !game.getCandidatesAndVotes().values.flatten().any { it.number == player.number }
+    }
 
     Box(
         modifier = Modifier
@@ -69,7 +72,7 @@ fun VoteStage(navController: NavController, game: MafiaGame) {
             )
 
             LazyColumn {
-                items(alivePlayers) { otherPlayer ->
+                items(nonVotedPlayers) { otherPlayer ->
                     val isSelected = voters.contains(otherPlayer)
 
                     Row(
@@ -110,8 +113,6 @@ fun VoteStage(navController: NavController, game: MafiaGame) {
                             color = Color.White,
                             fontSize = 28.sp
                         )
-
-
                     }
                 }
             }
@@ -133,6 +134,7 @@ fun VoteStage(navController: NavController, game: MafiaGame) {
                         if (game.findCandidatesWithLongestVotes().size == 1){
                             game.killPlayer(game.findCandidatesWithLongestVotes()[0])
                             //todo
+                            game.clearVote()
                             navController.navigate(Screen.NightStageScreen.route)
                         }
                     } else {
@@ -142,7 +144,6 @@ fun VoteStage(navController: NavController, game: MafiaGame) {
                 })
 
             }
-
         }
     }
 }
