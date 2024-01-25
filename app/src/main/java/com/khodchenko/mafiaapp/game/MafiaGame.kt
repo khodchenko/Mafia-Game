@@ -81,31 +81,11 @@ class MafiaGame(
         player.isAlive = false
     }
 
-    fun startRolePickRandom(player: Player) {
-        currentPlayer = player
-        gameStage = GameStage.ROLE_PICK_RANDOM
-        gameInProgress = false
+    fun getCurrentStage(): GameStage {
+        return gameStage
     }
-
-    fun startNight() {
-        gameStage = GameStage.NIGHT
-        gameInProgress = true
-    }
-
-    fun startDay() {
-        gameStage = GameStage.DAY
-        gameInProgress = true
-        currentPlayer = players.find { it.number == getCurrentDay() } ?: players.first()
-    }
-
-    fun startVote() {
-        gameStage = GameStage.VOTE
-        gameInProgress = true
-    }
-
-    fun startRolePickStage() {
-        gameStage = GameStage.ROLE_PICK
-        gameInProgress = false
+    fun setStage(stage: GameStage) {
+        gameStage = stage
     }
 
     fun getCurrentDay(): Int = currentDay

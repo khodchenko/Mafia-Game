@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.khodchenko.mafiaapp.data.GameStage
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
 import com.khodchenko.mafiaapp.helpers.SoundPlayer
@@ -91,8 +92,11 @@ fun NightStage(navController: NavController, game: MafiaGame) {
                         players.find { it.number == activePlayerIndex }?.let { game.killPlayer(it) }
                         soundPlayer.playShootSound()
                         if (game.checkEndGame()) {
+                            game.setStage(GameStage.GAME_OVER)
                             navController.navigate(Screen.EndGameStageScreen.route)
-                        } else navController.navigate(Screen.DayStageScreen.route)
+                        } else {
+                            navController.navigate(Screen.LastWordsScreen.route)
+                        }
                     },
                     modifier = Modifier.align(Alignment.Center),
                     colors = ButtonDefaults.buttonColors(Color.White)

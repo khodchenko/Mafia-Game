@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.khodchenko.mafiaapp.R
+import com.khodchenko.mafiaapp.data.GameStage
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
 import com.khodchenko.mafiaapp.ui.CustomElevatedButton
@@ -125,9 +126,11 @@ fun VoteMainStage(navController: NavController, game: MafiaGame) {
                     if (game.getNextCandidateAfterCurrentPlayer() == null){
                             Log.d("VoteMainStage", "End of stage.")
                             if (game.checkEndGame()) {
+                                game.setStage(GameStage.GAME_OVER)
                                 navController.navigate(Screen.EndGameStageScreen.route)
                             } else {
                                 Log.d("VoteMainStage", "Most votes: ${game.findCandidatesWithLongestVotes()}")
+                                game.setStage(GameStage.NIGHT)
                                 navController.navigate(Screen.NightStageScreen.route)
                                 Toast.makeText(context, "End of voting", Toast.LENGTH_SHORT).show()
                             }

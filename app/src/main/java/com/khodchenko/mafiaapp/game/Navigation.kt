@@ -8,6 +8,7 @@ import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.helpers.BluetoothHelper
 import com.khodchenko.mafiaapp.ui.stage.DayStage
 import com.khodchenko.mafiaapp.ui.stage.EndGameStage
+import com.khodchenko.mafiaapp.ui.stage.LastWordsStage
 import com.khodchenko.mafiaapp.ui.stage.NightStage
 import com.khodchenko.mafiaapp.ui.stage.RolePickerStage
 import com.khodchenko.mafiaapp.ui.stage.StartGameStage
@@ -36,6 +37,9 @@ fun Navigation(game: MafiaGame, bluetoothHelper: BluetoothHelper) {
         }
         composable(route = Screen.VoteStageScreen.route, arguments = listOf()) {
             VoteStage(navController = navController, game = game)
+        }
+        composable(route = Screen.LastWordsScreen.route, arguments = listOf()) {
+            LastWordsStage(navController = navController, game = game)
         }
         composable(route = Screen.EndGameStageScreen.route, arguments = listOf()) {
             EndGameStage(game = game)

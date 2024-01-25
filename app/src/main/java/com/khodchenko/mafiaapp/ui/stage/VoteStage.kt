@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.khodchenko.mafiaapp.data.GameStage
 import com.khodchenko.mafiaapp.data.Player
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
@@ -135,10 +136,12 @@ fun VoteStage(navController: NavController, game: MafiaGame) {
                             game.killPlayer(game.findCandidatesWithLongestVotes()[0])
                             //todo
                             game.clearVote()
+                            game.setStage(GameStage.NIGHT)
                             navController.navigate(Screen.NightStageScreen.route)
                         }
                     } else {
                         game.getNextCandidateAfterCurrentPlayer()?.let { game.setCurrentPlayer(it) }
+                        game.setStage(GameStage.VOTE)
                         navController.navigate(Screen.VoteMainStageScreen.route)
                     }
                 })

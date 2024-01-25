@@ -7,5 +7,6 @@ sealed class Screen(val route: String) {
     object DayStageScreen : Screen("day_stage_screen")
     object VoteMainStageScreen : Screen("vote_main_stage_screen")
     object VoteStageScreen : Screen("vote_stage_screen")
+    object LastWordsScreen : Screen("last_words_screen")
     object EndGameStageScreen : Screen("end_game_screen")
 }

@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.khodchenko.mafiaapp.R
+import com.khodchenko.mafiaapp.data.GameStage
 import com.khodchenko.mafiaapp.data.Player
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
@@ -183,6 +184,7 @@ fun DayStage(navController: NavController, game: MafiaGame) {
                 CustomElevatedButton(buttonText = "Голосование",enabled = true, onClick = {
                     game.getCandidates().firstOrNull()?.let { game.setCurrentPlayer(it) }
                     Log.d("DayStage", "Current player: ${game.getCurrentPlayer()}")
+                    game.setStage(GameStage.VOTE)
                     navController.navigate(Screen.VoteMainStageScreen.route)
                 })
             }

@@ -39,6 +39,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.khodchenko.mafiaapp.data.GameStage
 import com.khodchenko.mafiaapp.data.Player
 import com.khodchenko.mafiaapp.data.Role
 import com.khodchenko.mafiaapp.data.Screen
@@ -177,8 +178,8 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
                     "Погнали", rulesCheck,
                     onClick = {
                         game.initialPlayers(playersList)
+                        game.setStage(GameStage.NIGHT)
                         navController.navigate(Screen.NightStageScreen.route)
-
                     },
                 )
             }
