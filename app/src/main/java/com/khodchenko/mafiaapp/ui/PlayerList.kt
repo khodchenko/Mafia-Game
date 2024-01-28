@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,7 +63,7 @@ fun PlayerList(
 private fun PlayerItem(
     player: Player,
     isActive: Boolean,
-    onPlayerClick: () -> Unit,  // не передаем индекс в onPlayerClick
+    onPlayerClick: () -> Unit,
     activePlayerColor: Color,
     showRoles: Boolean,
     showVotes: Boolean,
@@ -70,20 +72,22 @@ private fun PlayerItem(
     Row(
         modifier = Modifier
             .clickable { onPlayerClick() }
+            .fillMaxWidth()
             .padding(6.dp)
+            .clip(RoundedCornerShape(16.dp))
             .background(if (isActive) activePlayerColor else Color.Transparent),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = "${player.number}: ",
             style = MaterialTheme.typography.titleMedium,
-            fontSize = 22.sp,
+            fontSize = if (isActive)28.sp else 22.sp,
             color = Color.White
         )
         Text(
             text = player.name,
             style = MaterialTheme.typography.titleMedium,
-            fontSize = 22.sp,
+            fontSize = if (isActive)28.sp else 22.sp,
             color = Color.White
         )
         Text(

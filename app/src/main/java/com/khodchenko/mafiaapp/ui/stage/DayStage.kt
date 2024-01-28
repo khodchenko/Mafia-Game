@@ -45,7 +45,7 @@ import com.khodchenko.mafiaapp.ui.theme.Background
 @Composable
 fun DayStage(navController: NavController, game: MafiaGame) {
 
-    var showRoles by remember { mutableStateOf(true) }
+    var showRoles by remember { mutableStateOf(false) }
     var activePlayerIndex by remember { mutableStateOf(0) }
 
     var showDialog by remember { mutableStateOf(false) }
