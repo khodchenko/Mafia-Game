@@ -21,7 +21,7 @@ fun Navigation(game: MafiaGame, bluetoothHelper: BluetoothHelper) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.StartGameScreen.route) {
         composable(route = Screen.StartGameScreen.route) {
-            StartGameStage(navController = navController)
+            StartGameStage(navController = navController, game = game)
         }
         composable(route = Screen.RolePickerScreen.route, arguments = listOf()) {
            RolePickerStage(navController = navController, game = game)

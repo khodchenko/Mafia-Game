@@ -55,8 +55,10 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
     var rulesCheck by remember { mutableStateOf(false) }
 
 
-//todo TESTING
-   playersList = generateTestPlayers().toMutableList()
+    if (game.getGenerateDumbPlayersList()){
+        playersList = generateTestPlayers().toMutableList()
+    }
+
     Log.d("RolePickerStage", "PlayerList = $playersList")
 
     Box(
@@ -72,9 +74,10 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
             Text(
                 text = "Создание игроков",
                 style = MaterialTheme.typography.titleMedium,
-                fontSize = 22.sp,
+                fontSize = 28.sp,
                 color = Color.White
             )
+            Spacer(modifier = Modifier.weight(1f))
             LazyColumn {
                 items(playersList) { player ->
                     Row(

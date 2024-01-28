@@ -136,6 +136,7 @@ fun VoteStage(navController: NavController, game: MafiaGame) {
                             game.killPlayer(game.findCandidatesWithLongestVotes()[0])
                             //todo
                             game.clearVote()
+                            game.newDay()
                             game.setStage(GameStage.NIGHT)
                             navController.navigate(Screen.LastWordsScreen.route)
                         }

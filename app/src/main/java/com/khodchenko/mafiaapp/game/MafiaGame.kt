@@ -14,8 +14,8 @@ class MafiaGame(
     private lateinit var players: List<Player>
     private var blackTeam: Team = Team(Team.TeamColor.BLACK, mutableListOf())
     private var redTeam: Team = Team(Team.TeamColor.RED, mutableListOf())
-
     private var candidates: MutableMap<Player, List<Player>> = mutableMapOf()
+    private var generateDumbPlayersList: Boolean = false
 
 
     fun addCandidate(candidate: Player) {
@@ -23,7 +23,9 @@ class MafiaGame(
     }
 
     fun addVotesForCandidate(candidate: Player, playerList: List<Player>) {
-        val uniquePlayerList = playerList.filter { player -> !candidates.values.flatten().any { it.number == player.number } }
+        val uniquePlayerList = playerList.filter { player ->
+            !candidates.values.flatten().any { it.number == player.number }
+        }
         candidates[candidate] = uniquePlayerList
     }
 
@@ -69,8 +71,8 @@ class MafiaGame(
         candidates = mutableMapOf()
     }
 
-    fun newDay(){
-      currentDay += 1
+    fun newDay() {
+        currentDay += 1
     }
 
     fun killPlayer(player: Player) {
@@ -80,6 +82,7 @@ class MafiaGame(
     fun getCurrentStage(): GameStage {
         return gameStage
     }
+
     fun setStage(stage: GameStage) {
         gameStage = stage
     }
@@ -118,5 +121,13 @@ class MafiaGame(
         val aliveRedTeamSize = redTeam.players.count { it.isAlive }
 
         return if (aliveBlackTeamSize == 0 || aliveBlackTeamSize == aliveRedTeamSize) redTeam else blackTeam
+    }
+
+    fun getGenerateDumbPlayersList(): Boolean {
+        return generateDumbPlayersList
+    }
+
+    fun onOffGenerateDumbPlayersList() {
+        generateDumbPlayersList = !generateDumbPlayersList
     }
 }

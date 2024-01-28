@@ -49,7 +49,7 @@ fun VoteMainStage(navController: NavController, game: MafiaGame) {
             .padding(16.dp)
     ) {
 
-        Column() {
+        Column {
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -130,6 +130,7 @@ fun VoteMainStage(navController: NavController, game: MafiaGame) {
                                 navController.navigate(Screen.EndGameStageScreen.route)
                             } else {
                                 Log.d("VoteMainStage", "Most votes: ${game.findCandidatesWithLongestVotes()}")
+                                game.newDay()
                                 game.setStage(GameStage.NIGHT)
                                 navController.navigate(Screen.NightStageScreen.route)
                                 Toast.makeText(context, "End of voting", Toast.LENGTH_SHORT).show()

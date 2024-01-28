@@ -62,6 +62,7 @@ fun LastWordsStage(navController: NavController, game: MafiaGame) {
                         navController.previousBackStackEntry
                         navController.navigate(Screen.DayStageScreen.route)
                     } else {
+                        game.newDay()
                         game.setStage(GameStage.NIGHT)
                         navController.navigate(Screen.NightStageScreen.route)
                     }

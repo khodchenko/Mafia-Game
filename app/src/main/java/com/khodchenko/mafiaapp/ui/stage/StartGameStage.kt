@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -38,25 +39,26 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.khodchenko.mafiaapp.R
 import com.khodchenko.mafiaapp.data.Screen
+import com.khodchenko.mafiaapp.game.MafiaGame
 import com.khodchenko.mafiaapp.ui.CustomElevatedButton
 import com.khodchenko.mafiaapp.ui.theme.Background
 
 @Composable
-fun StartGameStage(navController: NavController) {
+fun StartGameStage(navController: NavController, game: MafiaGame) {
 
     val englishText = "English"
     val mafiaText = "MAFIA"
     val chooseRolesText = "Выбор ролей"
     var rolesInfoText by remember { mutableStateOf("Роли будут выданы случайным образом.") }
-    val importToServerText = "Импорт на сервер"
+    val importToServerText = "Экспорт на сервер"
     var exportInfoText by remember { mutableStateOf("Не экспортирует данные в телеграм.") }
-    var playersCountText by remember { mutableStateOf("Количество игроков:")}
+    var playersCountText by remember { mutableStateOf("Количество игроков:") }
     var playersCount by remember { mutableStateOf(7f) }
     val playersCountInfoText = "От количества игроков зависит количество “черных” ролей."
     val hutirText = "HUTIR"
     val productInfoText = "Продукт для внутреннего использования сообществом украинцев в Бельгии."
-
-
+    val textGenerateList = "Тестовый список"
+    var textGenerateListInfo by remember { mutableStateOf("Нужно для теста! Не создает список.") }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -64,15 +66,15 @@ fun StartGameStage(navController: NavController) {
             .padding(16.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                text = englishText,
-                color = Color(0xffffffff),
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.End
-            )
+//            Text(
+//                modifier = Modifier
+//                    .fillMaxWidth(),
+//                text = englishText,
+//                color = Color(0xffffffff),
+//                fontSize = 26.sp,
+//                fontWeight = FontWeight.Normal,
+//                textAlign = TextAlign.End
+//            )
 
             Text(
                 text = mafiaText,
@@ -90,17 +92,41 @@ fun StartGameStage(navController: NavController) {
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
+            //ROLES
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Column {
+                    Text(
+                        text = chooseRolesText,
+                        color = Color.White,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
-                Text(
-                    text = chooseRolesText,
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge
-                )
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_info),
+                            contentDescription = "info icon",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .size(14.dp)
+                                .padding(end = 4.dp)
+                        )
+
+                        Text(
+                            text = rolesInfoText,
+                            color = Color.White,
+                            style = TextStyle(
+                                fontSize = 12.sp
+                            )
+                        )
+                    }
+                }
+
                 Spacer(modifier = Modifier.weight(1f))
                 SimpleSwitch(onSwitchChanged = { isChecked ->
                     rolesInfoText = if (isChecked) {
@@ -111,38 +137,40 @@ fun StartGameStage(navController: NavController) {
                 })
 
             }
+
+
+            //EXPORT
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_info),
-                    contentDescription = "info icon",
-                    tint = Color.White
-                )
-
-                Text(
-                    text = rolesInfoText,
-                    color = Color.White,
-                    style = TextStyle(
-                        fontSize = 12.sp
+                Column {
+                    Text(
+                        text = importToServerText,
+                        color = Color.White,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge
                     )
-                )
-            }
-
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Text(
-                    text = importToServerText,
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge
-                )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_info),
+                            contentDescription = "info icon",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .size(14.dp)
+                                .padding(end = 4.dp)
+                        )
+                        Text(
+                            text = exportInfoText,
+                            color = Color.White,
+                            style = TextStyle(
+                                fontSize = 12.sp
+                            )
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.weight(1f))
                 SimpleSwitch(onSwitchChanged = { isChecked ->
                     exportInfoText = if (isChecked) {
@@ -153,24 +181,54 @@ fun StartGameStage(navController: NavController) {
                 })
             }
 
+
+            //TEST LIST
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_info),
-                    contentDescription = "info icon",
-                    tint = Color.White
-                )
-                Text(
-                    text = exportInfoText,
-                    color = Color.White,
-                    style = TextStyle(
-                        fontSize = 12.sp
+                Column {
+                    Text(
+                        text = textGenerateList,
+                        color = Color.White,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge
                     )
-                )
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_info),
+                            contentDescription = "info icon",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .size(14.dp)
+                                .padding(end = 4.dp)
+                        )
+                        Text(
+                            text = textGenerateListInfo,
+                            color = Color.White,
+                            style = TextStyle(
+                                fontSize = 12.sp
+                            )
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.weight(1f))
+
+                SimpleSwitch(onSwitchChanged = { isChecked ->
+                    game.onOffGenerateDumbPlayersList()
+                    textGenerateListInfo = if (isChecked) {
+                        "Нужно для теста! Создает список."
+                    } else {
+                        "Нужно для теста! Не создает список."
+                    }
+                })
+
             }
 
+            //PLAYERS
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -191,7 +249,10 @@ fun StartGameStage(navController: NavController) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_info),
                     contentDescription = "info icon",
-                    tint = Color.White
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(14.dp)
+                        .padding(end = 4.dp)
                 )
                 Text(
                     text = playersCountInfoText,
@@ -210,6 +271,7 @@ fun StartGameStage(navController: NavController) {
                 },
                 currentValue = playersCount
             )
+
             //todo
             Spacer(modifier = Modifier.weight(1f))
             Row(
@@ -220,11 +282,11 @@ fun StartGameStage(navController: NavController) {
             ) {
 
                 CustomElevatedButton("Погнали", enabled = true, onClick = {
-                  navController.navigate(Screen.RolePickerScreen.route)
+                    navController.navigate(Screen.RolePickerScreen.route)
                 })
 
             }
-
+            Spacer(modifier = Modifier.weight(1f))
             Box(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -235,7 +297,7 @@ fun StartGameStage(navController: NavController) {
                     text = hutirText,
                     textAlign = TextAlign.Center,
                     color = Color(0xffffffff),
-                    fontSize = 28.sp,
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -251,7 +313,6 @@ fun StartGameStage(navController: NavController) {
         }
     }
 }
-
 
 
 @Composable
