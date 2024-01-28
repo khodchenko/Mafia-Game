@@ -137,7 +137,7 @@ fun VoteStage(navController: NavController, game: MafiaGame) {
                             //todo
                             game.clearVote()
                             game.setStage(GameStage.NIGHT)
-                            navController.navigate(Screen.NightStageScreen.route)
+                            navController.navigate(Screen.LastWordsScreen.route)
                         }
                     } else {
                         game.getNextCandidateAfterCurrentPlayer()?.let { game.setCurrentPlayer(it) }

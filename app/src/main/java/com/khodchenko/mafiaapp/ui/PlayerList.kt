@@ -24,7 +24,7 @@ import com.khodchenko.mafiaapp.game.MafiaGame
 
 @Composable
 fun PlayerList(
-    playersList: MutableList<Player>,
+    playersList: List<Player>,
     activePlayerIndex: Int,
     onPlayerClick: (Int) -> Unit,
     activePlayerColor: Color = Color.Gray,

@@ -55,14 +55,10 @@ class MafiaGame(
     }
 
     fun getNextCandidateAfterCurrentPlayer(): Player? {
-        val candidateKeys = candidates.keys.toMutableList()
+        val candidateKeys = candidates.keys.toList()
         val currentIndex = candidateKeys.indexOf(currentPlayer)
 
-        return when {
-            candidateKeys.isEmpty() -> null
-            currentIndex == -1 || currentIndex == candidateKeys.size - 1 -> candidateKeys.first()
-            else -> candidateKeys[currentIndex + 1]
-        }
+        return candidateKeys.getOrNull(currentIndex + 1)
     }
 
     fun getVotersByCandidate(candidate: Player): MutableList<Player>? {
