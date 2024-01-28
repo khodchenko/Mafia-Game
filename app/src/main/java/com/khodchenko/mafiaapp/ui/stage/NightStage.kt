@@ -2,6 +2,7 @@ package com.khodchenko.mafiaapp.ui.stage
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -38,7 +39,7 @@ import com.khodchenko.mafiaapp.ui.theme.BeautifulBlack
 
 @Composable
 fun NightStage(navController: NavController, game: MafiaGame) {
-    var activePlayerIndex by remember { mutableIntStateOf(0) }
+    var activePlayerIndex by remember { mutableIntStateOf(11) }
     val soundPlayer = SoundPlayer(LocalContext.current)
     val currentDay = game.getCurrentDay()
     val players = game.getAllPlayers()
@@ -49,6 +50,9 @@ fun NightStage(navController: NavController, game: MafiaGame) {
             .fillMaxSize()
             .background(BeautifulBlack)
             .padding(8.dp)
+            .clickable {
+                activePlayerIndex = 11
+            }
     ) {
         Column(modifier = Modifier.fillMaxHeight()) {
             Text(
@@ -91,12 +95,20 @@ fun NightStage(navController: NavController, game: MafiaGame) {
             ) {
                 Button(
                     onClick = {
-                        players.find { it.number == activePlayerIndex }?.let { game.killPlayer(it) }
+                        players.find { it.number == activePlayerIndex + 1 }
+                            ?.let { game.killPlayer(it) }
                         soundPlayer.playShootSound()
+
                         if (game.checkEndGame()) {
                             game.setStage(GameStage.GAME_OVER)
                             navController.navigate(Screen.EndGameStageScreen.route)
+                        } else if (activePlayerIndex == 11) {
+                            game.getAllAlivePlayers().find { it.number == game.getCurrentDay() }
+                                ?.let { game.setCurrentPlayer(it) }
+                            game.setStage(GameStage.DAY)
+                            navController.navigate(Screen.DayStageScreen.route)
                         } else {
+                            game.setCurrentPlayer(players[activePlayerIndex])
                             navController.navigate(Screen.LastWordsScreen.route)
                         }
                     },

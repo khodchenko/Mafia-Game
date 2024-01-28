@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,11 +41,11 @@ fun PlayerList(
         Column() {
 
             LazyColumn {
-                items(playersList) { player ->
+                itemsIndexed(playersList) { index, player ->
                     PlayerItem(
                         player,
-                        activePlayerIndex == player.number,
-                        onPlayerClick,
+                        index == activePlayerIndex,
+                        { onPlayerClick(index) },
                         activePlayerColor,
                         showRoles,
                         showVotes,
@@ -61,15 +61,15 @@ fun PlayerList(
 private fun PlayerItem(
     player: Player,
     isActive: Boolean,
-    onPlayerClick: (Int) -> Unit,
+    onPlayerClick: () -> Unit,  // не передаем индекс в onPlayerClick
     activePlayerColor: Color,
     showRoles: Boolean,
-    showVotes : Boolean,
+    showVotes: Boolean,
     game: MafiaGame
 ) {
     Row(
         modifier = Modifier
-            .clickable { onPlayerClick(player.number) }
+            .clickable { onPlayerClick() }
             .padding(6.dp)
             .background(if (isActive) activePlayerColor else Color.Transparent),
         verticalAlignment = Alignment.CenterVertically
