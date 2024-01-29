@@ -55,10 +55,19 @@ fun VoteStage(navController: NavController, game: MafiaGame) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = "На голосовании:\n${game.getCurrentPlayer().name}",
+                text = "На голосовании:",
+                color = Color.White,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                text = game.getCurrentPlayer().name,
                 color = Color.White,
                 fontSize = 32.sp,
-                fontWeight = FontWeight.Normal,
+                fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
             Text(
@@ -123,7 +132,7 @@ fun VoteStage(navController: NavController, game: MafiaGame) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 30.dp),
+                    .padding(top = 30.dp, bottom = 50.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {

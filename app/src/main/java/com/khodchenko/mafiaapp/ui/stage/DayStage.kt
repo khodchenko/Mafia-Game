@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -65,17 +66,25 @@ fun DayStage(navController: NavController, game: MafiaGame) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(start = 10.dp)
             ) {
+                Spacer(modifier = Modifier.weight(1f))
+
                 Text(
                     text = "День: $currentDay",
+                   modifier = Modifier.padding(start = 60.dp),
                     style = MaterialTheme.typography.displayLarge,
+                    fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
                     color = Color.White
                 )
+
                 Spacer(modifier = Modifier.weight(1f))
+
                 IconButton(
                     onClick = {
                         showRoles = !showRoles
                     }
+                        ,
+                    modifier = Modifier.padding(end = 10.dp)
                 ) {
                     Icon(
                         painter = if (showRoles) painterResource(id = R.drawable.ic_roles_show_hide)
@@ -83,11 +92,11 @@ fun DayStage(navController: NavController, game: MafiaGame) {
                             id = R.drawable.ic_roles_show_hide
                         ),
                         contentDescription = null,
-                        tint = Color.White, modifier = Modifier.size(120.dp)
+                        tint = Color.White,
+                        modifier = Modifier.size(120.dp)
                     )
                 }
             }
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -99,7 +108,7 @@ fun DayStage(navController: NavController, game: MafiaGame) {
                 playersList = players.toMutableList(),
                 activePlayerIndex = activePlayerIndex,
                 onPlayerClick = { clickedIndex ->
-                    selectedPlayer = players.find { it.number == clickedIndex }
+                    selectedPlayer = players.find { it.number == clickedIndex + 1 }
                     showDialog = true
                 },
                 showRoles = showRoles, game = game

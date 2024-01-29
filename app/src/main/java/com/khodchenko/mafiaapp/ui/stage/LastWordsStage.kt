@@ -34,12 +34,27 @@ fun LastWordsStage(navController: NavController, game: MafiaGame) {
             .background(Background)
             .padding(8.dp)
     ) {
-        Column(Modifier.padding(top = 10.dp)) {
+        Column(
+            Modifier
+                .padding(top = 10.dp)
+                .fillMaxSize()) {
+
+            Spacer(modifier = Modifier.weight(1f))
 
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = "Последняя речь:\n${game.getCurrentPlayer().name}",
+                text = "Последняя речь:",
+                color = Color.White,
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center
+            )
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                text = game.getCurrentPlayer().name,
                 color = Color.White,
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Normal,

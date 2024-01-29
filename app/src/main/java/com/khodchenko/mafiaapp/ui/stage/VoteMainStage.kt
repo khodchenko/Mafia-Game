@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -49,38 +51,20 @@ fun VoteMainStage(navController: NavController, game: MafiaGame) {
             .padding(16.dp)
     ) {
 
-        Column {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                text = "Голосование за день:${game.getCurrentDay()}",
-                color = Color.White,
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center
-            )
-
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                text = "В живых игроков:${game.getAllAlivePlayers().size}",
-                color = Color.White,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center
-            )
-
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                text = "На голосовании:",
-                color = Color.White,
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center
-            )
-
-            Row() {
+        Column(modifier = Modifier.fillMaxHeight()) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    modifier = Modifier.padding(start = 60.dp),
+                    text = "Голосование: ${game.getCurrentDay()}",
+                    color = Color.White,
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
                 Spacer(modifier = Modifier.weight(1f))
                 IconButton(
                     onClick = {
@@ -105,6 +89,26 @@ fun VoteMainStage(navController: NavController, game: MafiaGame) {
                     .background(Color.White)
             )
 
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                text = "В живых: ${game.getAllAlivePlayers().size}",
+                color = Color.White,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center
+            )
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                text = "На голосовании:",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center
+            )
+
             PlayerList(
                 playersList = game.getCandidates().toMutableList(),
                 activePlayerIndex = game.getCurrentPlayer().number,
@@ -119,22 +123,28 @@ fun VoteMainStage(navController: NavController, game: MafiaGame) {
             Spacer(modifier = Modifier.weight(1f))
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 100.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomElevatedButton("К голосованию", true) {
-                    if (game.getNextCandidateAfterCurrentPlayer() == null){
-                            Log.d("VoteMainStage", "End of stage.")
-                            if (game.checkEndGame()) {
-                                game.setStage(GameStage.GAME_OVER)
-                                navController.navigate(Screen.EndGameStageScreen.route)
-                            } else {
-                                Log.d("VoteMainStage", "Most votes: ${game.findCandidatesWithLongestVotes()}")
-                                game.newDay()
-                                game.setStage(GameStage.NIGHT)
-                                navController.navigate(Screen.NightStageScreen.route)
-                                Toast.makeText(context, "End of voting", Toast.LENGTH_SHORT).show()
-                            }
+                    if (game.getNextCandidateAfterCurrentPlayer() == null) {
+                        Log.d("VoteMainStage", "End of stage.")
+                        if (game.checkEndGame()) {
+                            game.setStage(GameStage.GAME_OVER)
+                            navController.navigate(Screen.EndGameStageScreen.route)
+                        } else {
+                            Log.d(
+                                "VoteMainStage",
+                                "Most votes: ${game.findCandidatesWithLongestVotes()}"
+                            )
+                            game.clearVote()
+                            game.newDay()
+                            game.setStage(GameStage.NIGHT)
+                            navController.navigate(Screen.NightStageScreen.route)
+                            Toast.makeText(context, "End of voting", Toast.LENGTH_SHORT).show()
+                        }
                     } else {
                         Log.d("VoteMainStage", "Current player: ${game.getCurrentPlayer()}")
                         navController.navigate(Screen.VoteStageScreen.route)

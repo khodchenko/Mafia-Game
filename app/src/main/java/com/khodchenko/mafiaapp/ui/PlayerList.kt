@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -79,19 +80,19 @@ private fun PlayerItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "${player.number}: ",
+            modifier = Modifier.width(200.dp),
+            text = "${player.number}.  ${player.name}",
             style = MaterialTheme.typography.titleMedium,
             fontSize = if (isActive)28.sp else 22.sp,
             color = Color.White
         )
+
         Text(
-            text = player.name,
-            style = MaterialTheme.typography.titleMedium,
-            fontSize = if (isActive)28.sp else 22.sp,
-            color = Color.White
-        )
-        Text(
-            text = if (!showVotes) player.fouls.toString() else game.getVotersByCandidate(player)?.size.toString(),
+            text = if (!showVotes) {
+                if (player.fouls == 0){
+                    ""
+                } else player.fouls.toString()
+            } else game.getVotersByCandidate(player)?.size.toString(),
             style = MaterialTheme.typography.bodySmall,
             fontSize = 22.sp,
             color = Color.White,

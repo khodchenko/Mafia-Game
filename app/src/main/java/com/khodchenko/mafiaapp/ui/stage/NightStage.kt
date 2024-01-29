@@ -68,14 +68,16 @@ fun NightStage(navController: NavController, game: MafiaGame) {
 
             Column() {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(start = 10.dp)
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
+                    Spacer(modifier = Modifier.weight(1f))
+
                     Text(
-                        text = "Ночь:$currentDay",
+                        modifier = Modifier.padding(start = 60.dp),
+                        text = "Ночь: $currentDay",
                         color = Color.White,
                         fontSize = 26.sp,
-                        fontWeight = FontWeight.Normal,
+                        fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
 
@@ -83,7 +85,8 @@ fun NightStage(navController: NavController, game: MafiaGame) {
                     IconButton(
                         onClick = {
                             showRoles = !showRoles
-                        }
+                        },
+                        modifier = Modifier.padding(end = 10.dp)
                     ) {
                         Icon(
                             painter = if (showRoles) painterResource(id = R.drawable.ic_roles_show_hide)
@@ -106,7 +109,7 @@ fun NightStage(navController: NavController, game: MafiaGame) {
 
             Text(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth().padding(top = 6.dp),
                 text = "Мафия совершает выстрел...",
                 color = Color.White,
                 fontSize = 16.sp,
