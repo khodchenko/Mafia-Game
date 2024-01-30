@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -38,12 +40,15 @@ import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
 import com.khodchenko.mafiaapp.ui.CustomElevatedButton
 import com.khodchenko.mafiaapp.ui.PlayerList
+import com.khodchenko.mafiaapp.ui.Timer
 import com.khodchenko.mafiaapp.ui.theme.Background
 
 @Composable
 fun VoteMainStage(navController: NavController, game: MafiaGame) {
     var showRoles by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    var raiseAllDialog by remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -92,6 +97,21 @@ fun VoteMainStage(navController: NavController, game: MafiaGame) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
+                text = when (game.getCurrentStage()) {
+                    GameStage.VOTE -> "Фаза 1"
+                    GameStage.VOTE_2 -> "Фаза 2"
+                    GameStage.VOTE_3 -> "Фаза 3"
+                    else -> ""
+                },
+                color = Color.White,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth(),
                 text = "В живых: ${game.getAllAlivePlayers().size}",
                 color = Color.White,
                 fontSize = 14.sp,
@@ -125,32 +145,82 @@ fun VoteMainStage(navController: NavController, game: MafiaGame) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 100.dp),
+                    .padding(bottom = 20.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomElevatedButton("К голосованию", true) {
-                    if (game.getNextCandidateAfterCurrentPlayer() == null) {
+                    if (game.getCandidates().isEmpty()) {
                         Log.d("VoteMainStage", "End of stage.")
-                        if (game.checkEndGame()) {
-                            game.setStage(GameStage.GAME_OVER)
-                            navController.navigate(Screen.EndGameStageScreen.route)
-                        } else {
-                            Log.d(
-                                "VoteMainStage",
-                                "Most votes: ${game.findCandidatesWithLongestVotes()}"
-                            )
-                            game.clearVote()
-                            game.newDay()
-                            game.setStage(GameStage.NIGHT)
-                            navController.navigate(Screen.NightStageScreen.route)
-                            Toast.makeText(context, "End of voting", Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
+                        Log.d(
+                            "VoteMainStage",
+                            "Most votes: ${game.findCandidatesWithLongestVotes()}"
+                        )
+                        game.newDay()
+                        game.setStage(GameStage.NIGHT)
+                        navController.navigate(Screen.NightStageScreen.route)
+                        Toast.makeText(context, "End of voting", Toast.LENGTH_SHORT).show()
+                    } else if (game.getCurrentStage() != GameStage.VOTE_3) {
                         Log.d("VoteMainStage", "Current player: ${game.getCurrentPlayer()}")
                         navController.navigate(Screen.VoteStageScreen.route)
+                    } else {
+                        raiseAllDialog = true
                     }
                 }
             }
+
+            Timer(30000)
+
+            if (raiseAllDialog) {
+                ShowRaiseAllDialog(
+                    onRaiseAll = {
+                        raiseAllDialog = false
+                        for (candidate in game.getCandidates()){
+                            game.killPlayer(candidate)
+                            game.setCurrentPlayer(player = candidate)
+                            navController.navigate(Screen.LastWordsScreen.route)
+                        }
+                    },
+                    onLeaveAll = {
+                        raiseAllDialog = false
+                        navController.navigate(Screen.NightStageScreen.route)
+                    }
+                )
+            }
+
         }
     }
+}
+
+@Composable
+fun ShowRaiseAllDialog(onRaiseAll: () -> Unit, onLeaveAll: () -> Unit) {
+    AlertDialog(
+        containerColor = Color.Black,
+        onDismissRequest = {
+
+        },
+        title = {
+            Text("Поднимаем всех?")
+        },
+        text = {
+            Text("Выберите действие:")
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onRaiseAll()
+                }
+            ) {
+                Text("Поднимаем")
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = {
+                    onLeaveAll()
+                }
+            ) {
+                Text("Оставляем в игре")
+            }
+        }
+    )
 }
