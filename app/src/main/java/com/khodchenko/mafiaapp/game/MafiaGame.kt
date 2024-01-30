@@ -67,6 +67,21 @@ class MafiaGame(
         return candidates[candidate]?.toMutableList()
     }
 
+    fun removeCandidatesExceptMaxVotes() {
+        val maxVotes = candidates.values.maxOfOrNull { it.size }
+
+        maxVotes?.let { maxCount ->
+            val candidatesWithMaxVotes = candidates.filterValues { it.size == maxCount }.keys.toList()
+            candidates = candidates.filterKeys { it in candidatesWithMaxVotes }.toMutableMap()
+        }
+    }
+
+    fun clearVoters() {
+        for (candidate in candidates.keys) {
+            candidates[candidate] = emptyList()
+        }
+    }
+
     fun clearVote() {
         candidates = mutableMapOf()
     }
@@ -130,4 +145,6 @@ class MafiaGame(
     fun onOffGenerateDumbPlayersList() {
         generateDumbPlayersList = !generateDumbPlayersList
     }
+
+
 }

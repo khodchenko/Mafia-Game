@@ -141,17 +141,27 @@ fun VoteStage(navController: NavController, game: MafiaGame) {
 
                     Log.d("VoteStage", game.getCandidatesAndVotesLog())
                     if (game.getCandidates().last() == game.getCurrentPlayer()) {
-                        if (game.findCandidatesWithLongestVotes().size == 1){
+                        if (game.findCandidatesWithLongestVotes().size == 1) {
                             game.killPlayer(game.findCandidatesWithLongestVotes()[0])
-                            //todo
                             game.clearVote()
                             game.newDay()
                             game.setStage(GameStage.NIGHT)
                             navController.navigate(Screen.LastWordsScreen.route)
+                        } else if (game.findCandidatesWithLongestVotes().size > 1 && game.getCurrentStage() != GameStage.VOTE_2) {
+                            game.removeCandidatesExceptMaxVotes()
+                            game.setStage(GameStage.VOTE_2)
+                            game.setCurrentPlayer(game.getCandidates()[0])
+                            game.clearVoters()
+                            navController.navigate(Screen.VoteMainStageScreen.route)
+                        } else if (game.findCandidatesWithLongestVotes().size > 1 && game.getCurrentStage() == GameStage.VOTE_2) {
+                            game.setCurrentPlayer(game.getCandidates()[0])
+                            game.clearVoters()
+                            game.setStage(GameStage.VOTE_3)
+                            navController.navigate(Screen.VoteMainStageScreen.route)
                         }
+                        Log.d("VoteStage", "Stage: ${game.getCurrentStage()}")
                     } else {
                         game.getNextCandidateAfterCurrentPlayer()?.let { game.setCurrentPlayer(it) }
-                        game.setStage(GameStage.VOTE)
                         navController.navigate(Screen.VoteMainStageScreen.route)
                     }
                 })

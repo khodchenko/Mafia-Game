@@ -1,8 +1,6 @@
 package com.khodchenko.mafiaapp.ui
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.compose.foundation.background
@@ -23,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -31,23 +30,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import com.khodchenko.mafiaapp.R
 import com.khodchenko.mafiaapp.ui.theme.Background
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.ticker
 
 
-
+@Preview
 @Composable
-fun Timer() {
+fun Timer(maxTimeMillis: Long = MAX_TIME) {
     var isRunning by remember { mutableStateOf(false) }
-    var time by remember { mutableStateOf(0L) }
-
-    val context = LocalContext.current
-
+    var time by remember { mutableLongStateOf(0L) }
+    val vibrator = LocalContext.current.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
     Box(
         modifier = Modifier
@@ -65,25 +62,6 @@ fun Timer() {
                     text = formatTime(time),
                     style = MaterialTheme.typography.titleMedium,
                     fontSize = 32.sp,
-                    color = Color.White
-                )
-
-                val hasBluetoothPermission = ContextCompat.checkSelfPermission(
-                    LocalContext.current,
-                    Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED
-
-                Text(
-                    text = if (hasBluetoothPermission) {
-                       // val connectedDevice = bluetoothHelper.getBluetoothDevices().firstOrNull()
-                     //   connectedDevice?.toString() ?:
-                        "Нет устройств"
-                    }else {
-                        "Нет прав на отображение"
-                    },
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier
-                        .padding(start = 12.dp),
-                    fontSize = 14.sp,
                     color = Color.White
                 )
 
@@ -125,24 +103,24 @@ fun Timer() {
                     }
                 }
 
-
                 TimerTicker(
                     isRunning = isRunning,
                     onTick = {
                         time += TICK_INTERVAL
-                    }
+                    },
+                    vibrator = vibrator,
+                    maxTimeMillis = maxTimeMillis
                 )
             }
 
             LinearProgressIndicator(
-                progress = if (isRunning) time.toFloat() / MAX_TIME.toFloat() else 0f,
+                progress = if (isRunning) time.toFloat() / maxTimeMillis.toFloat() else 0f,
                 color = Background,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp)
             )
         }
-
     }
 }
 
@@ -150,11 +128,11 @@ fun Timer() {
 @Composable
 private fun TimerTicker(
     isRunning: Boolean,
-    onTick: () -> Unit
+    onTick: () -> Unit,
+    vibrator: Vibrator,
+    maxTimeMillis: Long
 ) {
-    val vibrator = LocalContext.current.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-
-    var ticks by remember { mutableStateOf(0L) }
+    var ticks by remember { mutableLongStateOf(0L) }
 
     LaunchedEffect(isRunning) {
         if (isRunning) {
@@ -166,8 +144,9 @@ private fun TimerTicker(
 
                     ticks++
 
-                    if (ticks * TICK_INTERVAL == MAX_TIME) {
+                    if (!isRunning || ticks * TICK_INTERVAL >= maxTimeMillis) {
                         vibratePhone(vibrator)
+                        break
                     }
                 }
             } finally {

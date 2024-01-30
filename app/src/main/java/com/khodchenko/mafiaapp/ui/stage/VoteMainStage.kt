@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -44,6 +46,8 @@ import com.khodchenko.mafiaapp.ui.theme.Background
 fun VoteMainStage(navController: NavController, game: MafiaGame) {
     var showRoles by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    var raiseAllDialog by remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -129,28 +133,72 @@ fun VoteMainStage(navController: NavController, game: MafiaGame) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomElevatedButton("К голосованию", true) {
-                    if (game.getNextCandidateAfterCurrentPlayer() == null) {
+                    if (game.getCandidates().isEmpty()) {
                         Log.d("VoteMainStage", "End of stage.")
-                        if (game.checkEndGame()) {
-                            game.setStage(GameStage.GAME_OVER)
-                            navController.navigate(Screen.EndGameStageScreen.route)
-                        } else {
-                            Log.d(
-                                "VoteMainStage",
-                                "Most votes: ${game.findCandidatesWithLongestVotes()}"
-                            )
-                            game.clearVote()
-                            game.newDay()
-                            game.setStage(GameStage.NIGHT)
-                            navController.navigate(Screen.NightStageScreen.route)
-                            Toast.makeText(context, "End of voting", Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
+                        Log.d(
+                            "VoteMainStage",
+                            "Most votes: ${game.findCandidatesWithLongestVotes()}"
+                        )
+                        game.newDay()
+                        game.setStage(GameStage.NIGHT)
+                        navController.navigate(Screen.NightStageScreen.route)
+                        Toast.makeText(context, "End of voting", Toast.LENGTH_SHORT).show()
+                    } else if (game.getCurrentStage() != GameStage.VOTE_3) {
                         Log.d("VoteMainStage", "Current player: ${game.getCurrentPlayer()}")
                         navController.navigate(Screen.VoteStageScreen.route)
+                    } else {
+                        raiseAllDialog = true
                     }
                 }
             }
+            if (raiseAllDialog) {
+                ShowRaiseAllDialog(
+                    onRaiseAll = {
+                        // Вызываем функцию для обработки поднятия всех
+                        raiseAllDialog = false
+                    },
+                    onLeaveAll = {
+                        // Вызываем функцию для обработки оставления в игре
+                        raiseAllDialog = false
+                    }
+                )
+            }
+
         }
     }
+}
+
+@Composable
+fun ShowRaiseAllDialog(onRaiseAll: () -> Unit, onLeaveAll: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = {
+            // Обработка закрытия диалога
+        },
+        title = {
+            Text("Поднимаем всех?")
+        },
+        text = {
+            Text("Выберите действие:")
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    // Вызываем функцию для обработки поднятия всех
+                    onRaiseAll()
+                }
+            ) {
+                Text("Поднимаем")
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = {
+                    // Вызываем функцию для обработки оставления в игре
+                    onLeaveAll()
+                }
+            ) {
+                Text("Оставляем в игре")
+            }
+        }
+    )
 }
