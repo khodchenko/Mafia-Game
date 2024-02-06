@@ -1,4 +1,4 @@
-package com.khodchenko.mafiaapp.ui
+package com.khodchenko.mafiaapp.ui.element
 
 import android.content.Context
 import android.os.VibrationEffect

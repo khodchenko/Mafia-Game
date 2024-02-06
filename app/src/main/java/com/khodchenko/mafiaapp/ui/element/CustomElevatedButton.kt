@@ -1,4 +1,4 @@
-package com.khodchenko.mafiaapp.ui
+package com.khodchenko.mafiaapp.ui.element
 
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton

@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.khodchenko.mafiaapp.data.Team
 import com.khodchenko.mafiaapp.game.MafiaGame
-import com.khodchenko.mafiaapp.ui.PlayerList
+import com.khodchenko.mafiaapp.ui.element.PlayerList
 import com.khodchenko.mafiaapp.ui.theme.Background
 import com.khodchenko.mafiaapp.ui.theme.BeautifulBlack
 

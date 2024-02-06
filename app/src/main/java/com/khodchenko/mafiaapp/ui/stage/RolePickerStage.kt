@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -36,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -44,7 +46,7 @@ import com.khodchenko.mafiaapp.data.Player
 import com.khodchenko.mafiaapp.data.Role
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
-import com.khodchenko.mafiaapp.ui.CustomElevatedButton
+import com.khodchenko.mafiaapp.ui.element.CustomElevatedButton
 import com.khodchenko.mafiaapp.ui.theme.Background
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,139 +57,141 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
     var rulesCheck by remember { mutableStateOf(false) }
 
 
-    if (game.getGenerateDumbPlayersList()){
-        playersList = generateTestPlayers().toMutableList()
+    if (game.getGenerateDumbPlayersList()) {
+        playersList = generateTestPlayers(game.getNumberOfPlayers()).toMutableList()
     }
 
     Log.d("RolePickerStage", "PlayerList = $playersList")
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Background)
-            .padding(16.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Создание игроков",
-                style = MaterialTheme.typography.titleMedium,
-                fontSize = 28.sp,
-                color = Color.White
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            LazyColumn {
-                items(playersList) { player ->
-                    Row(
-                        modifier = Modifier.padding(6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "${player.number}: ",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontSize = 22.sp,
-                            color = Color.White
-                        )
-                        Text(
-                            text = player.name,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontSize = 22.sp,
-                            color = Color.White
-                        )
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
 
-                        CustomDropDownMenu(player = player) { selectedRole ->
-                            player.role = selectedRole
-                            rulesCheck = checkRules(playersList = playersList)
-                            Log.d(
-                                "RolePickerStage",
-                                "Player ${player.number} role changed to $selectedRole"
-                            )
-                            Log.d("RolePickerStage", "RulesCheck = ${rulesCheck}")
-                        }
+    ) {
+        Text(
+            text = "Создание игроков",
+            style = MaterialTheme.typography.titleMedium,
+            fontSize = 28.sp,
+            color = Color.White
+        )
+
+        LazyColumn {
+            items(playersList) { player ->
+                Row(
+                    modifier = Modifier.padding(6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "${player.number}: ",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontSize = 22.sp,
+                        color = Color.White
+                    )
+                    Text(
+                        text = player.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontSize = 22.sp,
+                        color = Color.White
+                    )
+
+                    CustomDropDownMenu(player = player) { selectedRole ->
+                        player.role = selectedRole
+                        rulesCheck = checkRules(playersList = playersList, playersList.size)
+                        Log.d(
+                            "RolePickerStage",
+                            "Player ${player.number} role changed to $selectedRole"
+                        )
+                        Log.d("RolePickerStage", "RulesCheck = $rulesCheck")
                     }
                 }
             }
+        }
 
-            Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(1f))
 
-            OutlinedTextField(
-                value = newPlayerName,
-                onValueChange = {
-                    if (it.length <= 20) {
-                        newPlayerName = it
-                    }
-                },
-                label = { Text("Введите имя", color = Color.White) },
-                textStyle = TextStyle(color = Color.White),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                singleLine = true,
-                maxLines = 1
-            )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            ElevatedButton(enabled = playersList.isNotEmpty(), onClick = {
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                ElevatedButton(enabled = playersList.isNotEmpty(), onClick = {
+                playersList = playersList.dropLast(1).toMutableList()
+                Log.d("RolePickerStage", "PlayerList = ${playersList}")
 
-                    playersList = playersList.dropLast(1).toMutableList()
-                    Log.d("RolePickerStage", "PlayerList = ${playersList}")
+            }) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    tint = Background,
+                    contentDescription = "Delete"
+                )
+            }
+
+            ElevatedButton(
+                enabled = (newPlayerName.isNotEmpty() && playersList.size < game.getNumberOfPlayers()),
+                onClick = {
+
+                    val newPlayer = Player(
+                        number = playersList.size + 1,
+                        name = newPlayerName,
+                        role = Role.CIVIL,
+                        isAlive = true,
+                        score = 0.0
+                    )
+
+                    playersList = (playersList + newPlayer).toMutableList()
+                    newPlayerName = ""
 
                 }) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        tint = Background,
-                        contentDescription = "Delete"
-                    )
-                }
-
-                ElevatedButton(
-                    enabled = (newPlayerName.isNotEmpty() && playersList.size < 10),
-                    onClick = {
-
-                        val newPlayer = Player(
-                            number = playersList.size + 1,
-                            name = newPlayerName,
-                            role = Role.CIVIL,
-                            isAlive = true,
-                            score = 0.0
-                        )
-
-                        playersList = (playersList + newPlayer).toMutableList()
-                        newPlayerName = ""
-
-                    }) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        tint = Background,
-                        contentDescription = "Add"
-                    )
-                }
-            }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                contentAlignment = Alignment.BottomCenter
-            ) {
-                CustomElevatedButton(
-                    "Погнали", rulesCheck,
-                    onClick = {
-                        game.initialPlayers(playersList)
-                        game.setStage(GameStage.NIGHT)
-                        navController.navigate(Screen.NightStageScreen.route)
-                    },
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    tint = Background,
+                    contentDescription = "Add"
                 )
             }
         }
+
+        OutlinedTextField(
+            value = newPlayerName,
+            onValueChange = {
+                if (it.length <= 14) {
+                    newPlayerName = it
+                }
+            },
+            label = { Text("Введите имя", color = Color.White) },
+            textStyle = TextStyle(color = Color.White),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            singleLine = true,
+            maxLines = 1,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                capitalization = KeyboardCapitalization.Words
+            )
+        )
+
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            CustomElevatedButton(
+                "Погнали", rulesCheck,
+                onClick = {
+                    game.initialPlayers(playersList)
+                    game.setStage(GameStage.NIGHT)
+                    navController.navigate(Screen.NightStageScreen.route)
+                },
+            )
+        }
     }
+
 }
 
 
@@ -196,7 +200,12 @@ fun checkRules(playersList: List<Player>, numbersOfPlayers: Int = 10): Boolean {
     val donCount = playersList.count { it.role == Role.DON }
     val sheriffCount = playersList.count { it.role == Role.SHERIFF }
 
-    return numbersOfPlayers == 10 && donCount == 1 && sheriffCount == 1 && mafiaCount <= 2 && (donCount + sheriffCount) > 0
+    return when (numbersOfPlayers) {
+        10 -> donCount == 1 && sheriffCount == 1 && mafiaCount <= 2 && (donCount + sheriffCount) > 0
+        9 -> donCount == 1 && sheriffCount == 1 && mafiaCount == 1 && (donCount + sheriffCount) > 0
+        8, 7 -> donCount == 1 && sheriffCount == 1 && mafiaCount == 0 && (donCount + sheriffCount) > 0
+        else -> false
+    }
 }
 
 @Composable
@@ -243,12 +252,49 @@ fun CustomDropDownMenu(player: Player, onRoleSelected: (Role) -> Unit) {
     }
 }
 
-fun generateTestPlayers(
-    mafiaCount: Int = 2,
-    donCount: Int = 1,
-    sheriffCount: Int = 1,
-    civilCount: Int = 6
-): List<Player> {
+fun generateTestPlayers(playerCount: Int): List<Player> {
+    val mafiaCount: Int
+    val donCount: Int
+    val sheriffCount: Int
+    val civilCount: Int
+
+    when (playerCount) {
+        10 -> {
+            mafiaCount = 2
+            donCount = 1
+            sheriffCount = 1
+            civilCount = 6
+        }
+
+        9 -> {
+            mafiaCount = 1
+            donCount = 1
+            sheriffCount = 1
+            civilCount = 6
+        }
+
+        8 -> {
+            mafiaCount = 2
+            donCount = 1
+            sheriffCount = 0
+            civilCount = 5
+        }
+
+        7 -> {
+            mafiaCount = 1
+            donCount = 1
+            sheriffCount = 0
+            civilCount = 5
+        }
+
+        else -> {
+            mafiaCount = 0
+            donCount = 0
+            sheriffCount = 0
+            civilCount = 0
+        }
+    }
+
     val playerNames = listOf(
         "Player1", "Player2", "Player3", "Player4", "Player5",
         "Player6", "Player7", "Player8", "Player9", "Player10"

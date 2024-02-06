@@ -22,8 +22,8 @@ import androidx.navigation.NavController
 import com.khodchenko.mafiaapp.data.GameStage
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
-import com.khodchenko.mafiaapp.ui.CustomElevatedButton
-import com.khodchenko.mafiaapp.ui.Timer
+import com.khodchenko.mafiaapp.ui.element.CustomElevatedButton
+import com.khodchenko.mafiaapp.ui.element.Timer
 import com.khodchenko.mafiaapp.ui.theme.Background
 
 @Composable

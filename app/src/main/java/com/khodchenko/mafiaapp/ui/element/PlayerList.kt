@@ -1,4 +1,4 @@
-package com.khodchenko.mafiaapp.ui
+package com.khodchenko.mafiaapp.ui.element
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

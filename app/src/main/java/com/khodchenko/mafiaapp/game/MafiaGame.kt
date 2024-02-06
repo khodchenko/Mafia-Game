@@ -15,8 +15,14 @@ class MafiaGame(
     private var blackTeam: Team = Team(Team.TeamColor.BLACK, mutableListOf())
     private var redTeam: Team = Team(Team.TeamColor.RED, mutableListOf())
     private var candidates: MutableMap<Player, List<Player>> = mutableMapOf()
-    private var generateDumbPlayersList: Boolean = false
 
+    private var generateDumbPlayersList: Boolean = false
+    private var numbersOfPlayers: Int = 10
+
+    fun getNumberOfPlayers(): Int = numbersOfPlayers
+    fun setNumberOfPlayers(numberOfPlayers: Int) {
+        numbersOfPlayers = numberOfPlayers
+    }
 
     fun addCandidate(candidate: Player) {
         candidates[candidate] = emptyList()
@@ -71,7 +77,8 @@ class MafiaGame(
         val maxVotes = candidates.values.maxOfOrNull { it.size }
 
         maxVotes?.let { maxCount ->
-            val candidatesWithMaxVotes = candidates.filterValues { it.size == maxCount }.keys.toList()
+            val candidatesWithMaxVotes =
+                candidates.filterValues { it.size == maxCount }.keys.toList()
             candidates = candidates.filterKeys { it in candidatesWithMaxVotes }.toMutableMap()
         }
     }

@@ -20,6 +20,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,7 +41,7 @@ import androidx.navigation.NavController
 import com.khodchenko.mafiaapp.R
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
-import com.khodchenko.mafiaapp.ui.CustomElevatedButton
+import com.khodchenko.mafiaapp.ui.element.CustomElevatedButton
 import com.khodchenko.mafiaapp.ui.theme.Background
 
 @Composable
@@ -53,7 +54,7 @@ fun StartGameStage(navController: NavController, game: MafiaGame) {
     val importToServerText = "Экспорт на сервер"
     var exportInfoText by remember { mutableStateOf("Не экспортирует данные в телеграм.") }
     var playersCountText by remember { mutableStateOf("Количество игроков:") }
-    var playersCount by remember { mutableStateOf(7f) }
+    var playersCount by remember { mutableFloatStateOf(7f) }
     val playersCountInfoText = "От количества игроков зависит количество “черных” ролей."
     val hutirText = "HUTIR"
     val productInfoText = "Продукт для внутреннего использования сообществом украинцев в Бельгии."
@@ -66,15 +67,6 @@ fun StartGameStage(navController: NavController, game: MafiaGame) {
             .padding(16.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-//            Text(
-//                modifier = Modifier
-//                    .fillMaxWidth(),
-//                text = englishText,
-//                color = Color(0xffffffff),
-//                fontSize = 26.sp,
-//                fontWeight = FontWeight.Normal,
-//                textAlign = TextAlign.End
-//            )
 
             Text(
                 text = mafiaText,
@@ -274,6 +266,7 @@ fun StartGameStage(navController: NavController, game: MafiaGame) {
 
             //todo
             Spacer(modifier = Modifier.weight(1f))
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -282,6 +275,7 @@ fun StartGameStage(navController: NavController, game: MafiaGame) {
             ) {
 
                 CustomElevatedButton("Погнали", enabled = true, onClick = {
+                    game.setNumberOfPlayers(playersCount.toInt())
                     navController.navigate(Screen.RolePickerScreen.route)
                 })
 

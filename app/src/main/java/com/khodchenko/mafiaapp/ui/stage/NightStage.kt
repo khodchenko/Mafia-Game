@@ -39,8 +39,8 @@ import com.khodchenko.mafiaapp.data.GameStage
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
 import com.khodchenko.mafiaapp.helpers.SoundPlayer
-import com.khodchenko.mafiaapp.ui.PlayerList
-import com.khodchenko.mafiaapp.ui.Timer
+import com.khodchenko.mafiaapp.ui.element.PlayerList
+import com.khodchenko.mafiaapp.ui.element.Timer
 import com.khodchenko.mafiaapp.ui.theme.Background
 import com.khodchenko.mafiaapp.ui.theme.BeautifulBlack
 
