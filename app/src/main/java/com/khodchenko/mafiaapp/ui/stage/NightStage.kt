@@ -146,6 +146,7 @@ fun NightStage(navController: NavController, game: MafiaGame) {
 
                         if (game.checkEndGame()) {
                             game.setStage(GameStage.GAME_OVER)
+                            game.awardPointsToWinningTeam()
                             navController.navigate(Screen.EndGameStageScreen.route)
                         } else if (activePlayerIndex == 11) {
                             game.getAllAlivePlayers().find { it.number == game.getCurrentDay() }

@@ -1,6 +1,7 @@
 package com.khodchenko.mafiaapp.ui.stage
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -65,6 +66,7 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
     Column(
         modifier = Modifier.run {
             fillMaxWidth()
+                .background(Background)
                 .fillMaxSize()
                 .padding(16.dp)
         },

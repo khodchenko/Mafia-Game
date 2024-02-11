@@ -33,6 +33,7 @@ fun PlayerList(
     activePlayerColor: Color = Color.Gray,
     showRoles: Boolean = false,
     showVotes: Boolean = false,
+    showScores: Boolean = false,
     game: MafiaGame
 ) {
     Box(
@@ -52,6 +53,7 @@ fun PlayerList(
                         activePlayerColor,
                         showRoles,
                         showVotes,
+                        showScores,
                         game
                     )
                 }
@@ -68,6 +70,7 @@ private fun PlayerItem(
     activePlayerColor: Color,
     showRoles: Boolean,
     showVotes: Boolean,
+    showScores: Boolean,
     game: MafiaGame
 ) {
     Row(
@@ -83,16 +86,25 @@ private fun PlayerItem(
             modifier = Modifier.width(200.dp),
             text = "${player.number}.  ${player.name}",
             style = MaterialTheme.typography.titleMedium,
-            fontSize = if (isActive)28.sp else 22.sp,
+            fontSize = if (isActive) 28.sp else 22.sp,
             color = Color.White
         )
 
         Text(
             text = if (!showVotes) {
-                if (player.fouls == 0){
+                if (player.fouls == 0) {
                     ""
                 } else player.fouls.toString()
             } else game.getVotersByCandidate(player)?.size.toString(),
+            style = MaterialTheme.typography.bodySmall,
+            fontSize = 22.sp,
+            color = Color.White,
+            modifier = Modifier.padding(start = 12.dp)
+        )
+
+        Text(
+            text = if (!showScores) ""
+            else player.score.toString(),
             style = MaterialTheme.typography.bodySmall,
             fontSize = 22.sp,
             color = Color.White,

@@ -6,5 +6,5 @@ data class Player (
     var role : Role,
     var fouls : Int = 0,
     var isAlive : Boolean = true,
-    val score : Double = 0.0
+    var score : Double = 0.0
 )

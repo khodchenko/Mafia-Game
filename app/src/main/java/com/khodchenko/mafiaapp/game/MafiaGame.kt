@@ -153,5 +153,11 @@ class MafiaGame(
         generateDumbPlayersList = !generateDumbPlayersList
     }
 
+    fun awardPointsToWinningTeam() {
+        val winningTeam = getWinningTeam()
+        winningTeam.players.forEach { player ->
+            player.score += 1.0
+        }
+    }
 
 }

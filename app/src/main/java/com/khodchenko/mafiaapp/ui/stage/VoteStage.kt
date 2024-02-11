@@ -40,6 +40,7 @@ import com.khodchenko.mafiaapp.ui.theme.Background
 fun VoteStage(navController: NavController, game: MafiaGame) {
 
     var voters by remember { mutableStateOf(emptyList<Player>()) }
+    var isAllSelected by remember { mutableStateOf(false) }
 
     val nonVotedPlayers = game.getAllPlayers().filter { player ->
         !game.getCandidatesAndVotes().values.flatten().any { it.number == player.number }
@@ -74,12 +75,45 @@ fun VoteStage(navController: NavController, game: MafiaGame) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 10.dp, bottom = 10.dp),
-                text = "Выберете ниже кто голосует \nпротив этого игрока:",
+                text = "Выберите ниже кто голосует \nпротив этого игрока:",
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center
             )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 2.dp, bottom = 2.dp)
+                    .clickable {
+                        isAllSelected = !isAllSelected
+                        voters = if (isAllSelected) {
+                            nonVotedPlayers.toList()
+                        } else {
+                            emptyList()
+                        }
+                    },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+//                Checkbox(
+//                    checked = isAllSelected,
+//                    onCheckedChange = null,
+//                    colors = CheckboxDefaults.colors(
+//                        checkmarkColor = Background,
+//                        checkedColor = Color.White,
+//                        uncheckedColor = Color.White.copy(alpha = 0.5f)
+//                    ),
+//                    modifier = Modifier.padding(4.dp)
+//                )
+                Text(
+                    text = "Выбрать всех",
+                    modifier = Modifier.padding(end = 4.dp),
+                    color = Color.White,
+                    fontSize = 28.sp
+                )
+            }
 
             LazyColumn {
                 items(nonVotedPlayers) { otherPlayer ->
