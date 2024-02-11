@@ -1,7 +1,6 @@
 package com.khodchenko.mafiaapp.ui.stage
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -64,10 +63,11 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
     Log.d("RolePickerStage", "PlayerList = $playersList")
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Background)
-            .padding(16.dp),
+        modifier = Modifier.run {
+            fillMaxWidth()
+                .fillMaxSize()
+                .padding(16.dp)
+        },
         horizontalAlignment = Alignment.CenterHorizontally
 
     ) {
@@ -78,37 +78,37 @@ fun RolePickerStage(navController: NavController, game: MafiaGame) {
             color = Color.White
         )
 
-        LazyColumn {
-            items(playersList) { player ->
-                Row(
-                    modifier = Modifier.padding(6.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "${player.number}: ",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontSize = 22.sp,
-                        color = Color.White
-                    )
-                    Text(
-                        text = player.name,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontSize = 22.sp,
-                        color = Color.White
-                    )
-
-                    CustomDropDownMenu(player = player) { selectedRole ->
-                        player.role = selectedRole
-                        rulesCheck = checkRules(playersList = playersList, playersList.size)
-                        Log.d(
-                            "RolePickerStage",
-                            "Player ${player.number} role changed to $selectedRole"
+            LazyColumn {
+                items(playersList) { player ->
+                    Row(
+                        modifier = Modifier.padding(6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "${player.number}: ",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontSize = 22.sp,
+                            color = Color.White
                         )
-                        Log.d("RolePickerStage", "RulesCheck = $rulesCheck")
+                        Text(
+                            text = player.name,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontSize = 22.sp,
+                            color = Color.White
+                        )
+
+                        CustomDropDownMenu(player = player) { selectedRole ->
+                            player.role = selectedRole
+                            rulesCheck = checkRules(playersList = playersList, playersList.size)
+                            Log.d(
+                                "RolePickerStage",
+                                "Player ${player.number} role changed to $selectedRole"
+                            )
+                            Log.d("RolePickerStage", "RulesCheck = $rulesCheck")
+                        }
                     }
                 }
             }
-        }
 
         Spacer(modifier = Modifier.weight(1f))
 
@@ -201,9 +201,9 @@ fun checkRules(playersList: List<Player>, numbersOfPlayers: Int = 10): Boolean {
     val sheriffCount = playersList.count { it.role == Role.SHERIFF }
 
     return when (numbersOfPlayers) {
-        10 -> donCount == 1 && sheriffCount == 1 && mafiaCount <= 2 && (donCount + sheriffCount) > 0
-        9 -> donCount == 1 && sheriffCount == 1 && mafiaCount == 1 && (donCount + sheriffCount) > 0
-        8, 7 -> donCount == 1 && sheriffCount == 1 && mafiaCount == 0 && (donCount + sheriffCount) > 0
+        10 -> donCount == 1 && sheriffCount == 1 && mafiaCount == 2
+        9 -> donCount == 1 && sheriffCount == 1 && mafiaCount == 2
+        8, 7 -> donCount == 1 && sheriffCount == 1 && mafiaCount == 1
         else -> false
     }
 }
