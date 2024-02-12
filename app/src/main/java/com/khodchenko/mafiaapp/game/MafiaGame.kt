@@ -93,6 +93,20 @@ class MafiaGame(
         candidates = mutableMapOf()
     }
 
+    fun checkFaults() : Boolean {
+        val alivePlayers = getAllAlivePlayers()
+
+        for (player in alivePlayers) {
+            if (player.fouls >= 4) {
+                killPlayer(player)
+                currentPlayer = player
+                return true
+            }
+        }
+
+        return false
+    }
+
     fun newDay() {
         currentDay += 1
     }

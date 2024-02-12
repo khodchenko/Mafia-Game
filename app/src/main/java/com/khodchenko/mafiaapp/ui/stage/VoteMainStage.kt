@@ -149,21 +149,26 @@ fun VoteMainStage(navController: NavController, game: MafiaGame) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomElevatedButton("К голосованию", true) {
-                    if (game.getCandidates().isEmpty()) {
-                        Log.d("VoteMainStage", "End of stage.")
-                        Log.d(
-                            "VoteMainStage",
-                            "Most votes: ${game.findCandidatesWithLongestVotes()}"
-                        )
-                        game.newDay()
-                        game.setStage(GameStage.NIGHT)
-                        navController.navigate(Screen.NightStageScreen.route)
-                        Toast.makeText(context, "End of voting", Toast.LENGTH_SHORT).show()
-                    } else if (game.getCurrentStage() != GameStage.VOTE_3) {
-                        Log.d("VoteMainStage", "Current player: ${game.getCurrentPlayer()}")
-                        navController.navigate(Screen.VoteStageScreen.route)
+                    if (!game.checkFaults()) {
+                        if (game.getCandidates().isEmpty()) {
+                            Log.d("VoteMainStage", "End of stage.")
+                            Log.d(
+                                "VoteMainStage",
+                                "Most votes: ${game.findCandidatesWithLongestVotes()}"
+                            )
+                            game.newDay()
+                            game.setStage(GameStage.NIGHT)
+                            navController.navigate(Screen.NightStageScreen.route)
+                            Toast.makeText(context, "End of voting", Toast.LENGTH_SHORT).show()
+                        } else if (game.getCurrentStage() != GameStage.VOTE_3) {
+                            Log.d("VoteMainStage", "Current player: ${game.getCurrentPlayer()}")
+                            navController.navigate(Screen.VoteStageScreen.route)
+                        } else {
+                            raiseAllDialog = true
+                        }
                     } else {
-                        raiseAllDialog = true
+                        game.clearVote()
+                        navController.navigate(Screen.LastWordsScreen.route)
                     }
                 }
             }
@@ -174,7 +179,7 @@ fun VoteMainStage(navController: NavController, game: MafiaGame) {
                 ShowRaiseAllDialog(
                     onRaiseAll = {
                         raiseAllDialog = false
-                        for (candidate in game.getCandidates()){
+                        for (candidate in game.getCandidates()) {
                             game.killPlayer(candidate)
                             game.setCurrentPlayer(player = candidate)
                             navController.navigate(Screen.LastWordsScreen.route)
