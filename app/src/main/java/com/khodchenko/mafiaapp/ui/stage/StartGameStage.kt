@@ -47,7 +47,6 @@ import com.khodchenko.mafiaapp.ui.theme.Background
 @Composable
 fun StartGameStage(navController: NavController, game: MafiaGame) {
 
-    val englishText = "English"
     val mafiaText = "MAFIA"
     val chooseRolesText = "Выбор ролей"
     var rolesInfoText by remember { mutableStateOf("Роли будут выданы случайным образом.") }
@@ -86,7 +85,9 @@ fun StartGameStage(navController: NavController, game: MafiaGame) {
 
             //ROLES
             Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
@@ -133,7 +134,9 @@ fun StartGameStage(navController: NavController, game: MafiaGame) {
 
             //EXPORT
             Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
@@ -164,19 +167,24 @@ fun StartGameStage(navController: NavController, game: MafiaGame) {
                     }
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                SimpleSwitch(onSwitchChanged = { isChecked ->
-                    exportInfoText = if (isChecked) {
-                        "Экспортирует хронологию игры в телеграм."
-                    } else {
-                        "Не экспортирует данные в телеграм."
-                    }
-                })
+                SimpleSwitch(
+                    onSwitchChanged = { isChecked ->
+                        exportInfoText = if (isChecked) {
+                            "Экспортирует хронологию игры в телеграм."
+                        } else {
+                            "Не экспортирует данные в телеграм."
+                        }
+                    },
+                    enabled = false
+                )
             }
 
 
             //TEST LIST
             Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
@@ -310,7 +318,7 @@ fun StartGameStage(navController: NavController, game: MafiaGame) {
 
 
 @Composable
-fun SimpleSwitch(onSwitchChanged: (Boolean) -> Unit) {
+fun SimpleSwitch(onSwitchChanged: (Boolean) -> Unit, enabled: (Boolean) = true) {
     var switchState by remember { mutableStateOf(false) }
 
     Row {
@@ -325,7 +333,8 @@ fun SimpleSwitch(onSwitchChanged: (Boolean) -> Unit) {
                 checkedTrackColor = Color.White,
                 uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
                 uncheckedTrackColor = Color.White,
-            )
+            ),
+            enabled = enabled
         )
     }
 }
