@@ -1,6 +1,7 @@
 package com.khodchenko.mafiaapp.ui.stage
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,11 +35,26 @@ import com.khodchenko.mafiaapp.data.Player
 import com.khodchenko.mafiaapp.data.Role
 import com.khodchenko.mafiaapp.ui.theme.Background
 
+enum class CardFace {
+    Front, Back;
+
+    val rotation: Float
+        get() = when (this) {
+            Front -> 0f
+            Back -> 180f
+        }
+}
+
 @Composable
 fun RolePickerRandom(player: Player) {
     var showImage by remember { mutableStateOf(false) }
 
-    val rotationState by animateFloatAsState(if (showImage) 180f else 0f, label = "")
+    val rotationState by animateFloatAsState(
+        targetValue = if (showImage) CardFace.Back.rotation else CardFace.Front.rotation,
+        animationSpec = tween(
+            durationMillis = 1000
+        ), label = ""
+    )
 
     Box(
         modifier = Modifier
@@ -59,7 +75,7 @@ fun RolePickerRandom(player: Player) {
                 modifier = Modifier
                     .fillMaxWidth(),
                 text = "Игрок №${player.number}",
-                color = Color(0xffffffff),
+                color = Color.White,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center
@@ -68,7 +84,7 @@ fun RolePickerRandom(player: Player) {
                 modifier = Modifier
                     .fillMaxWidth(),
                 text = player.name,
-                color = Color(0xffffffff),
+                color = Color.White,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center
@@ -87,8 +103,12 @@ fun RolePickerRandom(player: Player) {
                     .graphicsLayer(rotationY = rotationState)
 
                 Image(
-                    painter = if (showImage) painterResource(id = R.drawable.ic_next)
-                    else painterResource(id = R.drawable.back),
+                    painter = when (player.role) {
+                        Role.MAFIA -> painterResource(id = R.drawable.back)
+                        Role.DON -> painterResource(id = R.drawable.back)
+                        Role.SHERIFF -> painterResource(id = R.drawable.back)
+                        Role.CIVIL -> painterResource(id = R.drawable.back)
+                    },
                     contentDescription = "Your Image",
                     modifier = imageModifier,
                     contentScale = ContentScale.FillHeight

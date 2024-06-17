@@ -16,12 +16,17 @@ class MafiaGame(
     private var redTeam: Team = Team(Team.TeamColor.RED, mutableListOf())
     private var candidates: MutableMap<Player, List<Player>> = mutableMapOf()
 
+    private var randomPlayerRoles: Boolean = false
     private var generateDumbPlayersList: Boolean = false
     private var numbersOfPlayers: Int = 10
 
     fun getNumberOfPlayers(): Int = numbersOfPlayers
     fun setNumberOfPlayers(numberOfPlayers: Int) {
         numbersOfPlayers = numberOfPlayers
+    }
+
+    fun onOffRandomPlayerRoles() {
+        randomPlayerRoles = !randomPlayerRoles
     }
 
     fun addCandidate(candidate: Player) {
