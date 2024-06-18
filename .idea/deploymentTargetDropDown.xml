@@ -2,21 +2,6 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="DayStagePreview">
-        <State />
-      </entry>
-      <entry key="NightStagePreview">
-        <State />
-      </entry>
-      <entry key="RolePickerRandomPreview">
-        <State />
-      </entry>
-      <entry key="TimerPreview">
-        <State />
-      </entry>
-      <entry key="VoteStagePreview">
-        <State />
-      </entry>
       <entry key="app">
         <State />
       </entry>
