@@ -1,0 +1,125 @@
+package com.example.mafiaapplication.ui.stage
+
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.mafiaapplication.R
+import com.example.mafiaapplication.ui.theme.Background
+import com.example.mafiaapplication.data.Player
+import com.example.mafiaapplication.data.Role
+
+enum class CardFace {
+    Front, Back;
+
+    val rotation: Float
+        get() = when (this) {
+            Front -> 0f
+            Back -> 180f
+        }
+}
+
+@Composable
+fun RolePickerRandom(player: Player) {
+    var showImage by remember { mutableStateOf(false) }
+
+    val rotationState by animateFloatAsState(
+        targetValue = if (showImage) CardFace.Back.rotation else CardFace.Front.rotation,
+        animationSpec = tween(
+            durationMillis = 1000
+        ), label = ""
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Background)
+            .padding(8.dp)
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Row() {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_refresh),
+                    contentDescription = "info icon",
+                    tint = Color.White,
+                    modifier = Modifier.size(44.dp)
+                )
+            }
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                text = "Игрок №${player.number}",
+                color = Color.White,
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                text = player.name,
+                color = Color.White,
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .clickable {
+                        showImage = !showImage
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                val imageModifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer(rotationY = rotationState)
+
+                Image(
+                    painter = when (player.role) {
+                        Role.MAFIA -> painterResource(id = R.drawable.back)
+                        Role.DON -> painterResource(id = R.drawable.back)
+                        Role.SHERIFF -> painterResource(id = R.drawable.back)
+                        Role.CIVIL -> painterResource(id = R.drawable.back)
+                    },
+                    contentDescription = "Your Image",
+                    modifier = imageModifier,
+                    contentScale = ContentScale.FillHeight
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun RolePickerRandomPreview() {
+    RolePickerRandom(Player(number = 1, name = "Player", role = Role.MAFIA, gameId = 1))
+}
