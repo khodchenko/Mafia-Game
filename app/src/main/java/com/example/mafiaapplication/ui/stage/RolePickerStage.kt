@@ -45,6 +45,7 @@ import com.example.mafiaapplication.MainActivity
 import com.example.mafiaapplication.data.GameStage
 import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.data.Role
+import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
@@ -52,14 +53,22 @@ import com.example.mafiaapplication.ui.theme.Background
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RolePickerStage(navController: NavController, game: MafiaGame, mainActivity: MainActivity) {
+fun RolePickerStage(
+    navController: NavController,
+    game: MafiaGame,
+    mainActivity: MainActivity,
+    sharedPreferencesHelper: SharedPreferencesHelper
+) {
     var newPlayerName by remember { mutableStateOf("") }
     var playersList by remember { mutableStateOf(listOf<Player>()) }
     var rulesCheck by remember { mutableStateOf(false) }
 
 
     if (game.getGenerateDumbPlayersList()) {
-        playersList = generateTestPlayers(playerCount = game.getNumberOfPlayers(), game = game).toMutableList()
+        playersList = generateTestPlayers(
+            playerCount = game.getNumberOfPlayers(),
+            game = game
+        ).toMutableList()
     }
 
     Log.d("RolePickerStage", "PlayerList = $playersList")
@@ -81,37 +90,37 @@ fun RolePickerStage(navController: NavController, game: MafiaGame, mainActivity:
             color = Color.White
         )
 
-            LazyColumn {
-                items(playersList) { player ->
-                    Row(
-                        modifier = Modifier.padding(6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "${player.number}: ",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontSize = 22.sp,
-                            color = Color.White
-                        )
-                        Text(
-                            text = player.name,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontSize = 22.sp,
-                            color = Color.White
-                        )
+        LazyColumn {
+            items(playersList) { player ->
+                Row(
+                    modifier = Modifier.padding(6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "${player.number}: ",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontSize = 22.sp,
+                        color = Color.White
+                    )
+                    Text(
+                        text = player.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontSize = 22.sp,
+                        color = Color.White
+                    )
 
-                        CustomDropDownMenu(player = player) { selectedRole ->
-                            player.role = selectedRole
-                            rulesCheck = checkRules(playersList = playersList, playersList.size)
-                            Log.d(
-                                "RolePickerStage",
-                                "Player ${player.number} role changed to $selectedRole"
-                            )
-                            Log.d("RolePickerStage", "RulesCheck = $rulesCheck")
-                        }
+                    CustomDropDownMenu(player = player) { selectedRole ->
+                        player.role = selectedRole
+                        rulesCheck = checkRules(playersList = playersList, playersList.size)
+                        Log.d(
+                            "RolePickerStage",
+                            "Player ${player.number} role changed to $selectedRole"
+                        )
+                        Log.d("RolePickerStage", "RulesCheck = $rulesCheck")
                     }
                 }
             }
+        }
 
         Spacer(modifier = Modifier.weight(1f))
 
@@ -190,9 +199,8 @@ fun RolePickerStage(navController: NavController, game: MafiaGame, mainActivity:
                 onClick = {
                     game.initialPlayers(playersList)
                     game.setStage(GameStage.NIGHT)
+                    sharedPreferencesHelper.saveGameState(game.gameState, playersList)
                     navController.navigate(Screen.NightStageScreen.route)
-
-                    //todo
                 },
             )
         }

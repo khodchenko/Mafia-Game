@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mafiaapplication.data.GameStage
+import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
@@ -28,7 +29,10 @@ import com.khodchenko.mafiaapp.ui.element.Timer
 
 
 @Composable
-fun LastWordsStage(navController: NavController, game: MafiaGame) {
+fun LastWordsStage(
+    navController: NavController, game: MafiaGame,
+    sharedPreferencesHelper: SharedPreferencesHelper
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -38,7 +42,8 @@ fun LastWordsStage(navController: NavController, game: MafiaGame) {
         Column(
             Modifier
                 .padding(top = 10.dp)
-                .fillMaxSize()) {
+                .fillMaxSize()
+        ) {
 
             Spacer(modifier = Modifier.weight(1f))
 

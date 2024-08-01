@@ -37,6 +37,7 @@ import androidx.navigation.NavController
 import com.example.mafiaapplication.R
 import com.example.mafiaapplication.data.GameStage
 import com.example.mafiaapplication.data.Player
+import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
@@ -46,9 +47,11 @@ import com.khodchenko.mafiaapp.ui.element.PlayerList
 import com.khodchenko.mafiaapp.ui.element.Timer
 
 
-
 @Composable
-fun DayStage(navController: NavController, game: MafiaGame) {
+fun DayStage(
+    navController: NavController, game: MafiaGame,
+    sharedPreferencesHelper: SharedPreferencesHelper
+) {
 
     val context = LocalContext.current
     var showRoles by remember { mutableStateOf(false) }
@@ -75,7 +78,7 @@ fun DayStage(navController: NavController, game: MafiaGame) {
 
                 Text(
                     text = "День: $currentDay",
-                   modifier = Modifier.padding(start = 60.dp),
+                    modifier = Modifier.padding(start = 60.dp),
                     style = MaterialTheme.typography.displayLarge,
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
@@ -87,8 +90,7 @@ fun DayStage(navController: NavController, game: MafiaGame) {
                 IconButton(
                     onClick = {
                         showRoles = !showRoles
-                    }
-                        ,
+                    },
                     modifier = Modifier.padding(end = 10.dp)
                 ) {
                     Icon(
@@ -126,7 +128,10 @@ fun DayStage(navController: NavController, game: MafiaGame) {
                     onVoteClick = {
                         if (!game.getCandidates().contains(selectedPlayer)) {
                             game.addCandidate(selectedPlayer!!)
-                            Log.d("DayStage", "Add ${selectedPlayer!!.name} to Candidates: ${game.getCandidates()} ")
+                            Log.d(
+                                "DayStage",
+                                "Add ${selectedPlayer!!.name} to Candidates: ${game.getCandidates()} "
+                            )
                         } else {
                             Log.d("DayStage", "Кандидат $selectedPlayer уже выставлен")
                         }
@@ -134,7 +139,11 @@ fun DayStage(navController: NavController, game: MafiaGame) {
                     onFoulClick = {
                         selectedPlayer?.let {
                             it.fouls += 1
-                            Toast.makeText(context, "Выдан фол игроку ${it.name}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Выдан фол игроку ${it.name}",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 )
@@ -148,7 +157,9 @@ fun DayStage(navController: NavController, game: MafiaGame) {
 
             Text(
                 modifier = Modifier.padding(top = 4.dp),
-                text = "На голосовании: ${game.getCandidates().joinToString { it.number.toString() }}",
+                text = "На голосовании: ${
+                    game.getCandidates().joinToString { it.number.toString() }
+                }",
                 style = MaterialTheme.typography.bodySmall,
                 fontSize = 22.sp,
                 color = Color.White
@@ -196,7 +207,7 @@ fun DayStage(navController: NavController, game: MafiaGame) {
                     .padding(top = 20.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                CustomElevatedButton(buttonText = "Голосование",enabled = true, onClick = {
+                CustomElevatedButton(buttonText = "Голосование", enabled = true, onClick = {
                     game.getCandidates().firstOrNull()?.let { game.setCurrentPlayer(it) }
                     Log.d("DayStage", "Current player: ${game.getCurrentPlayer()}")
                     game.setStage(GameStage.VOTE)

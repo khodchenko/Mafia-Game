@@ -38,6 +38,7 @@ import com.example.mafiaapplication.R
 import com.example.mafiaapplication.ui.theme.Background
 import com.example.mafiaapplication.ui.theme.BeautifulBlack
 import com.example.mafiaapplication.data.GameStage
+import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
 import com.khodchenko.mafiaapp.helpers.SoundPlayer
@@ -45,11 +46,14 @@ import com.khodchenko.mafiaapp.ui.element.PlayerList
 import com.khodchenko.mafiaapp.ui.element.Timer
 
 @Composable
-fun NightStage(navController: NavController, game: MafiaGame) {
+fun NightStage(
+    navController: NavController, game: MafiaGame,
+    sharedPreferencesHelper: SharedPreferencesHelper
+) {
     var activePlayerIndex by remember { mutableIntStateOf(11) }
     val soundPlayer = SoundPlayer(LocalContext.current)
     val currentDay = game.getCurrentDay()
-    val players = game.getAllPlayers()
+    val playersList = game.getAllPlayers()
     var showRoles by remember { mutableStateOf(true) }
 
     Box(
@@ -61,9 +65,11 @@ fun NightStage(navController: NavController, game: MafiaGame) {
                 activePlayerIndex = 11
             }
     ) {
-        Column(modifier = Modifier
-            .fillMaxHeight()
-            .align(Alignment.Center)) {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .align(Alignment.Center)
+        ) {
 
             Column() {
                 Row(
@@ -108,7 +114,8 @@ fun NightStage(navController: NavController, game: MafiaGame) {
 
             Text(
                 modifier = Modifier
-                    .fillMaxWidth().padding(top = 6.dp),
+                    .fillMaxWidth()
+                    .padding(top = 6.dp),
                 text = "Мафия совершает выстрел...",
                 color = Color.White,
                 fontSize = 16.sp,
@@ -119,7 +126,7 @@ fun NightStage(navController: NavController, game: MafiaGame) {
             Spacer(modifier = Modifier.weight(1f))
 
             PlayerList(
-                playersList = players,
+                playersList = playersList,
                 activePlayerIndex = activePlayerIndex,
                 onPlayerClick = { clickedPlayerIndex ->
                     Log.d("NightStage", "NightStage: activePlayerIndex = $activePlayerIndex")
@@ -139,7 +146,7 @@ fun NightStage(navController: NavController, game: MafiaGame) {
             ) {
                 Button(
                     onClick = {
-                        players.find { it.number == activePlayerIndex + 1 }
+                        playersList.find { it.number == activePlayerIndex + 1 }
                             ?.let { game.killPlayer(it) }
                         soundPlayer.playShootSound()
 
@@ -153,9 +160,10 @@ fun NightStage(navController: NavController, game: MafiaGame) {
                             game.setStage(GameStage.DAY)
                             navController.navigate(Screen.DayStageScreen.route)
                         } else {
-                            game.setCurrentPlayer(players[activePlayerIndex])
+                            game.setCurrentPlayer(playersList[activePlayerIndex])
                             navController.navigate(Screen.LastWordsScreen.route)
                         }
+                        sharedPreferencesHelper.saveGameState(game.gameState, playersList)
                     },
                     modifier = Modifier.align(Alignment.Center),
                     colors = ButtonDefaults.buttonColors(Color.White)

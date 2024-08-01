@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mafiaapplication.R
 import com.example.mafiaapplication.data.GameStage
+import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
@@ -45,7 +46,10 @@ import com.khodchenko.mafiaapp.ui.element.Timer
 
 
 @Composable
-fun VoteMainStage(navController: NavController, game: MafiaGame) {
+fun VoteMainStage(
+    navController: NavController, game: MafiaGame,
+    sharedPreferencesHelper: SharedPreferencesHelper
+) {
     var showRoles by remember { mutableStateOf(false) }
     val context = LocalContext.current
     var raiseAllDialog by remember { mutableStateOf(false) }
@@ -171,6 +175,7 @@ fun VoteMainStage(navController: NavController, game: MafiaGame) {
                         game.clearVote()
                         navController.navigate(Screen.LastWordsScreen.route)
                     }
+
                 }
             }
 
