@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mafiaapplication.data.GameStage
+import com.example.mafiaapplication.data.GameState
 import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
@@ -40,10 +41,11 @@ import com.example.mafiaapplication.ui.theme.Background
 
 @Composable
 fun VoteStage(
-    navController: NavController, game: MafiaGame,
-    sharedPreferencesHelper: SharedPreferencesHelper
+    navController: NavController,
+    gameState: GameState,
+    players: List<Player>
 ) {
-
+    val game = MafiaGame(gameState, players)
     var voters by remember { mutableStateOf(emptyList<Player>()) }
     var isAllSelected by remember { mutableStateOf(false) }
 

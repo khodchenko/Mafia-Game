@@ -23,7 +23,6 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -41,37 +40,32 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.mafiaapplication.MainActivity
 import com.example.mafiaapplication.data.GameStage
+import com.example.mafiaapplication.data.GameState
 import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.data.Role
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
-import com.example.mafiaapplication.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
 import com.example.mafiaapplication.ui.theme.Background
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun RolePickerStage(
     navController: NavController,
-    game: MafiaGame,
-    mainActivity: MainActivity,
+    gameState: GameState,
     sharedPreferencesHelper: SharedPreferencesHelper
 ) {
     var newPlayerName by remember { mutableStateOf("") }
     var playersList by remember { mutableStateOf(listOf<Player>()) }
     var rulesCheck by remember { mutableStateOf(false) }
 
-
-    if (game.getGenerateDumbPlayersList()) {
+    if (gameState.generateDumbPlayersList) {
         playersList = generateTestPlayers(
-            playerCount = game.getNumberOfPlayers(),
-            game = game
+            playerCount = gameState.players.size,
+            gameState = gameState
         ).toMutableList()
     }
-
-    Log.d("RolePickerStage", "PlayerList = $playersList")
 
     Column(
         modifier = Modifier.run {
@@ -144,7 +138,7 @@ fun RolePickerStage(
             }
 
             ElevatedButton(
-                enabled = (newPlayerName.isNotEmpty() && playersList.size < game.getNumberOfPlayers()),
+                enabled = (newPlayerName.isNotEmpty() && playersList.size < gameState.players.size),
                 onClick = {
 
                     val newPlayer = Player(
@@ -153,7 +147,7 @@ fun RolePickerStage(
                         role = Role.CIVIL,
                         isAlive = true,
                         score = 0.0,
-                        gameId = game.gameState.id
+                        gameId = gameState.id
                     )
 
                     playersList = (playersList + newPlayer).toMutableList()
@@ -197,9 +191,9 @@ fun RolePickerStage(
             CustomElevatedButton(
                 "ПОЕХАЛИ", rulesCheck,
                 onClick = {
-                    game.initialPlayers(playersList)
-                    game.setStage(GameStage.NIGHT)
-                    sharedPreferencesHelper.saveGameState(game.gameState, playersList)
+                    gameState.players = playersList
+                    gameState.stage = GameStage.NIGHT
+                    sharedPreferencesHelper.saveGameState(gameState, playersList)
                     navController.navigate(Screen.NightStageScreen.route)
                 },
             )
@@ -252,7 +246,7 @@ fun CustomDropDownMenu(player: Player, onRoleSelected: (Role) -> Unit) {
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            Role.values().forEach { role ->
+            Role.entries.forEach { role ->
                 DropdownMenuItem(
                     text = { Text(role.name) },
                     onClick = {
@@ -266,7 +260,7 @@ fun CustomDropDownMenu(player: Player, onRoleSelected: (Role) -> Unit) {
     }
 }
 
-fun generateTestPlayers(playerCount: Int, game: MafiaGame): List<Player> {
+fun generateTestPlayers(playerCount: Int, gameState: GameState): List<Player> {
     val mafiaCount: Int
     val donCount: Int
     val sheriffCount: Int
@@ -324,7 +318,7 @@ fun generateTestPlayers(playerCount: Int, game: MafiaGame): List<Player> {
                 role = Role.MAFIA,
                 isAlive = true,
                 score = 0.0,
-                gameId = game.gameState.id
+                gameId = gameState.id
             )
         )
     }
@@ -337,7 +331,7 @@ fun generateTestPlayers(playerCount: Int, game: MafiaGame): List<Player> {
                 role = Role.DON,
                 isAlive = true,
                 score = 0.0,
-                gameId = game.gameState.id
+                gameId = gameState.id
             )
         )
     }
@@ -350,7 +344,7 @@ fun generateTestPlayers(playerCount: Int, game: MafiaGame): List<Player> {
                 role = Role.SHERIFF,
                 isAlive = true,
                 score = 0.0,
-                gameId = game.gameState.id
+                gameId = gameState.id
             )
         )
     }
@@ -363,7 +357,7 @@ fun generateTestPlayers(playerCount: Int, game: MafiaGame): List<Player> {
                 role = Role.CIVIL,
                 isAlive = true,
                 score = 0.0,
-                gameId = game.gameState.id
+                gameId = gameState.id
             )
         )
     }

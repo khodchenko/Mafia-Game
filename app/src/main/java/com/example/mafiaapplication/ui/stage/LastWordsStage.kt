@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mafiaapplication.data.GameStage
+import com.example.mafiaapplication.data.GameState
+import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
 import com.example.mafiaapplication.game.MafiaGame
@@ -30,9 +32,12 @@ import com.khodchenko.mafiaapp.ui.element.Timer
 
 @Composable
 fun LastWordsStage(
-    navController: NavController, game: MafiaGame,
-    sharedPreferencesHelper: SharedPreferencesHelper
+    navController: NavController,
+    gameState: GameState,
+    players: List<Player>
 ) {
+    val game = MafiaGame(gameState, players)
+
     Box(
         modifier = Modifier
             .fillMaxSize()

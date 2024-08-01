@@ -14,6 +14,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mafiaapplication.data.GameState
+import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.ui.theme.Background
 import com.example.mafiaapplication.ui.theme.BeautifulBlack
 import com.khodchenko.mafiaapp.data.Team
@@ -21,9 +23,12 @@ import com.example.mafiaapplication.game.MafiaGame
 import com.khodchenko.mafiaapp.ui.element.PlayerList
 
 @Composable
-fun EndGameStage(game: MafiaGame) {
-    val playerList = game.getAllPlayers()
-    val bestPlayer = playerList.maxByOrNull { it.score }
+fun EndGameStage(
+    gameState: GameState,
+    players: List<Player>
+) {
+    val game = MafiaGame(gameState, players)
+    val bestPlayer = players.maxByOrNull { it.score }
     val winnerTeam = game.getWinningTeam()
     Box(
         modifier = Modifier
@@ -46,7 +51,7 @@ fun EndGameStage(game: MafiaGame) {
             )
 
             PlayerList(
-                playersList = playerList.toMutableList(),
+                playersList = players.toMutableList(),
                 activePlayerIndex = bestPlayer?.number ?: 0,
                 onPlayerClick = {},
                 showScores = true,

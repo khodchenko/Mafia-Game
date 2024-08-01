@@ -39,13 +39,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mafiaapplication.R
+import com.example.mafiaapplication.data.GameState
+import com.example.mafiaapplication.data.Player
+import com.example.mafiaapplication.data.Role
 import com.khodchenko.mafiaapp.data.Screen
 import com.example.mafiaapplication.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
 import com.example.mafiaapplication.ui.theme.Background
 
 @Composable
-fun StartGameStage(navController: NavController, game: MafiaGame) {
+fun StartGameStage(navController: NavController, gameState: GameState) {
 
     val mafiaText = "MAFIA"
     val chooseRolesText = "Выбор ролей"
@@ -218,7 +221,7 @@ fun StartGameStage(navController: NavController, game: MafiaGame) {
                 Spacer(modifier = Modifier.weight(1f))
 
                 SimpleSwitch(onSwitchChanged = { isChecked ->
-                    game.onOffGenerateDumbPlayersList()
+                    !gameState.generateDumbPlayersList
                     textGenerateListInfo = if (isChecked) {
                         "Нужно для теста! Создает список."
                     } else {
@@ -283,7 +286,18 @@ fun StartGameStage(navController: NavController, game: MafiaGame) {
             ) {
 
                 CustomElevatedButton("Погнали", enabled = true, onClick = {
-                    game.setNumberOfPlayers(playersCount.toInt())
+                    gameState.players = List(playersCount.toInt()) { index ->
+                        Player(
+                            id = index + 1,
+                            gameId = gameState.id,
+                            number = index + 1,
+                            name = "Player ${index + 1}",
+                            role = Role.CIVIL,
+                            fouls = 0,
+                            isAlive = true,
+                            score = 0.0
+                        )
+                    }
                     navController.navigate(Screen.RolePickerScreen.route)
                 })
 
@@ -315,7 +329,6 @@ fun StartGameStage(navController: NavController, game: MafiaGame) {
         }
     }
 }
-
 
 @Composable
 fun SimpleSwitch(onSwitchChanged: (Boolean) -> Unit, enabled: (Boolean) = true) {

@@ -38,7 +38,6 @@ class MainActivity : ComponentActivity() {
 
                 Navigation(
                     navController = navController,
-                    game = mafiaGame,
                     startDestination = startDestination,
                     sharedPreferencesHelper = sharedPreferencesHelper,
                     gameState = gameState,

@@ -38,23 +38,26 @@ import com.example.mafiaapplication.R
 import com.example.mafiaapplication.ui.theme.Background
 import com.example.mafiaapplication.ui.theme.BeautifulBlack
 import com.example.mafiaapplication.data.GameStage
+import com.example.mafiaapplication.data.GameState
+import com.example.mafiaapplication.data.Player
+import com.example.mafiaapplication.game.MafiaGame
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
-import com.example.mafiaapplication.game.MafiaGame
 import com.khodchenko.mafiaapp.helpers.SoundPlayer
 import com.khodchenko.mafiaapp.ui.element.PlayerList
 import com.khodchenko.mafiaapp.ui.element.Timer
 
 @Composable
 fun NightStage(
-    navController: NavController, game: MafiaGame,
+    navController: NavController,
+    gameState: GameState,
+    players: List<Player>,
     sharedPreferencesHelper: SharedPreferencesHelper
 ) {
     var activePlayerIndex by remember { mutableIntStateOf(11) }
     val soundPlayer = SoundPlayer(LocalContext.current)
-    val currentDay = game.getCurrentDay()
-    val playersList = game.getAllPlayers()
     var showRoles by remember { mutableStateOf(true) }
+    val game = MafiaGame(gameState, players)
 
     Box(
         modifier = Modifier
@@ -79,7 +82,7 @@ fun NightStage(
 
                     Text(
                         modifier = Modifier.padding(start = 60.dp),
-                        text = "Ночь: $currentDay",
+                        text = "Ночь: ${gameState.day}",
                         color = Color.White,
                         fontSize = 26.sp,
                         fontWeight = FontWeight.Bold,
@@ -126,7 +129,7 @@ fun NightStage(
             Spacer(modifier = Modifier.weight(1f))
 
             PlayerList(
-                playersList = playersList,
+                playersList = players,
                 activePlayerIndex = activePlayerIndex,
                 onPlayerClick = { clickedPlayerIndex ->
                     Log.d("NightStage", "NightStage: activePlayerIndex = $activePlayerIndex")
@@ -146,7 +149,7 @@ fun NightStage(
             ) {
                 Button(
                     onClick = {
-                        playersList.find { it.number == activePlayerIndex + 1 }
+                        players.find { it.number == activePlayerIndex + 1 }
                             ?.let { game.killPlayer(it) }
                         soundPlayer.playShootSound()
 
@@ -160,11 +163,11 @@ fun NightStage(
                             game.setStage(GameStage.DAY)
                             navController.navigate(Screen.DayStageScreen.route)
                         } else {
-                            game.setCurrentPlayer(playersList[activePlayerIndex])
+                            game.setCurrentPlayer(players[activePlayerIndex])
                             navController.navigate(Screen.LastWordsScreen.route)
                         }
 
-                        sharedPreferencesHelper.saveGameState(game.gameState, playersList)
+                        sharedPreferencesHelper.saveGameState(gameState, players)
                     },
                     modifier = Modifier.align(Alignment.Center),
                     colors = ButtonDefaults.buttonColors(Color.White)

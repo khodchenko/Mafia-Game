@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.mafiaapplication.MainActivity
 import com.example.mafiaapplication.data.GameState
 import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
@@ -22,61 +21,67 @@ import com.example.mafiaapplication.ui.stage.VoteStage
 @Composable
 fun Navigation(
     navController: NavHostController,
-    game: MafiaGame,
     startDestination: String,
     sharedPreferencesHelper: SharedPreferencesHelper,
     gameState: GameState,
     players: List<Player>
 ) {
-    NavHost(navController = navController, startDestination = Screen.StartGameScreen.route) {
+    NavHost(navController = navController, startDestination = startDestination) {
         composable(route = Screen.StartGameScreen.route) {
-            StartGameStage(navController = navController, game = game)
+            StartGameStage(navController = navController, gameState = gameState)
         }
         composable(route = Screen.RolePickerScreen.route, arguments = listOf()) {
             RolePickerStage(
                 navController = navController,
-                game = game,
-                mainActivity = MainActivity(),
+                gameState = gameState,
                 sharedPreferencesHelper = sharedPreferencesHelper
             )
         }
         composable(route = Screen.NightStageScreen.route, arguments = listOf()) {
             NightStage(
                 navController = navController,
-                game = game,
+                gameState = gameState,
+                players = players,
                 sharedPreferencesHelper = sharedPreferencesHelper
             )
         }
         composable(route = Screen.DayStageScreen.route, arguments = listOf()) {
             DayStage(
                 navController = navController,
-                game = game,
+                gameState = gameState,
+                players = players,
                 sharedPreferencesHelper = sharedPreferencesHelper
             )
         }
         composable(route = Screen.VoteMainStageScreen.route, arguments = listOf()) {
             VoteMainStage(
                 navController = navController,
-                game = game,
-                sharedPreferencesHelper = sharedPreferencesHelper
+                gameState = gameState,
+                players = players
             )
         }
         composable(route = Screen.VoteStageScreen.route, arguments = listOf()) {
             VoteStage(
                 navController = navController,
-                game = game,
-                sharedPreferencesHelper = sharedPreferencesHelper
+                gameState = gameState,
+                players = players
             )
         }
         composable(route = Screen.LastWordsScreen.route, arguments = listOf()) {
             LastWordsStage(
                 navController = navController,
-                game = game,
-                sharedPreferencesHelper = sharedPreferencesHelper
+                gameState = gameState,
+                players = players
             )
         }
         composable(route = Screen.EndGameStageScreen.route, arguments = listOf()) {
-            EndGameStage(game = game)
+            EndGameStage(
+                gameState = gameState,
+                players = players,
+            )
         }
     }
+
+
 }
+

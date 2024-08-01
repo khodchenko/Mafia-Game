@@ -8,7 +8,10 @@ data class GameState(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     var stage: GameStage,
     var day : Int,
-    var currentPlayerIndex : Int
+    var players : List<Player>,
+    var currentPlayerIndex : Int,
+    var randomPlayerRoles: Boolean = false,
+    var generateDumbPlayersList: Boolean = false
 )
 
 enum class GameStage {

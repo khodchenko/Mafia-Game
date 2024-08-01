@@ -22,10 +22,11 @@ class SharedPreferencesHelper(context: Context) {
                 id = jsonObject.getInt("id"),
                 stage = GameStage.valueOf(jsonObject.getString("stage")),
                 day = jsonObject.getInt("day"),
-                currentPlayerIndex = jsonObject.getInt("currentPlayerIndex")
+                currentPlayerIndex = jsonObject.getInt("currentPlayerIndex"),
+                players = loadPlayers()
             )
         } else {
-            GameState(stage = GameStage.NIGHT, day = 1, currentPlayerIndex = 0)
+            GameState(stage = GameStage.NIGHT, day = 1, currentPlayerIndex = 0, players = mutableListOf())
         }
     }
 
