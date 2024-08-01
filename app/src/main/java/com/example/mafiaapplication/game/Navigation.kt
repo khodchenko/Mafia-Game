@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import com.example.mafiaapplication.data.GameState
 import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
+import com.example.mafiaapplication.ui.element.SettingsScreen
 import com.khodchenko.mafiaapp.data.Screen
 import com.example.mafiaapplication.ui.stage.DayStage
 import com.example.mafiaapplication.ui.stage.EndGameStage
@@ -78,6 +79,12 @@ fun Navigation(
             EndGameStage(
                 gameState = gameState,
                 players = players,
+            )
+        }
+        composable(route = Screen.SettingsScreen.route, arguments = listOf()) {
+            SettingsScreen(
+                navController = navController,
+                sharedPreferencesHelper = sharedPreferencesHelper
             )
         }
     }

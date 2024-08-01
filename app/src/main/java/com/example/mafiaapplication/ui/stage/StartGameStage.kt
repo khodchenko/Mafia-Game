@@ -43,7 +43,6 @@ import com.example.mafiaapplication.data.GameState
 import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.data.Role
 import com.khodchenko.mafiaapp.data.Screen
-import com.example.mafiaapplication.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
 import com.example.mafiaapplication.ui.theme.Background
 
@@ -134,7 +133,6 @@ fun StartGameStage(navController: NavController, gameState: GameState) {
 
             }
 
-
             //EXPORT
             Row(
                 modifier = Modifier
@@ -182,7 +180,6 @@ fun StartGameStage(navController: NavController, gameState: GameState) {
                 )
             }
 
-
             //TEST LIST
             Row(
                 modifier = Modifier
@@ -221,14 +218,14 @@ fun StartGameStage(navController: NavController, gameState: GameState) {
                 Spacer(modifier = Modifier.weight(1f))
 
                 SimpleSwitch(onSwitchChanged = { isChecked ->
-                    !gameState.generateDumbPlayersList
                     textGenerateListInfo = if (isChecked) {
+                        gameState.generateDumbPlayersList = false
                         "Нужно для теста! Создает список."
                     } else {
+                        gameState.generateDumbPlayersList = true
                         "Нужно для теста! Не создает список."
                     }
                 })
-
             }
 
             //PLAYERS

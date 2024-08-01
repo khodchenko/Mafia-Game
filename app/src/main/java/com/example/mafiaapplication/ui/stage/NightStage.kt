@@ -3,6 +3,7 @@ package com.example.mafiaapplication.ui.stage
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -76,12 +77,27 @@ fun NightStage(
 
             Column() {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Spacer(modifier = Modifier.weight(1f))
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp, end = 10.dp)
+                ){
+                    IconButton(
+                        onClick = {
+                            navController.navigate(Screen.SettingsScreen.route)
+                        },
+                        modifier = Modifier.padding(end = 10.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_settings),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(40.dp)
+                        )
+                    }
 
                     Text(
-                        modifier = Modifier.padding(start = 60.dp),
                         text = "Ночь: ${gameState.day}",
                         color = Color.White,
                         fontSize = 26.sp,
@@ -89,7 +105,6 @@ fun NightStage(
                         textAlign = TextAlign.Center
                     )
 
-                    Spacer(modifier = Modifier.weight(1f))
                     IconButton(
                         onClick = {
                             showRoles = !showRoles
@@ -102,7 +117,8 @@ fun NightStage(
                                 id = R.drawable.ic_roles_show_hide
                             ),
                             contentDescription = null,
-                            tint = Color.White, modifier = Modifier.size(120.dp)
+                            tint = Color.White,
+                            modifier = Modifier.size(40.dp)
                         )
                     }
                 }

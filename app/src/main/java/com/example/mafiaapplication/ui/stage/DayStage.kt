@@ -73,38 +73,50 @@ fun DayStage(
         Column() {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(start = 10.dp)
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp, end = 10.dp)
             ) {
-                Spacer(modifier = Modifier.weight(1f))
+                IconButton(
+                    onClick = {
+                        navController.navigate(Screen.SettingsScreen.route)
+                    },
+                    modifier = Modifier.padding(end = 10.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_settings),
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(40.dp)
+                    )
+                }
 
                 Text(
-                    text = "День: $${gameState.day}",
-                    modifier = Modifier.padding(start = 60.dp),
+                    text = "День: ${gameState.day}",
                     style = MaterialTheme.typography.displayLarge,
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
                     color = Color.White
                 )
 
-                Spacer(modifier = Modifier.weight(1f))
-
                 IconButton(
                     onClick = {
                         showRoles = !showRoles
                     },
-                    modifier = Modifier.padding(end = 10.dp)
+                    modifier = Modifier.padding(start = 10.dp)
                 ) {
                     Icon(
-                        painter = if (showRoles) painterResource(id = R.drawable.ic_roles_show_hide)
-                        else painterResource(
-                            id = R.drawable.ic_roles_show_hide
+                        painter = painterResource(
+                            id = if (showRoles) R.drawable.ic_roles_show_hide else R.drawable.ic_roles_show_hide
                         ),
                         contentDescription = null,
                         tint = Color.White,
-                        modifier = Modifier.size(120.dp)
+                        modifier = Modifier.size(40.dp)
                     )
                 }
             }
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

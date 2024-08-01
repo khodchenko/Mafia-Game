@@ -81,4 +81,9 @@ class SharedPreferencesHelper(context: Context) {
         sharedPreferences.edit().putString("players", jsonArray.toString()).apply()
         Log.d("SharedPreferencesHelper", "Game players saved \n$jsonArray")
     }
+
+    fun clearSavedGame() {
+        sharedPreferences.edit().remove("gameState").remove("players").apply()
+        Log.d("SharedPreferencesHelper", "Saved game data cleared")
+    }
 }
