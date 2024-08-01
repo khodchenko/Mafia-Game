@@ -22,7 +22,7 @@ import androidx.navigation.NavController
 import com.example.mafiaapplication.data.GameStage
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
-import com.khodchenko.mafiaapp.game.MafiaGame
+import com.example.mafiaapplication.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
 import com.example.mafiaapplication.ui.theme.Background
 import com.khodchenko.mafiaapp.ui.element.Timer
@@ -60,7 +60,7 @@ fun LastWordsStage(
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = game.getCurrentPlayer().name,
+                text = game.getPlayerByIndex(game.getCurrentPlayerIndex()).name,
                 color = Color.White,
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Normal,

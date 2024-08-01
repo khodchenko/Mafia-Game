@@ -47,7 +47,7 @@ import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.data.Role
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
-import com.khodchenko.mafiaapp.game.MafiaGame
+import com.example.mafiaapplication.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
 import com.example.mafiaapplication.ui.theme.Background
 

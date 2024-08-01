@@ -21,10 +21,11 @@ class SharedPreferencesHelper(context: Context) {
             GameState(
                 id = jsonObject.getInt("id"),
                 stage = GameStage.valueOf(jsonObject.getString("stage")),
-                day = jsonObject.getInt("day")
+                day = jsonObject.getInt("day"),
+                currentPlayerIndex = jsonObject.getInt("currentPlayerIndex")
             )
         } else {
-            GameState(stage = GameStage.NIGHT, day = 1)
+            GameState(stage = GameStage.NIGHT, day = 1, currentPlayerIndex = 0)
         }
     }
 
@@ -59,6 +60,7 @@ class SharedPreferencesHelper(context: Context) {
         jsonObject.put("id", gameState.id)
         jsonObject.put("stage", gameState.stage.name)
         jsonObject.put("day", gameState.day)
+        jsonObject.put("currentPlayerIndex", gameState.currentPlayerIndex)
         sharedPreferences.edit().putString("gameState", jsonObject.toString()).apply()
         Log.d("SharedPreferencesHelper", "Game state saved \n$jsonObject")
 

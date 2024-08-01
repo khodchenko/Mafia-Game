@@ -1,4 +1,4 @@
-package com.khodchenko.mafiaapp.game
+package com.example.mafiaapplication.game
 
 import com.example.mafiaapplication.data.GameStage
 import com.example.mafiaapplication.data.GameState
@@ -8,11 +8,11 @@ import com.khodchenko.mafiaapp.data.Team
 
 class MafiaGame(
     var gameState: GameState,
-    var players : List<Player>
+    private var players : List<Player>
 ) {
     private var gameStage: GameStage = gameState.stage
     private var currentDay: Int = gameState.day
-    private lateinit var currentPlayer: Player
+    private var currentPlayerIndex: Int = gameState.currentPlayerIndex
     private var blackTeam: Team = Team(Team.TeamColor.BLACK, mutableListOf())
     private var redTeam: Team = Team(Team.TeamColor.RED, mutableListOf())
     private var candidates: MutableMap<Player, List<Player>> = mutableMapOf()
@@ -64,15 +64,12 @@ class MafiaGame(
             val logMessage = "Candidate ${candidate.number}: $voterList"
             logBuilder.appendLine(logMessage)
         }
-
         return logBuilder.toString()
     }
 
-    fun getNextCandidateAfterCurrentPlayer(): Player? {
+    fun getNextCandidateAfterCurrentPlayer(): Player {
         val candidateKeys = candidates.keys.toList()
-        val currentIndex = candidateKeys.indexOf(currentPlayer)
-
-        return candidateKeys.getOrNull(currentIndex + 1)
+        return candidateKeys[currentPlayerIndex]
     }
 
     fun getVotersByCandidate(candidate: Player): MutableList<Player>? {
@@ -105,7 +102,7 @@ class MafiaGame(
         for (player in alivePlayers) {
             if (player.fouls >= 4) {
                 killPlayer(player)
-                currentPlayer = player
+                currentPlayerIndex = players.indexOf(player)
                 return true
             }
         }
@@ -114,7 +111,7 @@ class MafiaGame(
     }
 
     fun newDay() {
-        currentDay += 1
+        gameState.day += 1
     }
 
     fun killPlayer(player: Player) {
@@ -126,7 +123,7 @@ class MafiaGame(
     }
 
     fun setStage(stage: GameStage) {
-        gameStage = stage
+        gameState.stage = stage
     }
 
     fun getCurrentDay(): Int = currentDay
@@ -135,10 +132,14 @@ class MafiaGame(
 
     fun getAllAlivePlayers(): List<Player> = players.filter { it.isAlive }
 
-    fun getCurrentPlayer(): Player = currentPlayer
+    fun getCurrentPlayerIndex(): Int = currentPlayerIndex
+
+    fun getPlayerByIndex(index: Int) : Player {
+        return players[index]
+    }
 
     fun setCurrentPlayer(player: Player) {
-        currentPlayer = player
+        gameState.currentPlayerIndex = players.indexOf(player)
     }
 
     fun initialPlayers(players: List<Player>) {

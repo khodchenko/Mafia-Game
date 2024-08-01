@@ -39,7 +39,7 @@ import com.example.mafiaapplication.data.GameStage
 import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
-import com.khodchenko.mafiaapp.game.MafiaGame
+import com.example.mafiaapplication.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
 import com.example.mafiaapplication.ui.theme.Background
 import com.khodchenko.mafiaapp.ui.element.PlayerDialog
@@ -60,7 +60,7 @@ fun DayStage(
     var showDialog by remember { mutableStateOf(false) }
     var selectedPlayer by remember { mutableStateOf<Player?>(null) }
     val currentDay = game.getCurrentDay()
-    val players = game.getAllPlayers().filter { it.isAlive }
+    val playersList = game.getAllPlayers().filter { it.isAlive }
 
 
     Box(
@@ -112,10 +112,10 @@ fun DayStage(
             )
 
             PlayerList(
-                playersList = players.toMutableList(),
+                playersList = playersList.toMutableList(),
                 activePlayerIndex = activePlayerIndex,
                 onPlayerClick = { clickedIndex ->
-                    selectedPlayer = players.find { it.number == clickedIndex + 1 }
+                    selectedPlayer = playersList.find { it.number == clickedIndex + 1 }
                     showDialog = true
                 },
                 showRoles = showRoles, game = game
@@ -123,7 +123,8 @@ fun DayStage(
             if (showDialog) {
                 PlayerDialog(
                     player = selectedPlayer,
-                    activePlayer = players.find { it.number == activePlayerIndex } ?: players[0],
+                    activePlayer = playersList.find { it.number == activePlayerIndex }
+                        ?: playersList[0],
                     onDismiss = { showDialog = false },
                     onVoteClick = {
                         if (!game.getCandidates().contains(selectedPlayer)) {
@@ -167,7 +168,8 @@ fun DayStage(
 
             Row() {
                 Box(modifier = Modifier.clickable {
-                    activePlayerIndex = (activePlayerIndex - 1 + players.size) % players.size
+                    activePlayerIndex =
+                        (activePlayerIndex - 1 + playersList.size) % playersList.size
                 }) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
@@ -184,7 +186,7 @@ fun DayStage(
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Box(modifier = Modifier.clickable {
-                    activePlayerIndex = (activePlayerIndex + 1) % players.size
+                    activePlayerIndex = (activePlayerIndex + 1) % playersList.size
                 }) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
@@ -209,9 +211,10 @@ fun DayStage(
             ) {
                 CustomElevatedButton(buttonText = "Голосование", enabled = true, onClick = {
                     game.getCandidates().firstOrNull()?.let { game.setCurrentPlayer(it) }
-                    Log.d("DayStage", "Current player: ${game.getCurrentPlayer()}")
+                    Log.d("DayStage", "Current player: ${game.getCurrentPlayerIndex()}")
                     game.setStage(GameStage.VOTE)
                     navController.navigate(Screen.VoteMainStageScreen.route)
+                    sharedPreferencesHelper.saveGameState(game.gameState, playersList)
                 })
             }
 

@@ -6,8 +6,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "game_state")
 data class GameState(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val stage: GameStage,
-    val day : Int
+    var stage: GameStage,
+    var day : Int,
+    var currentPlayerIndex : Int
 )
 
 enum class GameStage {

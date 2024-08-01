@@ -40,7 +40,7 @@ import com.example.mafiaapplication.ui.theme.BeautifulBlack
 import com.example.mafiaapplication.data.GameStage
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
-import com.khodchenko.mafiaapp.game.MafiaGame
+import com.example.mafiaapplication.game.MafiaGame
 import com.khodchenko.mafiaapp.helpers.SoundPlayer
 import com.khodchenko.mafiaapp.ui.element.PlayerList
 import com.khodchenko.mafiaapp.ui.element.Timer
@@ -163,6 +163,7 @@ fun NightStage(
                             game.setCurrentPlayer(playersList[activePlayerIndex])
                             navController.navigate(Screen.LastWordsScreen.route)
                         }
+
                         sharedPreferencesHelper.saveGameState(game.gameState, playersList)
                     },
                     modifier = Modifier.align(Alignment.Center),

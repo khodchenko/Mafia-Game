@@ -33,7 +33,7 @@ import com.example.mafiaapplication.data.GameStage
 import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
-import com.khodchenko.mafiaapp.game.MafiaGame
+import com.example.mafiaapplication.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
 import com.example.mafiaapplication.ui.theme.Background
 
@@ -70,7 +70,7 @@ fun VoteStage(
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = game.getCurrentPlayer().name,
+                text = game.getPlayerByIndex(game.getCurrentPlayerIndex()).name,
                 color = Color.White,
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
@@ -176,10 +176,10 @@ fun VoteStage(
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomElevatedButton("Голосуем", enabled = true, onClick = {
-                    game.addVotesForCandidate(game.getCurrentPlayer(), voters)
+                    game.addVotesForCandidate(game.getPlayerByIndex(game.getCurrentPlayerIndex()), voters)
                     Log.d("VoteStage", game.getCandidatesAndVotesLog())
 
-                    if (game.getCandidates().last() == game.getCurrentPlayer()) {
+                    if (game.getCandidates().last() == game.getPlayerByIndex(game.getCurrentPlayerIndex())) {
                         if (game.findCandidatesWithLongestVotes().size == 1) {
                             game.killPlayer(game.findCandidatesWithLongestVotes()[0])
                             game.clearVote()
@@ -201,7 +201,7 @@ fun VoteStage(
                         Log.d("VoteStage", "Stage: ${game.getCurrentStage()}")
                     } else {
                         game.getNextCandidateAfterCurrentPlayer()
-                            ?.let { game.setCurrentPlayer(it) }
+                            .let { game.setCurrentPlayer(it) }
                         navController.navigate(Screen.VoteMainStageScreen.route)
                     }
 

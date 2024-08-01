@@ -38,7 +38,7 @@ import com.example.mafiaapplication.R
 import com.example.mafiaapplication.data.GameStage
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
-import com.khodchenko.mafiaapp.game.MafiaGame
+import com.example.mafiaapplication.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
 import com.example.mafiaapplication.ui.theme.Background
 import com.khodchenko.mafiaapp.ui.element.PlayerList
@@ -136,7 +136,7 @@ fun VoteMainStage(
 
             PlayerList(
                 playersList = game.getCandidates().toMutableList(),
-                activePlayerIndex = game.getCurrentPlayer().number,
+                activePlayerIndex = game.getCurrentPlayerIndex(),
                 showRoles = showRoles,
                 onPlayerClick = {
 
@@ -166,7 +166,7 @@ fun VoteMainStage(
                             navController.navigate(Screen.NightStageScreen.route)
                             Toast.makeText(context, "End of voting", Toast.LENGTH_SHORT).show()
                         } else if (game.getCurrentStage() != GameStage.VOTE_3) {
-                            Log.d("VoteMainStage", "Current player: ${game.getCurrentPlayer()}")
+                            Log.d("VoteMainStage", "Current player: ${game.getCurrentPlayerIndex()}")
                             navController.navigate(Screen.VoteStageScreen.route)
                         } else {
                             raiseAllDialog = true
