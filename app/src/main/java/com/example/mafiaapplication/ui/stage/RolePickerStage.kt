@@ -193,7 +193,6 @@ fun RolePickerStage(
                 "ПОЕХАЛИ", rulesCheck,
                 onClick = {
                     gameState.players = playersList
-                    gameState.initialPlayersTeams()
                     gameState.stage = GameStage.NIGHT
                     sharedPreferencesHelper.saveGameState(gameState)
                     navController.navigate(Screen.NightStageScreen.route)
@@ -203,7 +202,6 @@ fun RolePickerStage(
     }
 
 }
-
 
 fun checkRules(playersList: List<Player>, numbersOfPlayers: Int = 10): Boolean {
     val mafiaCount = playersList.count { it.role == Role.MAFIA }

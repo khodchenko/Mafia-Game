@@ -31,7 +31,7 @@ fun EndGameStage(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                color = if (winnerTeam.color == Team.TeamColor.RED) Background
+                color = if (winnerTeam == "Red") Background
                 else BeautifulBlack
             )
             .padding(8.dp)
@@ -40,7 +40,7 @@ fun EndGameStage(
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = "Победила команда:\n" + winnerTeam.color.toString(),
+                text = "Победила команда:\n$winnerTeam",
                 color = Color.White,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Normal,

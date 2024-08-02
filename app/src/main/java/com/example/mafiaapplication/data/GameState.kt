@@ -16,8 +16,6 @@ data class GameState(
     var numbersOfPlayers: Int = 10
 ) {
     private var candidates: MutableMap<Player, List<Player>> = mutableMapOf()
-    private var blackTeam: Team = Team(Team.TeamColor.BLACK, mutableListOf())
-    private var redTeam: Team = Team(Team.TeamColor.RED, mutableListOf())
 
     fun addCandidate(candidate: Player) {
         candidates[candidate] = emptyList()
@@ -117,46 +115,58 @@ data class GameState(
     }
 
     fun getAllAlivePlayers(): List<Player> = players.filter { it.isAlive }
+
     fun getAllDeadPlayers(): List<Player> = players.filter { !it.isAlive }
 
     fun setCurrentPlayer(player: Player) {
         currentPlayerIndex = players.indexOf(player)
     }
 
-    fun initialPlayersTeams() {
-        players.forEach { player ->
-            when (player.role) {
-                Role.MAFIA, Role.DON -> blackTeam.players.add(player)
-                Role.CIVIL, Role.SHERIFF -> redTeam.players.add(player)
-            }
-        }
-    }
+//    fun initialPlayersTeams() {
+//        players.forEach { player ->
+//            when (player.role) {
+//                Role.MAFIA, Role.DON -> blackTeam.players.add(player)
+//                Role.CIVIL, Role.SHERIFF -> redTeam.players.add(player)
+//            }
+//        }
+//    }
 
     fun checkEndGame(): Boolean {
-        val aliveBlackTeamSize = blackTeam.players.count { it.isAlive }
-        val aliveRedTeamSize = redTeam.players.count { it.isAlive }
+        val aliveBlackTeamSize =
+            players.count { it.role == Role.MAFIA && it.isAlive || it.role == Role.DON && it.isAlive }
+        val aliveRedTeamSize =
+            players.count { it.role == Role.CIVIL && it.isAlive || it.role == Role.SHERIFF && it.isAlive }
 
         return aliveBlackTeamSize == 0 || aliveBlackTeamSize == aliveRedTeamSize
     }
 
-    fun getWinningTeam(): Team {
-        val aliveBlackTeamSize = blackTeam.players.count { it.isAlive }
-        val aliveRedTeamSize = redTeam.players.count { it.isAlive }
+    fun getWinningTeam(): String {
+        val aliveBlackTeamSize = players.count { it.role == Role.MAFIA || it.role == Role.DON }
+        val aliveRedTeamSize = players.count { it.role == Role.CIVIL || it.role == Role.SHERIFF }
 
-        return if (aliveBlackTeamSize == 0 || aliveBlackTeamSize == aliveRedTeamSize) redTeam else blackTeam
+        return if (aliveBlackTeamSize == 0 || aliveBlackTeamSize == aliveRedTeamSize) "Red" else "Black"
     }
 
     fun awardPointsToWinningTeam() {
         val winningTeam = getWinningTeam()
-        winningTeam.players.forEach { player ->
-            player.score += 1.0
+        if (winningTeam == "Black") {
+            players.forEach { player ->
+                if (player.role == Role.MAFIA || player.role == Role.DON) {
+                    player.score += 1
+                }
+            }
+        } else if (winningTeam == "Red") {
+            players.forEach { player ->
+                if (player.role == Role.CIVIL || player.role == Role.SHERIFF) {
+                    player.score += 1
+                }
+            }
         }
     }
 
     fun getPlayerByIndex(index: Int): Player {
         return players[index]
     }
-
 }
 
 
