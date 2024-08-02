@@ -103,8 +103,13 @@ data class GameState(
         day += 1
     }
 
-    fun killPlayer(player: Player) {
-        player.isAlive = false
+    fun killPlayer(player: Player): Boolean {
+        return if (player.isAlive) {
+            player.isAlive = false
+            true
+        } else {
+            false
+        }
     }
 
     fun getAllAlivePlayers(): List<Player> = players.filter { it.isAlive }

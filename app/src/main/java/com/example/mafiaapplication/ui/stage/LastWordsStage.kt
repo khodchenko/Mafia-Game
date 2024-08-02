@@ -67,6 +67,17 @@ fun LastWordsStage(
                 textAlign = TextAlign.Center
             )
 
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                text = if (gameState.checkEndGame())"C правом обьявления победы противоположной команды." else "",
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+
+            )
+
             Spacer(modifier = Modifier.weight(1f))
 
             Row(
@@ -78,18 +89,23 @@ fun LastWordsStage(
             ) {
 
                 CustomElevatedButton("Погнали", enabled = true, onClick = {
-                    if (gameState.stage == GameStage.NIGHT) {
-                        gameState.stage = GameStage.DAY
-                        navController.navigate(Screen.DayStageScreen.route)
-                    } else {
-                        gameState.newDay()
-                        gameState.stage = GameStage.NIGHT
-                        navController.navigate(Screen.NightStageScreen.route)
+                    if (gameState.checkEndGame()) {
+                        gameState.stage = GameStage.GAME_OVER
+                        gameState.awardPointsToWinningTeam()
+                        navController.navigate(Screen.EndGameStageScreen.route)
                     }
-                })
-            }
+                        else if (gameState.stage == GameStage.NIGHT) {
+                            gameState.stage = GameStage.DAY
+                            navController.navigate(Screen.DayStageScreen.route)
+                        } else {
+                            gameState.newDay()
+                            gameState.stage = GameStage.NIGHT
+                            navController.navigate(Screen.NightStageScreen.route)
+                        }
+                    })
+                }
 
-            Timer()
+                        Timer ()
+            }
         }
     }
-}

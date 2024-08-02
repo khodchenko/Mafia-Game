@@ -80,7 +80,7 @@ fun NightStage(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 10.dp, end = 10.dp)
-                ){
+                ) {
                     IconButton(
                         onClick = {
                             navController.navigate(Screen.SettingsScreen.route)
@@ -163,25 +163,29 @@ fun NightStage(
             ) {
                 Button(
                     onClick = {
-                        players[activePlayerIndex].let { gameState.killPlayer(it) }
-                        Log.d("NightStage", "Killed: ${players[activePlayerIndex]} ${players[activePlayerIndex].isAlive}")
-                        soundPlayer.playShootSound()
+                        if (activePlayerIndex in players.indices) {
+                            players[activePlayerIndex].let { player ->
+                                val result = gameState.killPlayer(player)
+                                if (result) {
+                                    soundPlayer.playShootSound()
+                                    Log.d("NightStage", "Player ${players[activePlayerIndex]} killed")
+                                } else {
+                                    soundPlayer.playShootSound()
+                                    Log.d("NightStage", "Player ${players[activePlayerIndex]} already dead")
+                                }
+                            }
+                        }
+
                         sharedPreferencesHelper.saveGameState(gameState)
-//                        if (game.checkEndGame()) {
-//                            game.setStage(GameStage.GAME_OVER)
-//                            game.awardPointsToWinningTeam()
-//                            navController.navigate(Screen.EndGameStageScreen.route)
-                       if (activePlayerIndex == 11) {
-                           gameState.currentPlayerIndex = gameState.day-1 //todo it can make bug
-                           gameState.stage = GameStage.DAY
-                           navController.navigate(Screen.DayStageScreen.route)
-                       } else {
-                           gameState.setCurrentPlayer(players[activePlayerIndex])
-                           navController.navigate(Screen.LastWordsScreen.route)
-                       }
 
-
-                        //navController.navigate(Screen.DayStageScreen.route)
+                        if (activePlayerIndex == 11) {
+                            gameState.currentPlayerIndex = gameState.day - 1 //todo it can make bug
+                            gameState.stage = GameStage.DAY
+                            navController.navigate(Screen.DayStageScreen.route)
+                        } else {
+                            gameState.currentPlayerIndex = activePlayerIndex
+                            navController.navigate(Screen.LastWordsScreen.route)
+                        }
                     },
                     modifier = Modifier.align(Alignment.Center),
                     colors = ButtonDefaults.buttonColors(Color.White)
