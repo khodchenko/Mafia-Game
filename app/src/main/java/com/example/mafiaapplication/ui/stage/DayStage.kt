@@ -40,7 +40,6 @@ import com.example.mafiaapplication.data.GameState
 import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
-import com.example.mafiaapplication.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
 import com.example.mafiaapplication.ui.theme.Background
 import com.khodchenko.mafiaapp.ui.element.PlayerDialog
@@ -52,7 +51,6 @@ import com.khodchenko.mafiaapp.ui.element.Timer
 fun DayStage(
     navController: NavController,
     gameState: GameState,
-    players: List<Player>,
     sharedPreferencesHelper: SharedPreferencesHelper
 ) {
 
@@ -61,8 +59,6 @@ fun DayStage(
     var activePlayerIndex by remember { mutableIntStateOf(0) }
     var showDialog by remember { mutableStateOf(false) }
     var selectedPlayer by remember { mutableStateOf<Player?>(null) }
-    val game = MafiaGame(gameState, players)
-
 
     Box(
         modifier = Modifier
@@ -125,26 +121,26 @@ fun DayStage(
             )
 
             PlayerList(
-                playersList = players,
+                playersList = gameState.getAllAlivePlayers(),
                 activePlayerIndex = activePlayerIndex,
                 onPlayerClick = { clickedIndex ->
-                    selectedPlayer = players.find { it.number == clickedIndex + 1 }
+                    selectedPlayer = gameState.getAllAlivePlayers()[clickedIndex]
                     showDialog = true
                 },
-                showRoles = showRoles, game = game
+                showRoles = showRoles, gameState = gameState
             )
             if (showDialog) {
                 PlayerDialog(
                     player = selectedPlayer,
-                    activePlayer = players.find { it.number == activePlayerIndex }
-                        ?: players[0],
+                    activePlayer = gameState.getAllAlivePlayers().find { it.number == activePlayerIndex }
+                        ?: gameState.getAllAlivePlayers()[0],
                     onDismiss = { showDialog = false },
                     onVoteClick = {
-                        if (!game.getCandidates().contains(selectedPlayer)) {
-                            game.addCandidate(selectedPlayer!!)
+                        if (!gameState.getCandidates().contains(selectedPlayer)) {
+                            gameState.addCandidate(selectedPlayer!!)
                             Log.d(
                                 "DayStage",
-                                "Add ${selectedPlayer!!.name} to Candidates: ${game.getCandidates()} "
+                                "Add ${selectedPlayer!!.name} to Candidates: ${gameState.getCandidates()} "
                             )
                         } else {
                             Log.d("DayStage", "Кандидат $selectedPlayer уже выставлен")
@@ -172,7 +168,7 @@ fun DayStage(
             Text(
                 modifier = Modifier.padding(top = 4.dp),
                 text = "На голосовании: ${
-                    game.getCandidates().joinToString { it.number.toString() }
+                    gameState.getCandidates().joinToString { it.number.toString() }
                 }",
                 style = MaterialTheme.typography.bodySmall,
                 fontSize = 22.sp,
@@ -182,7 +178,7 @@ fun DayStage(
             Row() {
                 Box(modifier = Modifier.clickable {
                     activePlayerIndex =
-                        (activePlayerIndex - 1 + players.size) % players.size
+                        (activePlayerIndex - 1 + gameState.getAllAlivePlayers().size) % gameState.getAllAlivePlayers().size
                 }) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
@@ -199,7 +195,7 @@ fun DayStage(
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Box(modifier = Modifier.clickable {
-                    activePlayerIndex = (activePlayerIndex + 1) % players.size
+                    activePlayerIndex = (activePlayerIndex + 1) % gameState.getAllAlivePlayers().size
                 }) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
@@ -223,11 +219,11 @@ fun DayStage(
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomElevatedButton(buttonText = "Голосование", enabled = true, onClick = {
-                    game.getCandidates().firstOrNull()?.let { game.setCurrentPlayer(it) }
-                    Log.d("DayStage", "Current player: ${game.getCurrentPlayerIndex()}")
-                    game.setStage(GameStage.VOTE)
+                    gameState.getCandidates().firstOrNull()?.let { gameState.setCurrentPlayer(it) }
+                    Log.d("DayStage", "Current player: ${gameState.currentPlayerIndex}")
+                    gameState.stage = GameStage.VOTE
                     navController.navigate(Screen.VoteMainStageScreen.route)
-                    sharedPreferencesHelper.saveGameState(game.gameState, players)
+                    sharedPreferencesHelper.saveGameState(gameState)
                 })
             }
 

@@ -37,10 +37,7 @@ import androidx.navigation.NavController
 import com.example.mafiaapplication.R
 import com.example.mafiaapplication.data.GameStage
 import com.example.mafiaapplication.data.GameState
-import com.example.mafiaapplication.data.Player
-import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
-import com.example.mafiaapplication.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
 import com.example.mafiaapplication.ui.theme.Background
 import com.khodchenko.mafiaapp.ui.element.PlayerList
@@ -50,13 +47,11 @@ import com.khodchenko.mafiaapp.ui.element.Timer
 @Composable
 fun VoteMainStage(
     navController: NavController,
-    gameState: GameState,
-    players: List<Player>
+    gameState: GameState
 ) {
     var showRoles by remember { mutableStateOf(false) }
     val context = LocalContext.current
     var raiseAllDialog by remember { mutableStateOf(false) }
-    val game = MafiaGame(gameState, players)
 
     Box(
         modifier = Modifier
@@ -73,7 +68,7 @@ fun VoteMainStage(
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     modifier = Modifier.padding(start = 60.dp),
-                    text = "Голосование: ${game.getCurrentDay()}",
+                    text = "Голосование: ${gameState.day}",
                     color = Color.White,
                     fontSize = 26.sp,
                     fontWeight = FontWeight.Bold,
@@ -106,7 +101,7 @@ fun VoteMainStage(
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = when (game.getCurrentStage()) {
+                text = when (gameState.stage) {
                     GameStage.VOTE -> "Фаза 1"
                     GameStage.VOTE_2 -> "Фаза 2"
                     GameStage.VOTE_3 -> "Фаза 3"
@@ -121,7 +116,7 @@ fun VoteMainStage(
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = "В живых: ${game.getAllAlivePlayers().size}",
+                text = "В живых: ${gameState.getAllAlivePlayers().size}",
                 color = Color.White,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
@@ -139,14 +134,14 @@ fun VoteMainStage(
             )
 
             PlayerList(
-                playersList = game.getCandidates().toMutableList(),
-                activePlayerIndex = game.getCurrentPlayerIndex(),
+                playersList = gameState.getCandidates().toMutableList(),
+                activePlayerIndex = gameState.currentPlayerIndex,
                 showRoles = showRoles,
                 onPlayerClick = {
 
                 },
                 showVotes = true,
-                game = game
+                gameState = gameState
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -158,25 +153,25 @@ fun VoteMainStage(
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomElevatedButton("К голосованию", true) {
-                    if (!game.checkFaults()) {
-                        if (game.getCandidates().isEmpty()) {
+                    if (!gameState.checkFaults()) {
+                        if (gameState.getCandidates().isEmpty()) {
                             Log.d("VoteMainStage", "End of stage.")
                             Log.d(
                                 "VoteMainStage",
-                                "Most votes: ${game.findCandidatesWithLongestVotes()}"
+                                "Most votes: ${gameState.findCandidatesWithLongestVotes()}"
                             )
-                            game.newDay()
-                            game.setStage(GameStage.NIGHT)
+                            gameState.newDay()
+                            gameState.stage = GameStage.NIGHT
                             navController.navigate(Screen.NightStageScreen.route)
                             Toast.makeText(context, "End of voting", Toast.LENGTH_SHORT).show()
-                        } else if (game.getCurrentStage() != GameStage.VOTE_3) {
-                            Log.d("VoteMainStage", "Current player: ${game.getCurrentPlayerIndex()}")
+                        } else if (gameState.stage != GameStage.VOTE_3) {
+                            Log.d("VoteMainStage", "Current player: ${gameState.currentPlayerIndex}")
                             navController.navigate(Screen.VoteStageScreen.route)
                         } else {
                             raiseAllDialog = true
                         }
                     } else {
-                        game.clearVote()
+                        gameState.clearVote()
                         navController.navigate(Screen.LastWordsScreen.route)
                     }
 
@@ -189,9 +184,9 @@ fun VoteMainStage(
                 ShowRaiseAllDialog(
                     onRaiseAll = {
                         raiseAllDialog = false
-                        for (candidate in game.getCandidates()) {
-                            game.killPlayer(candidate)
-                            game.setCurrentPlayer(player = candidate)
+                        for (candidate in gameState.getCandidates()) {
+                            gameState.killPlayer(candidate)
+                            gameState.setCurrentPlayer(player = candidate)
                             navController.navigate(Screen.LastWordsScreen.route)
                         }
                     },

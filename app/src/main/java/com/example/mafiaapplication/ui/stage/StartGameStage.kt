@@ -1,5 +1,6 @@
 package com.example.mafiaapplication.ui.stage
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -218,11 +219,12 @@ fun StartGameStage(navController: NavController, gameState: GameState) {
                 Spacer(modifier = Modifier.weight(1f))
 
                 SimpleSwitch(onSwitchChanged = { isChecked ->
+                    Log.d("StartGameStage", "StartGameStage: ${gameState.generateDumbPlayersList}")
                     textGenerateListInfo = if (isChecked) {
-                        gameState.generateDumbPlayersList = false
+                        gameState.generateDumbPlayersList = true
                         "Нужно для теста! Создает список."
                     } else {
-                        gameState.generateDumbPlayersList = true
+                        gameState.generateDumbPlayersList = false
                         "Нужно для теста! Не создает список."
                     }
                 })

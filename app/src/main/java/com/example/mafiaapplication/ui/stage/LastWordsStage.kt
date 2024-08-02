@@ -21,10 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mafiaapplication.data.GameStage
 import com.example.mafiaapplication.data.GameState
-import com.example.mafiaapplication.data.Player
-import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
-import com.example.mafiaapplication.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
 import com.example.mafiaapplication.ui.theme.Background
 import com.khodchenko.mafiaapp.ui.element.Timer
@@ -33,10 +30,8 @@ import com.khodchenko.mafiaapp.ui.element.Timer
 @Composable
 fun LastWordsStage(
     navController: NavController,
-    gameState: GameState,
-    players: List<Player>
+    gameState: GameState
 ) {
-    val game = MafiaGame(gameState, players)
 
     Box(
         modifier = Modifier
@@ -65,7 +60,7 @@ fun LastWordsStage(
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = game.getPlayerByIndex(game.getCurrentPlayerIndex()).name,
+                text = gameState.players[gameState.currentPlayerIndex].name,
                 color = Color.White,
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Normal,
@@ -83,13 +78,12 @@ fun LastWordsStage(
             ) {
 
                 CustomElevatedButton("Погнали", enabled = true, onClick = {
-                    if (game.getCurrentStage() == GameStage.NIGHT) {
-                        game.setStage(GameStage.DAY)
-                        navController.previousBackStackEntry
+                    if (gameState.stage == GameStage.NIGHT) {
+                        gameState.stage = GameStage.DAY
                         navController.navigate(Screen.DayStageScreen.route)
                     } else {
-                        game.newDay()
-                        game.setStage(GameStage.NIGHT)
+                        gameState.newDay()
+                        gameState.stage = GameStage.NIGHT
                         navController.navigate(Screen.NightStageScreen.route)
                     }
                 })

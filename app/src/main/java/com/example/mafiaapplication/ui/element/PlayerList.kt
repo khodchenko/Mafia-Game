@@ -21,8 +21,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mafiaapplication.data.GameState
 import com.example.mafiaapplication.data.Player
-import com.example.mafiaapplication.game.MafiaGame
 
 
 @Composable
@@ -34,7 +34,7 @@ fun PlayerList(
     showRoles: Boolean = false,
     showVotes: Boolean = false,
     showScores: Boolean = false,
-    game: MafiaGame
+    gameState: GameState
 ) {
     Box(
         modifier = Modifier
@@ -54,7 +54,7 @@ fun PlayerList(
                         showRoles,
                         showVotes,
                         showScores,
-                        game
+                        gameState
                     )
                 }
             }
@@ -71,7 +71,7 @@ private fun PlayerItem(
     showRoles: Boolean,
     showVotes: Boolean,
     showScores: Boolean,
-    game: MafiaGame
+    gameState: GameState
 ) {
     Row(
         modifier = Modifier
@@ -95,7 +95,7 @@ private fun PlayerItem(
                 if (player.fouls == 0) {
                     ""
                 } else player.fouls.toString()
-            } else game.getVotersByCandidate(player)?.size.toString(),
+            } else gameState.getVotersByCandidate(player)?.size.toString(),
             style = MaterialTheme.typography.bodySmall,
             fontSize = 22.sp,
             color = Color.White,

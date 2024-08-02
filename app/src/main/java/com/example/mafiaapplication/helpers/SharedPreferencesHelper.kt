@@ -26,7 +26,7 @@ class SharedPreferencesHelper(context: Context) {
                 players = loadPlayers()
             )
         } else {
-            GameState(stage = GameStage.NIGHT, day = 1, currentPlayerIndex = 0, players = mutableListOf())
+            GameState(stage = GameStage.START, day = 1, currentPlayerIndex = 0, players = mutableListOf())
         }
     }
 
@@ -56,7 +56,7 @@ class SharedPreferencesHelper(context: Context) {
         }
     }
 
-    fun saveGameState(gameState: GameState, players: List<Player>) {
+    fun saveGameState(gameState: GameState) {
         val jsonObject = JSONObject()
         jsonObject.put("id", gameState.id)
         jsonObject.put("stage", gameState.stage.name)
@@ -66,7 +66,7 @@ class SharedPreferencesHelper(context: Context) {
         Log.d("SharedPreferencesHelper", "Game state saved \n$jsonObject")
 
         val jsonArray = JSONArray()
-        players.forEach { player ->
+        gameState.players.forEach { player ->
             val playerJsonObject = JSONObject()
             playerJsonObject.put("id", player.id)
             playerJsonObject.put("gameId", player.gameId)

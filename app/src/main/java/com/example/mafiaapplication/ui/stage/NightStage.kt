@@ -36,12 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mafiaapplication.R
+import com.example.mafiaapplication.data.GameStage
 import com.example.mafiaapplication.ui.theme.Background
 import com.example.mafiaapplication.ui.theme.BeautifulBlack
-import com.example.mafiaapplication.data.GameStage
 import com.example.mafiaapplication.data.GameState
-import com.example.mafiaapplication.data.Player
-import com.example.mafiaapplication.game.MafiaGame
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.helpers.SoundPlayer
@@ -52,13 +50,13 @@ import com.khodchenko.mafiaapp.ui.element.Timer
 fun NightStage(
     navController: NavController,
     gameState: GameState,
-    players: List<Player>,
     sharedPreferencesHelper: SharedPreferencesHelper
 ) {
     var activePlayerIndex by remember { mutableIntStateOf(11) }
     val soundPlayer = SoundPlayer(LocalContext.current)
     var showRoles by remember { mutableStateOf(true) }
-    val game = MafiaGame(gameState, players)
+
+    val players = gameState.players
 
     Box(
         modifier = Modifier
@@ -152,7 +150,7 @@ fun NightStage(
                     activePlayerIndex = clickedPlayerIndex
                 },
                 Background,
-                game = game,
+                gameState = gameState,
                 showRoles = showRoles
             )
 
@@ -165,25 +163,25 @@ fun NightStage(
             ) {
                 Button(
                     onClick = {
-                        players.find { it.number == activePlayerIndex + 1 }
-                            ?.let { game.killPlayer(it) }
+                        players[activePlayerIndex].let { gameState.killPlayer(it) }
+                        Log.d("NightStage", "Killed: ${players[activePlayerIndex]} ${players[activePlayerIndex].isAlive}")
                         soundPlayer.playShootSound()
+                        sharedPreferencesHelper.saveGameState(gameState)
+//                        if (game.checkEndGame()) {
+//                            game.setStage(GameStage.GAME_OVER)
+//                            game.awardPointsToWinningTeam()
+//                            navController.navigate(Screen.EndGameStageScreen.route)
+                       if (activePlayerIndex == 11) {
+                           gameState.currentPlayerIndex = gameState.day-1 //todo it can make bug
+                           gameState.stage = GameStage.DAY
+                           navController.navigate(Screen.DayStageScreen.route)
+                       } else {
+                           gameState.setCurrentPlayer(players[activePlayerIndex])
+                           navController.navigate(Screen.LastWordsScreen.route)
+                       }
 
-                        if (game.checkEndGame()) {
-                            game.setStage(GameStage.GAME_OVER)
-                            game.awardPointsToWinningTeam()
-                            navController.navigate(Screen.EndGameStageScreen.route)
-                        } else if (activePlayerIndex == 11) {
-                            game.getAllAlivePlayers().find { it.number == game.getCurrentDay() }
-                                ?.let { game.setCurrentPlayer(it) }
-                            game.setStage(GameStage.DAY)
-                            navController.navigate(Screen.DayStageScreen.route)
-                        } else {
-                            game.setCurrentPlayer(players[activePlayerIndex])
-                            navController.navigate(Screen.LastWordsScreen.route)
-                        }
 
-                        sharedPreferencesHelper.saveGameState(gameState, players)
+                        //navController.navigate(Screen.DayStageScreen.route)
                     },
                     modifier = Modifier.align(Alignment.Center),
                     colors = ButtonDefaults.buttonColors(Color.White)
