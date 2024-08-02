@@ -65,6 +65,7 @@ fun RolePickerStage(
             playerCount = gameState.players.size,
             gameState = gameState
         ).toMutableList()
+        gameState.generateDumbPlayersList = false
     }
 
     Column(
@@ -192,8 +193,9 @@ fun RolePickerStage(
                 "ПОЕХАЛИ", rulesCheck,
                 onClick = {
                     gameState.players = playersList
+                    gameState.initialPlayersTeams()
                     gameState.stage = GameStage.NIGHT
-                    sharedPreferencesHelper.saveGameState(gameState, playersList)
+                    sharedPreferencesHelper.saveGameState(gameState)
                     navController.navigate(Screen.NightStageScreen.route)
                 },
             )

@@ -1,5 +1,6 @@
 package com.example.mafiaapplication.ui.stage
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,8 +44,8 @@ import com.example.mafiaapplication.data.GameState
 import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.data.Role
 import com.khodchenko.mafiaapp.data.Screen
-import com.example.mafiaapplication.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
+import com.example.mafiaapplication.ui.element.SliderMinimalExample
 import com.example.mafiaapplication.ui.theme.Background
 
 @Composable
@@ -134,7 +135,6 @@ fun StartGameStage(navController: NavController, gameState: GameState) {
 
             }
 
-
             //EXPORT
             Row(
                 modifier = Modifier
@@ -182,7 +182,6 @@ fun StartGameStage(navController: NavController, gameState: GameState) {
                 )
             }
 
-
             //TEST LIST
             Row(
                 modifier = Modifier
@@ -221,14 +220,15 @@ fun StartGameStage(navController: NavController, gameState: GameState) {
                 Spacer(modifier = Modifier.weight(1f))
 
                 SimpleSwitch(onSwitchChanged = { isChecked ->
-                    !gameState.generateDumbPlayersList
+                    Log.d("StartGameStage", "StartGameStage: ${gameState.generateDumbPlayersList}")
                     textGenerateListInfo = if (isChecked) {
+                        gameState.generateDumbPlayersList = true
                         "Нужно для теста! Создает список."
                     } else {
+                        gameState.generateDumbPlayersList = false
                         "Нужно для теста! Не создает список."
                     }
                 })
-
             }
 
             //PLAYERS
@@ -272,10 +272,11 @@ fun StartGameStage(navController: NavController, gameState: GameState) {
                     playersCountText =
                         "Количество игроков: ${value.toInt()}"
                 },
-                currentValue = playersCount
+                currentValue = playersCount,
+                steps = 3,
+                valueRange = 7f..10f
             )
 
-            //todo
             Spacer(modifier = Modifier.weight(1f))
 
             Row(
@@ -348,30 +349,6 @@ fun SimpleSwitch(onSwitchChanged: (Boolean) -> Unit, enabled: (Boolean) = true) 
                 uncheckedTrackColor = Color.White,
             ),
             enabled = enabled
-        )
-    }
-}
-
-
-@Composable
-fun SliderMinimalExample(onSliderValueChanged: (Float) -> Unit, currentValue: Float) {
-    Column {
-        Slider(
-            value = currentValue,
-            onValueChange = {
-                onSliderValueChanged(it)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp)
-                .height(8.dp),
-            colors = SliderDefaults.colors(
-                thumbColor = Color.White,
-                activeTrackColor = Color.White,
-                inactiveTrackColor = Color.Gray
-            ),
-            steps = 2,
-            valueRange = 7f..10F
         )
     }
 }

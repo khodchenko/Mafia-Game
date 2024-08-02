@@ -3,6 +3,7 @@ package com.example.mafiaapplication.ui.stage
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,12 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mafiaapplication.R
+import com.example.mafiaapplication.data.GameStage
 import com.example.mafiaapplication.ui.theme.Background
 import com.example.mafiaapplication.ui.theme.BeautifulBlack
-import com.example.mafiaapplication.data.GameStage
 import com.example.mafiaapplication.data.GameState
-import com.example.mafiaapplication.data.Player
-import com.example.mafiaapplication.game.MafiaGame
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.helpers.SoundPlayer
@@ -51,19 +50,19 @@ import com.khodchenko.mafiaapp.ui.element.Timer
 fun NightStage(
     navController: NavController,
     gameState: GameState,
-    players: List<Player>,
     sharedPreferencesHelper: SharedPreferencesHelper
 ) {
     var activePlayerIndex by remember { mutableIntStateOf(11) }
     val soundPlayer = SoundPlayer(LocalContext.current)
     var showRoles by remember { mutableStateOf(true) }
-    val game = MafiaGame(gameState, players)
+
+    val players = gameState.players
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(BeautifulBlack)
-            .padding(8.dp)
+            .padding(4.dp)
             .clickable {
                 activePlayerIndex = 11
             }
@@ -73,15 +72,29 @@ fun NightStage(
                 .fillMaxHeight()
                 .align(Alignment.Center)
         ) {
-
             Column() {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp, end = 10.dp)
                 ) {
-                    Spacer(modifier = Modifier.weight(1f))
+                    IconButton(
+                        onClick = {
+                            navController.navigate(Screen.SettingsScreen.route)
+                        },
+                        modifier = Modifier.padding(end = 10.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_settings),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(40.dp)
+                        )
+                    }
 
                     Text(
-                        modifier = Modifier.padding(start = 60.dp),
                         text = "Ночь: ${gameState.day}",
                         color = Color.White,
                         fontSize = 26.sp,
@@ -89,7 +102,6 @@ fun NightStage(
                         textAlign = TextAlign.Center
                     )
 
-                    Spacer(modifier = Modifier.weight(1f))
                     IconButton(
                         onClick = {
                             showRoles = !showRoles
@@ -102,7 +114,8 @@ fun NightStage(
                                 id = R.drawable.ic_roles_show_hide
                             ),
                             contentDescription = null,
-                            tint = Color.White, modifier = Modifier.size(120.dp)
+                            tint = Color.White,
+                            modifier = Modifier.size(40.dp)
                         )
                     }
                 }
@@ -136,7 +149,7 @@ fun NightStage(
                     activePlayerIndex = clickedPlayerIndex
                 },
                 Background,
-                game = game,
+                gameState = gameState,
                 showRoles = showRoles
             )
 
@@ -149,25 +162,29 @@ fun NightStage(
             ) {
                 Button(
                     onClick = {
-                        players.find { it.number == activePlayerIndex + 1 }
-                            ?.let { game.killPlayer(it) }
-                        soundPlayer.playShootSound()
-
-                        if (game.checkEndGame()) {
-                            game.setStage(GameStage.GAME_OVER)
-                            game.awardPointsToWinningTeam()
-                            navController.navigate(Screen.EndGameStageScreen.route)
-                        } else if (activePlayerIndex == 11) {
-                            game.getAllAlivePlayers().find { it.number == game.getCurrentDay() }
-                                ?.let { game.setCurrentPlayer(it) }
-                            game.setStage(GameStage.DAY)
-                            navController.navigate(Screen.DayStageScreen.route)
-                        } else {
-                            game.setCurrentPlayer(players[activePlayerIndex])
-                            navController.navigate(Screen.LastWordsScreen.route)
+                        if (activePlayerIndex in players.indices) {
+                            players[activePlayerIndex].let { player ->
+                                val result = gameState.killPlayer(player)
+                                if (result) {
+                                    soundPlayer.playShootSound()
+                                    Log.d("NightStage", "Player ${players[activePlayerIndex]} killed")
+                                } else {
+                                    soundPlayer.playShootSound()
+                                    Log.d("NightStage", "Player ${players[activePlayerIndex]} already dead")
+                                }
+                            }
                         }
 
-                        sharedPreferencesHelper.saveGameState(gameState, players)
+                        sharedPreferencesHelper.saveGameState(gameState)
+
+                        if (activePlayerIndex == 11) {
+                            gameState.currentPlayerIndex = gameState.day - 1 //todo it can make bug
+                            gameState.stage = GameStage.DAY
+                            navController.navigate(Screen.DayStageScreen.route)
+                        } else {
+                            gameState.currentPlayerIndex = activePlayerIndex
+                            navController.navigate(Screen.LastWordsScreen.route)
+                        }
                     },
                     modifier = Modifier.align(Alignment.Center),
                     colors = ButtonDefaults.buttonColors(Color.White)

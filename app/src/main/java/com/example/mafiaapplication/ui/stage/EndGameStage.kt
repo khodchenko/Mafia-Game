@@ -15,21 +15,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mafiaapplication.data.GameState
-import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.ui.theme.Background
 import com.example.mafiaapplication.ui.theme.BeautifulBlack
 import com.khodchenko.mafiaapp.data.Team
-import com.example.mafiaapplication.game.MafiaGame
 import com.khodchenko.mafiaapp.ui.element.PlayerList
 
 @Composable
 fun EndGameStage(
-    gameState: GameState,
-    players: List<Player>
+    gameState: GameState
 ) {
-    val game = MafiaGame(gameState, players)
+    val players = gameState.players
     val bestPlayer = players.maxByOrNull { it.score }
-    val winnerTeam = game.getWinningTeam()
+    val winnerTeam = gameState.getWinningTeam()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -55,7 +52,7 @@ fun EndGameStage(
                 activePlayerIndex = bestPlayer?.number ?: 0,
                 onPlayerClick = {},
                 showScores = true,
-                game = game
+                gameState = gameState
             )
 
             Text(

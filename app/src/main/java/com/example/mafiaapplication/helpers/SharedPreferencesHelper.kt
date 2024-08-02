@@ -23,14 +23,15 @@ class SharedPreferencesHelper(context: Context) {
                 stage = GameStage.valueOf(jsonObject.getString("stage")),
                 day = jsonObject.getInt("day"),
                 currentPlayerIndex = jsonObject.getInt("currentPlayerIndex"),
+                numbersOfPlayers = jsonObject.getInt("numbersOfPlayers"),
                 players = loadPlayers()
             )
         } else {
-            GameState(stage = GameStage.NIGHT, day = 1, currentPlayerIndex = 0, players = mutableListOf())
+            GameState(stage = GameStage.START, day = 1, currentPlayerIndex = 0, players = mutableListOf())
         }
     }
 
-    fun loadPlayers(): MutableList<Player> {
+    private fun loadPlayers(): MutableList<Player> {
         val playersJson = sharedPreferences.getString("players", null)
         return if (playersJson != null) {
             val jsonArray = JSONArray(playersJson)
@@ -56,17 +57,18 @@ class SharedPreferencesHelper(context: Context) {
         }
     }
 
-    fun saveGameState(gameState: GameState, players: List<Player>) {
+    fun saveGameState(gameState: GameState) {
         val jsonObject = JSONObject()
         jsonObject.put("id", gameState.id)
         jsonObject.put("stage", gameState.stage.name)
         jsonObject.put("day", gameState.day)
         jsonObject.put("currentPlayerIndex", gameState.currentPlayerIndex)
+        jsonObject.put("numbersOfPlayers", gameState.numbersOfPlayers)
         sharedPreferences.edit().putString("gameState", jsonObject.toString()).apply()
         Log.d("SharedPreferencesHelper", "Game state saved \n$jsonObject")
 
         val jsonArray = JSONArray()
-        players.forEach { player ->
+        gameState.players.forEach { player ->
             val playerJsonObject = JSONObject()
             playerJsonObject.put("id", player.id)
             playerJsonObject.put("gameId", player.gameId)
@@ -80,5 +82,10 @@ class SharedPreferencesHelper(context: Context) {
         }
         sharedPreferences.edit().putString("players", jsonArray.toString()).apply()
         Log.d("SharedPreferencesHelper", "Game players saved \n$jsonArray")
+    }
+
+    fun clearSavedGame() {
+        sharedPreferences.edit().remove("gameState").remove("players").apply()
+        Log.d("SharedPreferencesHelper", "Saved game data cleared")
     }
 }

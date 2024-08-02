@@ -5,8 +5,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.mafiaapplication.data.GameState
-import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
+import com.example.mafiaapplication.ui.element.SettingsScreen
 import com.khodchenko.mafiaapp.data.Screen
 import com.example.mafiaapplication.ui.stage.DayStage
 import com.example.mafiaapplication.ui.stage.EndGameStage
@@ -17,14 +17,12 @@ import com.example.mafiaapplication.ui.stage.StartGameStage
 import com.example.mafiaapplication.ui.stage.VoteMainStage
 import com.example.mafiaapplication.ui.stage.VoteStage
 
-
 @Composable
 fun Navigation(
     navController: NavHostController,
     startDestination: String,
     sharedPreferencesHelper: SharedPreferencesHelper,
-    gameState: GameState,
-    players: List<Player>
+    gameState: GameState
 ) {
     NavHost(navController = navController, startDestination = startDestination) {
         composable(route = Screen.StartGameScreen.route) {
@@ -41,7 +39,6 @@ fun Navigation(
             NightStage(
                 navController = navController,
                 gameState = gameState,
-                players = players,
                 sharedPreferencesHelper = sharedPreferencesHelper
             )
         }
@@ -49,39 +46,39 @@ fun Navigation(
             DayStage(
                 navController = navController,
                 gameState = gameState,
-                players = players,
                 sharedPreferencesHelper = sharedPreferencesHelper
             )
         }
         composable(route = Screen.VoteMainStageScreen.route, arguments = listOf()) {
             VoteMainStage(
                 navController = navController,
-                gameState = gameState,
-                players = players
+                gameState = gameState
             )
         }
         composable(route = Screen.VoteStageScreen.route, arguments = listOf()) {
             VoteStage(
                 navController = navController,
-                gameState = gameState,
-                players = players
+                gameState = gameState
             )
         }
         composable(route = Screen.LastWordsScreen.route, arguments = listOf()) {
             LastWordsStage(
                 navController = navController,
-                gameState = gameState,
-                players = players
+                gameState = gameState
             )
         }
         composable(route = Screen.EndGameStageScreen.route, arguments = listOf()) {
             EndGameStage(
-                gameState = gameState,
-                players = players,
+                gameState = gameState
+            )
+        }
+        composable(route = Screen.SettingsScreen.route, arguments = listOf()) {
+            SettingsScreen(
+                navController = navController,
+                sharedPreferencesHelper = sharedPreferencesHelper,
+                gameState = gameState
             )
         }
     }
-
-
 }
 

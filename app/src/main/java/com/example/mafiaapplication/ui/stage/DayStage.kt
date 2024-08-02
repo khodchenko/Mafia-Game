@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -40,7 +42,6 @@ import com.example.mafiaapplication.data.GameState
 import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
-import com.example.mafiaapplication.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
 import com.example.mafiaapplication.ui.theme.Background
 import com.khodchenko.mafiaapp.ui.element.PlayerDialog
@@ -52,174 +53,204 @@ import com.khodchenko.mafiaapp.ui.element.Timer
 fun DayStage(
     navController: NavController,
     gameState: GameState,
-    players: List<Player>,
     sharedPreferencesHelper: SharedPreferencesHelper
 ) {
 
     val context = LocalContext.current
     var showRoles by remember { mutableStateOf(false) }
-    var activePlayerIndex by remember { mutableIntStateOf(0) }
+    var activePlayerIndex by remember { mutableIntStateOf(gameState.currentPlayerIndex) }
     var showDialog by remember { mutableStateOf(false) }
     var selectedPlayer by remember { mutableStateOf<Player?>(null) }
-    val game = MafiaGame(gameState, players)
-
+    var counterHelper: Int = 0
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Background)
-            .padding(8.dp)
+            .padding(4.dp)
     ) {
-        Column() {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(start = 10.dp)
-            ) {
-                Spacer(modifier = Modifier.weight(1f))
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .align(Alignment.Center)
+        ) {
+            Column() {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp, end = 10.dp)
+                ) {
+                    IconButton(
+                        onClick = {
+                            navController.navigate(Screen.SettingsScreen.route)
+                        },
+                        modifier = Modifier.padding(end = 10.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_settings),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(40.dp)
+                        )
+                    }
+
+                    Text(
+                        text = "День: ${gameState.day}",
+                        style = MaterialTheme.typography.displayLarge,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 26.sp,
+                        color = Color.White,
+                        textAlign = TextAlign.Center
+                    )
+
+                    IconButton(
+                        onClick = {
+                            showRoles = !showRoles
+                        },
+                        modifier = Modifier.padding(start = 10.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                id = if (showRoles) R.drawable.ic_roles_show_hide else R.drawable.ic_roles_show_hide
+                            ),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(40.dp)
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(2.dp)
+                        .background(Color.White)
+                )
+
+                PlayerList(
+                    playersList = gameState.getAllAlivePlayers(),
+                    activePlayerIndex = activePlayerIndex,
+                    onPlayerClick = { clickedIndex ->
+                        selectedPlayer = gameState.getAllAlivePlayers()[clickedIndex]
+                        showDialog = true
+                    },
+                    showRoles = showRoles, gameState = gameState
+                )
+                if (showDialog) {
+                    PlayerDialog(
+                        player = selectedPlayer,
+                        activePlayer = gameState.getAllAlivePlayers()
+                            .find { it.number == activePlayerIndex }
+                            ?: gameState.getAllAlivePlayers()[0],
+                        onDismiss = { showDialog = false },
+                        onVoteClick = {
+                            if (!gameState.getCandidates().contains(selectedPlayer)) {
+                                gameState.addCandidate(selectedPlayer!!)
+                                Log.d(
+                                    "DayStage",
+                                    "Add ${selectedPlayer!!.name} to Candidates: ${gameState.getCandidates()} "
+                                )
+                            } else {
+                                Log.d("DayStage", "Кандидат $selectedPlayer уже выставлен")
+                            }
+                        },
+                        onFoulClick = {
+                            selectedPlayer?.let {
+                                it.fouls += 1
+                                Toast.makeText(
+                                    context,
+                                    "Выдан фол игроку ${it.name}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(2.dp)
+                        .background(Color.White)
+                )
 
                 Text(
-                    text = "День: $${gameState.day}",
-                    modifier = Modifier.padding(start = 60.dp),
-                    style = MaterialTheme.typography.displayLarge,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 28.sp,
+                    modifier = Modifier.padding(top = 4.dp),
+                    text = "На голосовании: ${
+                        gameState.getCandidates().joinToString { it.number.toString() }
+                    }",
+                    style = MaterialTheme.typography.bodySmall,
+                    fontSize = 22.sp,
                     color = Color.White
                 )
 
-                Spacer(modifier = Modifier.weight(1f))
-
-                IconButton(
-                    onClick = {
-                        showRoles = !showRoles
-                    },
-                    modifier = Modifier.padding(end = 10.dp)
-                ) {
-                    Icon(
-                        painter = if (showRoles) painterResource(id = R.drawable.ic_roles_show_hide)
-                        else painterResource(
-                            id = R.drawable.ic_roles_show_hide
-                        ),
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(120.dp)
-                    )
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(2.dp)
-                    .background(Color.White)
-            )
-
-            PlayerList(
-                playersList = players,
-                activePlayerIndex = activePlayerIndex,
-                onPlayerClick = { clickedIndex ->
-                    selectedPlayer = players.find { it.number == clickedIndex + 1 }
-                    showDialog = true
-                },
-                showRoles = showRoles, game = game
-            )
-            if (showDialog) {
-                PlayerDialog(
-                    player = selectedPlayer,
-                    activePlayer = players.find { it.number == activePlayerIndex }
-                        ?: players[0],
-                    onDismiss = { showDialog = false },
-                    onVoteClick = {
-                        if (!game.getCandidates().contains(selectedPlayer)) {
-                            game.addCandidate(selectedPlayer!!)
-                            Log.d(
-                                "DayStage",
-                                "Add ${selectedPlayer!!.name} to Candidates: ${game.getCandidates()} "
+                Row() {
+                    Box(modifier = Modifier.clickable {
+                        counterHelper -= 1
+                        activePlayerIndex =
+                            (activePlayerIndex - 1 + gameState.getAllAlivePlayers().size) % gameState.getAllAlivePlayers().size
+                    }) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_previous),
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(42.dp)
                             )
-                        } else {
-                            Log.d("DayStage", "Кандидат $selectedPlayer уже выставлен")
-                        }
-                    },
-                    onFoulClick = {
-                        selectedPlayer?.let {
-                            it.fouls += 1
-                            Toast.makeText(
-                                context,
-                                "Выдан фол игроку ${it.name}",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Spacer(modifier = Modifier.width(2.dp))
+                            Text(text = "Предыдущий", color = Color.White, fontSize = 20.sp)
                         }
                     }
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(2.dp)
-                    .background(Color.White)
-            )
 
-            Text(
-                modifier = Modifier.padding(top = 4.dp),
-                text = "На голосовании: ${
-                    game.getCandidates().joinToString { it.number.toString() }
-                }",
-                style = MaterialTheme.typography.bodySmall,
-                fontSize = 22.sp,
-                color = Color.White
-            )
+                    Spacer(modifier = Modifier.weight(1f))
 
-            Row() {
-                Box(modifier = Modifier.clickable {
-                    activePlayerIndex =
-                        (activePlayerIndex - 1 + players.size) % players.size
-                }) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_previous),
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(42.dp)
-                        )
-                        Spacer(modifier = Modifier.width(2.dp))
-                        Text(text = "Предыдущий", color = Color.White, fontSize = 20.sp)
+                    Box(modifier = Modifier.clickable {
+
+                        if (counterHelper < gameState.getAllAlivePlayers().size) counterHelper += 1 else Toast.makeText(
+                            context,
+                            "All players passed!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        activePlayerIndex =
+                            (activePlayerIndex + 1) % gameState.getAllAlivePlayers().size
+                    }) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(text = "Следующий", color = Color.White, fontSize = 20.sp)
+                            Spacer(modifier = Modifier.width(2.dp))
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_next),
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(42.dp)
+                            )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                Box(modifier = Modifier.clickable {
-                    activePlayerIndex = (activePlayerIndex + 1) % players.size
-                }) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(text = "Следующий", color = Color.White, fontSize = 20.sp)
-                        Spacer(modifier = Modifier.width(2.dp))
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_next),
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(42.dp)
-                        )
-                    }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 20.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    CustomElevatedButton(buttonText = "Голосование", enabled = true, onClick = {
+                        gameState.getCandidates().firstOrNull()
+                            ?.let { gameState.setCurrentPlayer(it) }
+                        Log.d("DayStage", "Current player: ${gameState.currentPlayerIndex}")
+                        gameState.stage = GameStage.VOTE
+                        navController.navigate(Screen.VoteMainStageScreen.route)
+                        sharedPreferencesHelper.saveGameState(gameState)
+                    })
                 }
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                CustomElevatedButton(buttonText = "Голосование", enabled = true, onClick = {
-                    game.getCandidates().firstOrNull()?.let { game.setCurrentPlayer(it) }
-                    Log.d("DayStage", "Current player: ${game.getCurrentPlayerIndex()}")
-                    game.setStage(GameStage.VOTE)
-                    navController.navigate(Screen.VoteMainStageScreen.route)
-                    sharedPreferencesHelper.saveGameState(game.gameState, players)
-                })
-            }
 
-            Timer()
+                Timer()
+            }
         }
     }
 }

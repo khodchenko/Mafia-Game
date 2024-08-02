@@ -32,9 +32,7 @@ import androidx.navigation.NavController
 import com.example.mafiaapplication.data.GameStage
 import com.example.mafiaapplication.data.GameState
 import com.example.mafiaapplication.data.Player
-import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
-import com.example.mafiaapplication.game.MafiaGame
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
 import com.example.mafiaapplication.ui.theme.Background
 
@@ -42,15 +40,14 @@ import com.example.mafiaapplication.ui.theme.Background
 @Composable
 fun VoteStage(
     navController: NavController,
-    gameState: GameState,
-    players: List<Player>
+    gameState: GameState
 ) {
-    val game = MafiaGame(gameState, players)
+
     var voters by remember { mutableStateOf(emptyList<Player>()) }
     var isAllSelected by remember { mutableStateOf(false) }
 
-    val nonVotedPlayers = game.getAllPlayers().filter { player ->
-        !game.getCandidatesAndVotes().values.flatten().any { it.number == player.number }
+    val nonVotedPlayers = gameState.players.filter { player ->
+        !gameState.getCandidatesAndVotes().values.flatten().any { it.number == player.number }
     }
 
     Box(
@@ -72,7 +69,7 @@ fun VoteStage(
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = game.getPlayerByIndex(game.getCurrentPlayerIndex()).name,
+                text = gameState.players[gameState.currentPlayerIndex].name,
                 color = Color.White,
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
@@ -178,32 +175,32 @@ fun VoteStage(
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomElevatedButton("Голосуем", enabled = true, onClick = {
-                    game.addVotesForCandidate(game.getPlayerByIndex(game.getCurrentPlayerIndex()), voters)
-                    Log.d("VoteStage", game.getCandidatesAndVotesLog())
+                    gameState.addVotesForCandidate(gameState.players[gameState.currentPlayerIndex], voters)
+                    Log.d("VoteStage", gameState.getCandidatesAndVotesLog())
 
-                    if (game.getCandidates().last() == game.getPlayerByIndex(game.getCurrentPlayerIndex())) {
-                        if (game.findCandidatesWithLongestVotes().size == 1) {
-                            game.killPlayer(game.findCandidatesWithLongestVotes()[0])
-                            game.clearVote()
-                            game.newDay()
-                            game.setStage(GameStage.NIGHT)
+                    if (gameState.getCandidates().last() == gameState.players[gameState.currentPlayerIndex]) {
+                        if (gameState.findCandidatesWithLongestVotes().size == 1) {
+                            gameState.killPlayer(gameState.findCandidatesWithLongestVotes()[0])
+                            gameState.clearVote()
+                            gameState.newDay()
+                            gameState.stage = GameStage.NIGHT
                             navController.navigate(Screen.LastWordsScreen.route)
-                        } else if (game.findCandidatesWithLongestVotes().size > 1 && game.getCurrentStage() != GameStage.VOTE_2) {
-                            game.removeCandidatesExceptMaxVotes()
-                            game.setStage(GameStage.VOTE_2)
-                            game.setCurrentPlayer(game.getCandidates()[0])
-                            game.clearVoters()
+                        } else if (gameState.findCandidatesWithLongestVotes().size > 1 && gameState.stage != GameStage.VOTE_2) {
+                            gameState.removeCandidatesExceptMaxVotes()
+                            gameState.stage = GameStage.VOTE_2
+                            gameState.currentPlayerIndex = gameState.players.indexOf(gameState.getCandidates()[0])
+                            gameState.clearVoters()
                             navController.navigate(Screen.VoteMainStageScreen.route)
-                        } else if (game.findCandidatesWithLongestVotes().size > 1 && game.getCurrentStage() == GameStage.VOTE_2) {
-                            game.setCurrentPlayer(game.getCandidates()[0])
-                            game.clearVoters()
-                            game.setStage(GameStage.VOTE_3)
+                        } else if (gameState.findCandidatesWithLongestVotes().size > 1 && gameState.stage == GameStage.VOTE_2) {
+                            gameState.setCurrentPlayer(gameState.getCandidates()[0])
+                            gameState.clearVoters()
+                            gameState.stage = GameStage.VOTE_3
                             navController.navigate(Screen.VoteMainStageScreen.route)
                         }
-                        Log.d("VoteStage", "Stage: ${game.getCurrentStage()}")
+                        Log.d("VoteStage", "Stage: ${gameState.stage}")
                     } else {
-                        game.getNextCandidateAfterCurrentPlayer()
-                            .let { game.setCurrentPlayer(it) }
+                        gameState.getNextCandidateAfterCurrentPlayer()
+                            ?.let { gameState.setCurrentPlayer(it) }
                         navController.navigate(Screen.VoteMainStageScreen.route)
                     }
 

@@ -12,7 +12,6 @@ import com.example.mafiaapplication.data.GameStage
 import com.example.mafiaapplication.game.Navigation
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
-import com.example.mafiaapplication.game.MafiaGame
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("MutableCollectionMutableState")
@@ -24,24 +23,21 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
 
                 val gameState by remember { mutableStateOf(sharedPreferencesHelper.loadGameState()) }
-                val players by remember { mutableStateOf(sharedPreferencesHelper.loadPlayers()) }
-                val mafiaGame = MafiaGame(gameState, players)
 
-                // Определение начального экрана в зависимости от стадии игры
                 val startDestination = when (gameState.stage) {
                     GameStage.NIGHT -> Screen.NightStageScreen.route
                     GameStage.DAY -> Screen.DayStageScreen.route
                     GameStage.ROLE_PICK -> Screen.RolePickerScreen.route
-                    // Добавьте другие стадии игры, если они есть
-                    else -> Screen.RolePickerScreen.route
+                    GameStage.START -> Screen.StartGameScreen.route
+
+                    else -> Screen.StartGameScreen.route
                 }
 
                 Navigation(
                     navController = navController,
                     startDestination = startDestination,
                     sharedPreferencesHelper = sharedPreferencesHelper,
-                    gameState = gameState,
-                    players = players
+                    gameState = gameState
                 )
             }
         }
