@@ -75,7 +75,8 @@ fun Navigation(
         composable(route = Screen.SettingsScreen.route, arguments = listOf()) {
             SettingsScreen(
                 navController = navController,
-                sharedPreferencesHelper = sharedPreferencesHelper
+                sharedPreferencesHelper = sharedPreferencesHelper,
+                gameState = gameState
             )
         }
     }

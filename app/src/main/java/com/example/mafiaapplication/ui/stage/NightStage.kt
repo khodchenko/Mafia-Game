@@ -62,7 +62,7 @@ fun NightStage(
         modifier = Modifier
             .fillMaxSize()
             .background(BeautifulBlack)
-            .padding(8.dp)
+            .padding(4.dp)
             .clickable {
                 activePlayerIndex = 11
             }
@@ -72,7 +72,6 @@ fun NightStage(
                 .fillMaxHeight()
                 .align(Alignment.Center)
         ) {
-
             Column() {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,

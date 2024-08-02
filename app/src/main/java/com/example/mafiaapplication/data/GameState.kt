@@ -117,6 +117,7 @@ data class GameState(
     }
 
     fun getAllAlivePlayers(): List<Player> = players.filter { it.isAlive }
+    fun getAllDeadPlayers(): List<Player> = players.filter { !it.isAlive }
 
     fun setCurrentPlayer(player: Player) {
         currentPlayerIndex = players.indexOf(player)

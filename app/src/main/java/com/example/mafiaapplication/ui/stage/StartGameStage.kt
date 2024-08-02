@@ -45,6 +45,7 @@ import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.data.Role
 import com.khodchenko.mafiaapp.data.Screen
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
+import com.example.mafiaapplication.ui.element.SliderMinimalExample
 import com.example.mafiaapplication.ui.theme.Background
 
 @Composable
@@ -271,10 +272,11 @@ fun StartGameStage(navController: NavController, gameState: GameState) {
                     playersCountText =
                         "Количество игроков: ${value.toInt()}"
                 },
-                currentValue = playersCount
+                currentValue = playersCount,
+                steps = 3,
+                valueRange = 7f..10f
             )
 
-            //todo
             Spacer(modifier = Modifier.weight(1f))
 
             Row(
@@ -347,30 +349,6 @@ fun SimpleSwitch(onSwitchChanged: (Boolean) -> Unit, enabled: (Boolean) = true) 
                 uncheckedTrackColor = Color.White,
             ),
             enabled = enabled
-        )
-    }
-}
-
-
-@Composable
-fun SliderMinimalExample(onSliderValueChanged: (Float) -> Unit, currentValue: Float) {
-    Column {
-        Slider(
-            value = currentValue,
-            onValueChange = {
-                onSliderValueChanged(it)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp)
-                .height(8.dp),
-            colors = SliderDefaults.colors(
-                thumbColor = Color.White,
-                activeTrackColor = Color.White,
-                inactiveTrackColor = Color.Gray
-            ),
-            steps = 2,
-            valueRange = 7f..10F
         )
     }
 }
