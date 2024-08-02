@@ -56,9 +56,13 @@ data class GameState(
         return logBuilder.toString()
     }
 
-    fun getNextCandidateAfterCurrentPlayer(): Player {
-        val candidateKeys = candidates.keys.toList()
-        return candidateKeys[currentPlayerIndex]
+    fun getNextCandidateAfterCurrentPlayer(): Player? {
+        return if (players.isEmpty()) {
+            null
+        } else {
+            val nextIndex = (currentPlayerIndex + 1) % players.size
+            players.getOrNull(nextIndex)
+        }
     }
 
     fun getVotersByCandidate(candidate: Player): MutableList<Player>? {

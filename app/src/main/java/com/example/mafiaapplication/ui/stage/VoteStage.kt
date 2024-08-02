@@ -200,7 +200,7 @@ fun VoteStage(
                         Log.d("VoteStage", "Stage: ${gameState.stage}")
                     } else {
                         gameState.getNextCandidateAfterCurrentPlayer()
-                            .let { gameState.setCurrentPlayer(it) }
+                            ?.let { gameState.setCurrentPlayer(it) }
                         navController.navigate(Screen.VoteMainStageScreen.route)
                     }
 
