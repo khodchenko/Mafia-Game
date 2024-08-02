@@ -3,21 +3,16 @@ package com.example.mafiaapplication.ui.stage
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -41,6 +35,7 @@ import com.example.mafiaapplication.ui.theme.Background
 import com.example.mafiaapplication.ui.theme.BeautifulBlack
 import com.example.mafiaapplication.data.GameState
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
+import com.example.mafiaapplication.ui.element.HeaderBanner
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.helpers.SoundPlayer
 import com.khodchenko.mafiaapp.ui.element.PlayerList
@@ -54,7 +49,7 @@ fun NightStage(
 ) {
     var activePlayerIndex by remember { mutableIntStateOf(11) }
     val soundPlayer = SoundPlayer(LocalContext.current)
-    var showRoles by remember { mutableStateOf(true) }
+    val showRoles = remember { mutableStateOf(false) }
 
     val players = gameState.players
 
@@ -72,54 +67,17 @@ fun NightStage(
                 .fillMaxHeight()
                 .align(Alignment.Center)
         ) {
-            Column() {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp, end = 10.dp)
-                ) {
-                    IconButton(
-                        onClick = {
-                            navController.navigate(Screen.SettingsScreen.route)
-                        },
-                        modifier = Modifier.padding(end = 10.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_settings),
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(40.dp)
-                        )
-                    }
-
-                    Text(
-                        text = "Ночь: ${gameState.day}",
-                        color = Color.White,
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
-                    )
-
-                    IconButton(
-                        onClick = {
-                            showRoles = !showRoles
-                        },
-                        modifier = Modifier.padding(end = 10.dp)
-                    ) {
-                        Icon(
-                            painter = if (showRoles) painterResource(id = R.drawable.ic_roles_show_hide)
-                            else painterResource(
-                                id = R.drawable.ic_roles_show_hide
-                            ),
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(40.dp)
-                        )
-                    }
+            HeaderBanner(
+                leftIconId = R.drawable.ic_settings,
+                leftIconClick = {
+                    navController.navigate(Screen.SettingsScreen.route)
+                },
+                text = "Ночь: ${gameState.day}",
+                rightIconId = if (showRoles.value) R.drawable.ic_roles_show_hide else R.drawable.ic_roles_show_hide,
+                rightIconClick = {
+                    showRoles.value = !showRoles.value
                 }
-            }
+            )
 
             Box(
                 modifier = Modifier
@@ -150,7 +108,7 @@ fun NightStage(
                 },
                 Background,
                 gameState = gameState,
-                showRoles = showRoles
+                showRoles = showRoles.value
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -167,10 +125,16 @@ fun NightStage(
                                 val result = gameState.killPlayer(player)
                                 if (result) {
                                     soundPlayer.playShootSound()
-                                    Log.d("NightStage", "Player ${players[activePlayerIndex]} killed")
+                                    Log.d(
+                                        "NightStage",
+                                        "Player ${players[activePlayerIndex]} killed"
+                                    )
                                 } else {
                                     soundPlayer.playShootSound()
-                                    Log.d("NightStage", "Player ${players[activePlayerIndex]} already dead")
+                                    Log.d(
+                                        "NightStage",
+                                        "Player ${players[activePlayerIndex]} already dead"
+                                    )
                                 }
                             }
                         }
