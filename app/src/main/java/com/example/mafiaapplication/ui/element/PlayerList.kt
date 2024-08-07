@@ -1,4 +1,4 @@
-package com.khodchenko.mafiaapp.ui.element
+package com.example.mafiaapplication.ui.element
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,7 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mafiaapplication.data.GameState
+import com.example.mafiaapplication.game.GameState
 import com.example.mafiaapplication.data.Player
 
 
@@ -87,7 +87,7 @@ private fun PlayerItem(
             text = "${player.number}.  ${player.name}",
             style = MaterialTheme.typography.titleMedium,
             fontSize = if (isActive) 28.sp else 22.sp,
-            color = Color.White
+            color = if (player.isAlive) Color.White else Color.Gray
         )
 
         Text(
@@ -107,7 +107,7 @@ private fun PlayerItem(
             else player.score.toString(),
             style = MaterialTheme.typography.bodySmall,
             fontSize = 22.sp,
-            color = Color.White,
+            color = if (player.isAlive) Color.White else Color.Gray,
             modifier = Modifier.padding(start = 12.dp)
         )
 
@@ -117,7 +117,7 @@ private fun PlayerItem(
                 text = player.role.toString(),
                 style = MaterialTheme.typography.bodySmall,
                 fontSize = 20.sp,
-                color = Color.White,
+                color = if (player.isAlive) Color.White else Color.Gray,
                 modifier = Modifier.padding(start = 12.dp)
             )
         }

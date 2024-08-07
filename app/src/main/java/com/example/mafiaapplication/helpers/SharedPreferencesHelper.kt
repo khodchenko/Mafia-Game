@@ -3,8 +3,8 @@ package com.example.mafiaapplication.helpers
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import com.example.mafiaapplication.data.GameStage
-import com.example.mafiaapplication.data.GameState
+import com.example.mafiaapplication.game.GameStage
+import com.example.mafiaapplication.game.GameState
 import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.data.Role
 import org.json.JSONArray

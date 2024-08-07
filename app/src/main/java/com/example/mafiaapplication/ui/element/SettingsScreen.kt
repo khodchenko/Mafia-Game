@@ -31,11 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mafiaapplication.R
-import com.example.mafiaapplication.data.GameState
+import com.example.mafiaapplication.game.GameState
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.example.mafiaapplication.ui.theme.Background
 import com.khodchenko.mafiaapp.data.Screen
-import com.khodchenko.mafiaapp.ui.element.PlayerList
 
 @Composable
 fun SettingsScreen(

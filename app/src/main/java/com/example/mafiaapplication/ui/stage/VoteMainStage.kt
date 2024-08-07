@@ -31,13 +31,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mafiaapplication.R
-import com.example.mafiaapplication.data.GameStage
-import com.example.mafiaapplication.data.GameState
+import com.example.mafiaapplication.game.GameStage
+import com.example.mafiaapplication.game.GameState
 import com.khodchenko.mafiaapp.data.Screen
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
 import com.example.mafiaapplication.ui.element.HeaderBanner
 import com.example.mafiaapplication.ui.theme.Background
-import com.khodchenko.mafiaapp.ui.element.PlayerList
+import com.example.mafiaapplication.ui.element.PlayerList
 import com.khodchenko.mafiaapp.ui.element.Timer
 
 

@@ -8,7 +8,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.*
 import androidx.navigation.compose.rememberNavController
 import com.example.mafiaapplication.ui.theme.MafiaApplicationTheme
-import com.example.mafiaapplication.data.GameStage
+import com.example.mafiaapplication.game.GameStage
 import com.example.mafiaapplication.game.Navigation
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
