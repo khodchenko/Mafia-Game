@@ -21,7 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mafiaapplication.data.GameState
+import com.example.mafiaapplication.game.GameState
 import com.example.mafiaapplication.data.Player
 
 

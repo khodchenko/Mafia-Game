@@ -1,8 +1,10 @@
-package com.example.mafiaapplication.data
+package com.example.mafiaapplication.game
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.khodchenko.mafiaapp.data.Team
+import com.example.mafiaapplication.data.Player
+import com.example.mafiaapplication.data.Role
+import com.example.mafiaapplication.data.Scores
 
 @Entity(tableName = "game_state")
 data class GameState(
@@ -93,11 +95,11 @@ data class GameState(
         for (player in alivePlayers) {
             if (player.fouls >= 4) {
                 killPlayer(player)
+                deductionPointsForDisqualification(player)
                 currentPlayerIndex = players.indexOf(player)
                 return true
             }
         }
-
         return false
     }
 
@@ -122,15 +124,6 @@ data class GameState(
         currentPlayerIndex = players.indexOf(player)
     }
 
-//    fun initialPlayersTeams() {
-//        players.forEach { player ->
-//            when (player.role) {
-//                Role.MAFIA, Role.DON -> blackTeam.players.add(player)
-//                Role.CIVIL, Role.SHERIFF -> redTeam.players.add(player)
-//            }
-//        }
-//    }
-
     fun checkEndGame(): Boolean {
         val aliveBlackTeamSize =
             players.count { it.role == Role.MAFIA && it.isAlive || it.role == Role.DON && it.isAlive }
@@ -147,28 +140,61 @@ data class GameState(
         return if (aliveBlackTeamSize == 0 || aliveBlackTeamSize == aliveRedTeamSize) "Red" else "Black"
     }
 
+    fun getPlayerByIndex(index: Int): Player {
+        return players[index]
+    }
+
     fun awardPointsToWinningTeam() {
         val winningTeam = getWinningTeam()
         if (winningTeam == "Black") {
             players.forEach { player ->
                 if (player.role == Role.MAFIA || player.role == Role.DON) {
-                    player.score += 1
+                    player.score += Scores.WIN_TEAM_SCORE
                 }
             }
         } else if (winningTeam == "Red") {
             players.forEach { player ->
                 if (player.role == Role.CIVIL || player.role == Role.SHERIFF) {
-                    player.score += 1
+                    player.score += Scores.WIN_TEAM_SCORE
                 }
             }
         }
     }
 
-    fun getPlayerByIndex(index: Int): Player {
-        return players[index]
+    private fun deductionPointsForDisqualification(player: Player) {
+        player.score -= Scores.DISQUALIFICATION_SCORE
+    }
+
+    fun awardPointsForBestMove(player: Player, listOfPlayers: List<Player>) {
+        if (player.role == Role.CIVIL || player.role == Role.SHERIFF) {
+            if (listOfPlayers.count { it.role == Role.MAFIA || it.role == Role.DON } == 2) {
+                player.score += Scores.BEST_MOVE_2_SCORE
+            } else if (listOfPlayers.count { it.role == Role.MAFIA || it.role == Role.DON } == 3) {
+                player.score += Scores.BEST_MOVE_3_SCORE
+            }
+        }
+    }
+
+    fun awardPointsForMakeCandidate(player: Player, candidate: Player) {
+        if (player.role == Role.CIVIL || player.role == Role.SHERIFF && candidate.role == Role.MAFIA || candidate.role == Role.DON) {
+            player.score += Scores.MAKE_CANDIDATE_OPPOSITE_TEAM_SCORE
+        } else if (player.role == Role.MAFIA || player.role == Role.DON && candidate.role == Role.CIVIL || candidate.role == Role.SHERIFF) {
+            player.score += Scores.MAKE_CANDIDATE_OPPOSITE_TEAM_SCORE
+        } else {
+            player.score -= Scores.MAKE_CANDIDATE_SAME_TEAM_SCORE
+        }
+    }
+
+    fun awardPointsForVoting(player: Player, candidate: Player){
+        if (player.role == Role.CIVIL || player.role == Role.SHERIFF && candidate.role == Role.MAFIA || candidate.role == Role.DON) {
+            player.score += Scores.VOTING_OPPOSITE_TEAM_SCORE
+        } else if (player.role == Role.MAFIA || player.role == Role.DON && candidate.role == Role.CIVIL || candidate.role == Role.SHERIFF) {
+            player.score += Scores.VOTING_OPPOSITE_TEAM_SCORE
+        } else {
+            player.score -= Scores.VOTING_SAME_TEAM_SCORE
+        }
     }
 }
-
 
 enum class GameStage {
     START,

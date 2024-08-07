@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.mafiaapplication.data.GameState
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.example.mafiaapplication.ui.element.SettingsScreen
 import com.khodchenko.mafiaapp.data.Screen

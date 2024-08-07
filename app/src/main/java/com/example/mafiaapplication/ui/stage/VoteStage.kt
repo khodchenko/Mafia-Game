@@ -29,8 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.mafiaapplication.data.GameStage
-import com.example.mafiaapplication.data.GameState
+import com.example.mafiaapplication.game.GameStage
+import com.example.mafiaapplication.game.GameState
 import com.example.mafiaapplication.data.Player
 import com.khodchenko.mafiaapp.data.Screen
 import com.example.mafiaapplication.ui.element.CustomElevatedButton

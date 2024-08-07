@@ -30,10 +30,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mafiaapplication.R
-import com.example.mafiaapplication.data.GameStage
+import com.example.mafiaapplication.game.GameStage
 import com.example.mafiaapplication.ui.theme.Background
 import com.example.mafiaapplication.ui.theme.BeautifulBlack
-import com.example.mafiaapplication.data.GameState
+import com.example.mafiaapplication.game.GameState
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.example.mafiaapplication.ui.element.HeaderBanner
 import com.khodchenko.mafiaapp.data.Screen

@@ -40,8 +40,8 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.mafiaapplication.data.GameStage
-import com.example.mafiaapplication.data.GameState
+import com.example.mafiaapplication.game.GameStage
+import com.example.mafiaapplication.game.GameState
 import com.example.mafiaapplication.data.Player
 import com.example.mafiaapplication.data.Role
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
