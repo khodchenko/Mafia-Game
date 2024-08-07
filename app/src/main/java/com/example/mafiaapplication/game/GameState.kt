@@ -19,13 +19,21 @@ data class GameState(
 ) {
     private var candidates: MutableMap<Player, List<Player>> = mutableMapOf()
 
-    fun addCandidate(candidate: Player) {
+    private fun getUniquePlayers(playerList: List<Player>): List<Player> {
+        return playerList.filter { player ->
+            !candidates.values.flatten().any { it.number == player.number }
+        }
+    }
+
+    fun addCandidate(player: Player, candidate: Player) {
+        awardPointsForMakeCandidate(player, candidate)
         candidates[candidate] = emptyList()
     }
 
     fun addVotesForCandidate(candidate: Player, playerList: List<Player>) {
-        val uniquePlayerList = playerList.filter { player ->
-            !candidates.values.flatten().any { it.number == player.number }
+        val uniquePlayerList = getUniquePlayers(playerList)
+        uniquePlayerList.forEach { player ->
+            awardPointsForVoting(player, candidate)
         }
         candidates[candidate] = uniquePlayerList
     }
@@ -140,10 +148,6 @@ data class GameState(
         return if (aliveBlackTeamSize == 0 || aliveBlackTeamSize == aliveRedTeamSize) "Red" else "Black"
     }
 
-    fun getPlayerByIndex(index: Int): Player {
-        return players[index]
-    }
-
     fun awardPointsToWinningTeam() {
         val winningTeam = getWinningTeam()
         if (winningTeam == "Black") {
@@ -175,7 +179,7 @@ data class GameState(
         }
     }
 
-    fun awardPointsForMakeCandidate(player: Player, candidate: Player) {
+    private fun awardPointsForMakeCandidate(player: Player, candidate: Player) {
         if (player.role == Role.CIVIL || player.role == Role.SHERIFF && candidate.role == Role.MAFIA || candidate.role == Role.DON) {
             player.score += Scores.MAKE_CANDIDATE_OPPOSITE_TEAM_SCORE
         } else if (player.role == Role.MAFIA || player.role == Role.DON && candidate.role == Role.CIVIL || candidate.role == Role.SHERIFF) {
@@ -185,7 +189,7 @@ data class GameState(
         }
     }
 
-    fun awardPointsForVoting(player: Player, candidate: Player){
+    private fun awardPointsForVoting(player: Player, candidate: Player){
         if (player.role == Role.CIVIL || player.role == Role.SHERIFF && candidate.role == Role.MAFIA || candidate.role == Role.DON) {
             player.score += Scores.VOTING_OPPOSITE_TEAM_SCORE
         } else if (player.role == Role.MAFIA || player.role == Role.DON && candidate.role == Role.CIVIL || candidate.role == Role.SHERIFF) {

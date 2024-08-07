@@ -38,7 +38,7 @@ import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.example.mafiaapplication.ui.element.HeaderBanner
 import com.khodchenko.mafiaapp.data.Screen
 import com.khodchenko.mafiaapp.helpers.SoundPlayer
-import com.khodchenko.mafiaapp.ui.element.PlayerList
+import com.example.mafiaapplication.ui.element.PlayerList
 import com.khodchenko.mafiaapp.ui.element.Timer
 
 @Composable
@@ -124,13 +124,11 @@ fun NightStage(
                             players[activePlayerIndex].let { player ->
                                 val result = gameState.killPlayer(player)
                                 if (result) {
-                                    soundPlayer.playShootSound()
                                     Log.d(
                                         "NightStage",
                                         "Player ${players[activePlayerIndex]} killed"
                                     )
                                 } else {
-                                    soundPlayer.playShootSound()
                                     Log.d(
                                         "NightStage",
                                         "Player ${players[activePlayerIndex]} already dead"
@@ -138,7 +136,7 @@ fun NightStage(
                                 }
                             }
                         }
-
+                        soundPlayer.playShootSound()
                         sharedPreferencesHelper.saveGameState(gameState)
 
                         if (activePlayerIndex == 11) {

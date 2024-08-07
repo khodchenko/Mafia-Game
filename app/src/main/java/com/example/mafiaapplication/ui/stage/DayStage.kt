@@ -43,7 +43,7 @@ import com.example.mafiaapplication.ui.element.CustomElevatedButton
 import com.example.mafiaapplication.ui.element.HeaderBanner
 import com.example.mafiaapplication.ui.theme.Background
 import com.khodchenko.mafiaapp.ui.element.PlayerDialog
-import com.khodchenko.mafiaapp.ui.element.PlayerList
+import com.example.mafiaapplication.ui.element.PlayerList
 import com.khodchenko.mafiaapp.ui.element.Timer
 
 
@@ -55,7 +55,7 @@ fun DayStage(
 ) {
 
     val context = LocalContext.current
-    var showRoles = remember { mutableStateOf(false) }
+    val showRoles = remember { mutableStateOf(false) }
     var activePlayerIndex by remember { mutableIntStateOf(gameState.currentPlayerIndex) }
     var showDialog by remember { mutableStateOf(false) }
     var selectedPlayer by remember { mutableStateOf<Player?>(null) }
@@ -109,7 +109,14 @@ fun DayStage(
                     onDismiss = { showDialog = false },
                     onVoteClick = {
                         if (!gameState.getCandidates().contains(selectedPlayer)) {
-                            gameState.addCandidate(selectedPlayer!!)
+                            gameState.addCandidate(
+                                gameState.players[activePlayerIndex],
+                                selectedPlayer!!
+                            )
+                            Log.d(
+                                "DayStage",
+                                "Кандидат $selectedPlayer выставлен игроком ${gameState.players[activePlayerIndex].name} ${gameState.players[activePlayerIndex].score}"
+                            )
                             Log.d(
                                 "DayStage",
                                 "Add ${selectedPlayer!!.name} to Candidates: ${gameState.getCandidates()} "

@@ -37,7 +37,7 @@ import com.khodchenko.mafiaapp.data.Screen
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
 import com.example.mafiaapplication.ui.element.HeaderBanner
 import com.example.mafiaapplication.ui.theme.Background
-import com.khodchenko.mafiaapp.ui.element.PlayerList
+import com.example.mafiaapplication.ui.element.PlayerList
 import com.khodchenko.mafiaapp.ui.element.Timer
 
 

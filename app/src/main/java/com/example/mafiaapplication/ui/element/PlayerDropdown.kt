@@ -31,7 +31,7 @@ fun PlayerDropdown(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = selectedPlayer?.number?.toString() ?: "Выберите игрока",
+                text = selectedPlayer?.number?.toString() ?: "Игрок",
                 color = Color.White
             )
             Spacer(modifier = Modifier.width(4.dp))

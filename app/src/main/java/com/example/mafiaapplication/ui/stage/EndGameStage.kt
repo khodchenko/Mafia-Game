@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 import com.example.mafiaapplication.game.GameState
 import com.example.mafiaapplication.ui.theme.Background
 import com.example.mafiaapplication.ui.theme.BeautifulBlack
-import com.khodchenko.mafiaapp.ui.element.PlayerList
+import com.example.mafiaapplication.ui.element.PlayerList
 
 @Composable
 fun EndGameStage(
