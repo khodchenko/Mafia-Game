@@ -37,6 +37,8 @@ import com.example.mafiaapplication.R
 import com.example.mafiaapplication.game.GameStage
 import com.example.mafiaapplication.game.GameState
 import com.example.mafiaapplication.data.Player
+import com.example.mafiaapplication.game.StatisticManager
+import com.example.mafiaapplication.game.Type
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
@@ -51,7 +53,8 @@ import com.khodchenko.mafiaapp.ui.element.Timer
 fun DayStage(
     navController: NavController,
     gameState: GameState,
-    sharedPreferencesHelper: SharedPreferencesHelper
+    sharedPreferencesHelper: SharedPreferencesHelper,
+    statisticManager: StatisticManager
 ) {
 
     val context = LocalContext.current
@@ -117,6 +120,10 @@ fun DayStage(
                                 "DayStage",
                                 "Кандидат $selectedPlayer выставлен игроком ${gameState.players[activePlayerIndex].name} ${gameState.players[activePlayerIndex].score}"
                             )
+                            statisticManager.addEntry(
+                                "Кандидат ${selectedPlayer!!.number}.${selectedPlayer!!.name} выставлен игроком ${gameState.players[activePlayerIndex].number}.${gameState.players[activePlayerIndex].name}",
+                                Type.SIMPLE
+                            )
                             Log.d(
                                 "DayStage",
                                 "Add ${selectedPlayer!!.name} to Candidates: ${gameState.getCandidates()} "
@@ -133,6 +140,10 @@ fun DayStage(
                                 "Выдан фол игроку ${it.name}",
                                 Toast.LENGTH_SHORT
                             ).show()
+                            statisticManager.addEntry(
+                                "Выдан ${it.fouls}-й фол игроку ${it.name}",
+                                Type.SIMPLE
+                            )
                         }
                     }
                 )
@@ -213,6 +224,7 @@ fun DayStage(
                         ?.let { gameState.setCurrentPlayer(it) }
                     Log.d("DayStage", "Current player: ${gameState.currentPlayerIndex}")
                     gameState.stage = GameStage.VOTE
+                    statisticManager.addEntry("Day:${gameState.day} Vote started", Type.MAIN)
                     navController.navigate(Screen.VoteMainStageScreen.route)
                     sharedPreferencesHelper.saveGameState(gameState)
                 })

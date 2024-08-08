@@ -1,6 +1,7 @@
 package com.example.mafiaapplication.ui.stage
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -34,6 +35,8 @@ import com.example.mafiaapplication.game.GameStage
 import com.example.mafiaapplication.ui.theme.Background
 import com.example.mafiaapplication.ui.theme.BeautifulBlack
 import com.example.mafiaapplication.game.GameState
+import com.example.mafiaapplication.game.StatisticManager
+import com.example.mafiaapplication.game.Type
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.example.mafiaapplication.ui.element.HeaderBanner
 import com.khodchenko.mafiaapp.data.Screen
@@ -45,7 +48,8 @@ import com.khodchenko.mafiaapp.ui.element.Timer
 fun NightStage(
     navController: NavController,
     gameState: GameState,
-    sharedPreferencesHelper: SharedPreferencesHelper
+    sharedPreferencesHelper: SharedPreferencesHelper,
+    statisticManager: StatisticManager
 ) {
     var activePlayerIndex by remember { mutableIntStateOf(11) }
     val soundPlayer = SoundPlayer(LocalContext.current)
@@ -124,6 +128,10 @@ fun NightStage(
                             players[activePlayerIndex].let { player ->
                                 val result = gameState.killPlayer(player)
                                 if (result) {
+                                    statisticManager.addEntry(
+                                        "Player ${players[activePlayerIndex].name} killed",
+                                        Type.SIMPLE
+                                    )
                                     Log.d(
                                         "NightStage",
                                         "Player ${players[activePlayerIndex]} killed"
@@ -142,9 +150,14 @@ fun NightStage(
                         if (activePlayerIndex == 11) {
                             gameState.currentPlayerIndex = gameState.day - 1 //todo it can make bug
                             gameState.stage = GameStage.DAY
+                            statisticManager.addEntry("Day:${gameState.day} day started", Type.MAIN)
                             navController.navigate(Screen.DayStageScreen.route)
                         } else {
                             gameState.currentPlayerIndex = activePlayerIndex
+                            statisticManager.addEntry(
+                                "Day:${gameState.day} last words of player ${players[activePlayerIndex].number}.${players[activePlayerIndex].name}",
+                                Type.SIMPLE
+                            )
                             navController.navigate(Screen.LastWordsScreen.route)
                         }
                     },

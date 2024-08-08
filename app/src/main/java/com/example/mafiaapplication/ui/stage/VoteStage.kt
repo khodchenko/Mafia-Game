@@ -32,6 +32,8 @@ import androidx.navigation.NavController
 import com.example.mafiaapplication.game.GameStage
 import com.example.mafiaapplication.game.GameState
 import com.example.mafiaapplication.data.Player
+import com.example.mafiaapplication.game.StatisticManager
+import com.example.mafiaapplication.game.Type
 import com.khodchenko.mafiaapp.data.Screen
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
 import com.example.mafiaapplication.ui.theme.Background
@@ -40,7 +42,8 @@ import com.example.mafiaapplication.ui.theme.Background
 @Composable
 fun VoteStage(
     navController: NavController,
-    gameState: GameState
+    gameState: GameState,
+    statisticManager: StatisticManager
 ) {
 
     var voters by remember { mutableStateOf(emptyList<Player>()) }
@@ -101,16 +104,6 @@ fun VoteStage(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-//                Checkbox(
-//                    checked = isAllSelected,
-//                    onCheckedChange = null,
-//                    colors = CheckboxDefaults.colors(
-//                        checkmarkColor = Background,
-//                        checkedColor = Color.White,
-//                        uncheckedColor = Color.White.copy(alpha = 0.5f)
-//                    ),
-//                    modifier = Modifier.padding(4.dp)
-//                )
                 Text(
                     text = "Выбрать всех",
                     modifier = Modifier.padding(end = 4.dp),
@@ -175,27 +168,44 @@ fun VoteStage(
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomElevatedButton("Голосуем", enabled = true, onClick = {
-                    gameState.addVotesForCandidate(gameState.players[gameState.currentPlayerIndex], voters)
+                    gameState.addVotesForCandidate(
+                        gameState.players[gameState.currentPlayerIndex],
+                        voters
+                    )
                     Log.d("VoteStage", gameState.getCandidatesAndVotesLog())
 
-                    if (gameState.getCandidates().last() == gameState.players[gameState.currentPlayerIndex]) {
+                    if (gameState.getCandidates()
+                            .last() == gameState.players[gameState.currentPlayerIndex]
+                    ) {
                         if (gameState.findCandidatesWithLongestVotes().size == 1) {
-                            gameState.killPlayer(gameState.findCandidatesWithLongestVotes()[0])
+                            val kickedPlayer = gameState.findCandidatesWithLongestVotes()[0]
+                            gameState.killPlayer(kickedPlayer)
+                            statisticManager.addEntry(
+                                "Player ${kickedPlayer.name} выгнан по результатам голосования, он был единственным кандидатом",
+                                Type.SIMPLE
+                            )
                             gameState.clearVote()
                             gameState.newDay()
                             gameState.stage = GameStage.NIGHT
+                            statisticManager.addEntry(
+                                "Day:${gameState.day} last words of player ${kickedPlayer.number}.${kickedPlayer.name}",
+                                Type.SIMPLE
+                            )
                             navController.navigate(Screen.LastWordsScreen.route)
                         } else if (gameState.findCandidatesWithLongestVotes().size > 1 && gameState.stage != GameStage.VOTE_2) {
                             gameState.removeCandidatesExceptMaxVotes()
                             gameState.stage = GameStage.VOTE_2
-                            gameState.currentPlayerIndex = gameState.players.indexOf(gameState.getCandidates()[0])
+                            gameState.currentPlayerIndex =
+                                gameState.players.indexOf(gameState.getCandidates()[0])
                             gameState.clearVoters()
                             navController.navigate(Screen.VoteMainStageScreen.route)
+                            statisticManager.addEntry("Day:${gameState.day} кандидатов больше одного, второй тур голосования, проголосовали: ${gameState.getCandidatesAndVotes()}", Type.SIMPLE)
                         } else if (gameState.findCandidatesWithLongestVotes().size > 1 && gameState.stage == GameStage.VOTE_2) {
                             gameState.setCurrentPlayer(gameState.getCandidates()[0])
                             gameState.clearVoters()
                             gameState.stage = GameStage.VOTE_3
                             navController.navigate(Screen.VoteMainStageScreen.route)
+                            statisticManager.addEntry("Day:${gameState.day} кандидатов больше одного, третий тур голосования, проголосовали: ${gameState.getCandidatesAndVotes()}", Type.SIMPLE)
                         }
                         Log.d("VoteStage", "Stage: ${gameState.stage}")
                     } else {
