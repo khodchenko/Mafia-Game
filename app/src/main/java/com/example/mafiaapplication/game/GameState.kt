@@ -88,7 +88,8 @@ data class GameState(
     }
 
     fun clearVoters() {
-        for (candidate in candidates.keys) {
+        val keys = candidates.keys.toList()
+        for (candidate in keys) {
             candidates[candidate] = emptyList()
         }
     }
