@@ -88,7 +88,8 @@ data class GameState(
     }
 
     fun clearVoters() {
-        for (candidate in candidates.keys) {
+        val keys = candidates.keys.toList()
+        for (candidate in keys) {
             candidates[candidate] = emptyList()
         }
     }
@@ -189,7 +190,7 @@ data class GameState(
         }
     }
 
-    private fun awardPointsForVoting(player: Player, candidate: Player){
+    fun awardPointsForVoting(player: Player, candidate: Player){
         if (player.role == Role.CIVIL || player.role == Role.SHERIFF && candidate.role == Role.MAFIA || candidate.role == Role.DON) {
             player.score += Scores.VOTING_OPPOSITE_TEAM_SCORE
         } else if (player.role == Role.MAFIA || player.role == Role.DON && candidate.role == Role.CIVIL || candidate.role == Role.SHERIFF) {

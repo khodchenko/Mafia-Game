@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.mafiaapplication.ui.theme.MafiaApplicationTheme
 import com.example.mafiaapplication.game.GameStage
 import com.example.mafiaapplication.game.Navigation
+import com.example.mafiaapplication.game.StatisticManager
 import com.example.mafiaapplication.helpers.SharedPreferencesHelper
 import com.khodchenko.mafiaapp.data.Screen
 
@@ -23,6 +24,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
 
                 val gameState by remember { mutableStateOf(sharedPreferencesHelper.loadGameState()) }
+                val statisticManager = StatisticManager(this)
 
                 val startDestination = when (gameState.stage) {
                     GameStage.NIGHT -> Screen.NightStageScreen.route
@@ -37,7 +39,8 @@ class MainActivity : ComponentActivity() {
                     navController = navController,
                     startDestination = startDestination,
                     sharedPreferencesHelper = sharedPreferencesHelper,
-                    gameState = gameState
+                    gameState = gameState,
+                    statisticManager = statisticManager
                 )
             }
         }

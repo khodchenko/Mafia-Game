@@ -26,6 +26,8 @@ import androidx.navigation.NavController
 import com.example.mafiaapplication.game.GameStage
 import com.example.mafiaapplication.game.GameState
 import com.example.mafiaapplication.data.Player
+import com.example.mafiaapplication.game.StatisticManager
+import com.example.mafiaapplication.game.Type
 import com.example.mafiaapplication.ui.element.BestMovePanel
 import com.khodchenko.mafiaapp.data.Screen
 import com.example.mafiaapplication.ui.element.CustomElevatedButton
@@ -36,7 +38,8 @@ import com.khodchenko.mafiaapp.ui.element.Timer
 @Composable
 fun LastWordsStage(
     navController: NavController,
-    gameState: GameState
+    gameState: GameState,
+    statisticManager: StatisticManager
 ) {
     var selectedPlayersBestMove = remember { mutableStateListOf<Player>() }
     val isFirstKilledOrVotedOutPlayer = remember {
@@ -99,23 +102,26 @@ fun LastWordsStage(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-
                 CustomElevatedButton("Погнали", enabled = true, onClick = {
                     if (gameState.checkEndGame()) {
+                        statisticManager.addEntry("Game Over", Type.MAIN)
                         gameState.stage = GameStage.GAME_OVER
                         gameState.awardPointsToWinningTeam()
                         navController.navigate(Screen.EndGameStageScreen.route)
                     } else if (gameState.stage == GameStage.NIGHT) {
                         gameState.stage = GameStage.DAY
+                        statisticManager.addEntry("Day:${gameState.day} day started", Type.MAIN)
                         navController.navigate(Screen.DayStageScreen.route)
                     } else {
                         gameState.newDay()
                         gameState.stage = GameStage.NIGHT
+                        statisticManager.addEntry("Night:${gameState.day} night started", Type.MAIN)
                         navController.navigate(Screen.NightStageScreen.route)
                     }
 
                     if (isFirstKilledOrVotedOutPlayer && selectedPlayersBestMove.size == 3) {
                         gameState.awardPointsForBestMove(gameState.players[gameState.currentPlayerIndex], selectedPlayersBestMove)
+                        statisticManager.addEntry("Best move: ${gameState.players[gameState.currentPlayerIndex].score} candidates: $selectedPlayersBestMove", Type.SIMPLE)
                         Log.d("LastWordsStage", "Best move: ${gameState.players[gameState.currentPlayerIndex].score} candidates: $selectedPlayersBestMove")
                     }
                 })

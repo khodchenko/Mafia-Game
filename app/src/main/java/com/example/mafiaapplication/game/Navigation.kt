@@ -21,7 +21,8 @@ fun Navigation(
     navController: NavHostController,
     startDestination: String,
     sharedPreferencesHelper: SharedPreferencesHelper,
-    gameState: GameState
+    gameState: GameState,
+    statisticManager : StatisticManager
 ) {
     NavHost(navController = navController, startDestination = startDestination) {
         composable(route = Screen.StartGameScreen.route) {
@@ -38,37 +39,43 @@ fun Navigation(
             NightStage(
                 navController = navController,
                 gameState = gameState,
-                sharedPreferencesHelper = sharedPreferencesHelper
+                sharedPreferencesHelper = sharedPreferencesHelper,
+                statisticManager = statisticManager
             )
         }
         composable(route = Screen.DayStageScreen.route, arguments = listOf()) {
             DayStage(
                 navController = navController,
                 gameState = gameState,
-                sharedPreferencesHelper = sharedPreferencesHelper
+                sharedPreferencesHelper = sharedPreferencesHelper,
+                statisticManager = statisticManager
             )
         }
         composable(route = Screen.VoteMainStageScreen.route, arguments = listOf()) {
             VoteMainStage(
                 navController = navController,
-                gameState = gameState
+                gameState = gameState,
+               statisticManager = statisticManager
             )
         }
         composable(route = Screen.VoteStageScreen.route, arguments = listOf()) {
             VoteStage(
                 navController = navController,
-                gameState = gameState
+                gameState = gameState,
+                statisticManager = statisticManager
             )
         }
         composable(route = Screen.LastWordsScreen.route, arguments = listOf()) {
             LastWordsStage(
                 navController = navController,
-                gameState = gameState
+                gameState = gameState,
+                statisticManager = statisticManager
             )
         }
         composable(route = Screen.EndGameStageScreen.route, arguments = listOf()) {
             EndGameStage(
-                gameState = gameState
+                gameState = gameState,
+                statisticManager = statisticManager
             )
         }
         composable(route = Screen.SettingsScreen.route, arguments = listOf()) {

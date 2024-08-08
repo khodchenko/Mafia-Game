@@ -8,7 +8,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import com.example.mafiaapplication.ui.theme.Background
 
-
 @Composable
 fun CustomElevatedButton(buttonText: String, enabled: Boolean = true, onClick: () -> Unit) {
     ElevatedButton(
@@ -16,9 +15,9 @@ fun CustomElevatedButton(buttonText: String, enabled: Boolean = true, onClick: (
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.White,
             contentColor = Color.Black
-        ), enabled = enabled
+        ),
+        enabled = enabled
     ) {
         Text(buttonText, color = Background, fontSize = 30.sp)
-
     }
 }
